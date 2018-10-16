@@ -1,4 +1,46 @@
+IAM
+	AWS: Identity Access maanagement. .. Global (not tied to a region)
+		Create users, group => permissions,  Groups policies.  
+			User/ password for console, or accessKeyId / secret access key for programatic
+			Can attach permissions individually, or through groups
+			
+			SEtup billing alert.
+		Goto billing dashboard
+		Setup receive billing aleryts
+			click setup billing alert => CloudWatch page
+			Goto Billing under alarms. Create alert
 
+S3	
+	This email is from an external source - exercise caution regarding links and attachments.
+	Spread across multipe AZs
+	Key value sotre.
+	Key = name
+	Value = data  upto 5 TB
+	VersionId
+	MetaData
+	SubResources
+		ACLs
+		Torrents
+
+	et 200 response afer success upload
+
+	99.9 availability guarantee (built for 99.99 availability)
+	99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
+
+	Tiered storage (e.g. move after time to glacier)
+	Encryption
+	Control List and Bucket policie
+
+	s3, S3IA, S3 IA 1 td, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
+	bucket is like a folder but unique and routable to  
+
+	bucket corresponds to url... https://s3-amazonaws.com/<name> e.g. https://s3-eu-ireland
+	s3 global though??
+
+	Data conistency
+		REad after write for consistency for puts for new objects
+	   Eventual consistency for update puts or deletes.. 
+	read s3 faq
 
 Cross Region Replication
     Must enable versioning

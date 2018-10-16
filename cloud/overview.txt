@@ -1,0 +1,382 @@
+# Cloud Notes
+
+Preferred architecture 
+Active/active evenily accross AZs
+
+## 12 Factors
+See https://12factor.net/
+https://aws.amazon.com/blogs/compute/applying-the-twelve-factor-app-methodology-to-serverless-applications/
+1. Codebase:   			One codebase tracked in revision control, many deploys                    1
+2. Dependencies  		Explicitly declare and isolate dependencies                               3
+3. Config    			Store config in the environment                                           5
+4. Backing services   	Treat backing services as attached resources                              8
+5. Build, release, run	Strictly separate build and run stages                                    4
+6. Processes			Execute the app as one or more stateless processes                        12
+7. Port binding			Export services via port binding                                          11
+8. Concurrency			Scale out via the process model                                           13
+9. Disposability		Maximize robustness with fast startup and graceful shutdown               7
+0. Dev/prod parity		Keep development, staging, and production as similar as possible          9
+1. Logs					Treat logs as event streams                                               6
+2. Admin processes		Run admin/management tasks as one-off processes                           0
+
+
+## Beyond 12 factors
+See https://content.pivotal.io/blog/beyond-the-twelve-factor-app
+1. One codebase, one application 		(See 1 in 12 factor)
+2. API first
+3. Dependency management 				(See 2 in 12 factor)
+4. Design, build, release, and run  	(See 5 in 12 factor)
+5. Configuration, credentials, and code	(See 3 in 12 factor)
+6. Logs 								(See 11 in 12 factor)
+7. Disposability 						(See 9 in 12 factor)
+8. Backing services 					(See 4 in 12 factor)
+9. Environment parity					(See 10 in 12 factor)
+0. Administrative processes 			(See 12 in 12 factor)
+1. Port binding 						(See 7 in 12 factor)
+2. Stateless processes		            (See 6 in 12 factor)
+3. Concurrency                  		(See 8 in 12 factor)
+4. Telemetry
+5. Authentication and authorization
+
+## Replatforming
+See https://pivotal.io/replatforming
+Sometimes not all factors are needed if replatforming, i.e. moving to cloud. Can still benefit from lower capEx / opEx
+
+### Cloud maturity model
+* Cloud Native: 
+  * Microservice arch, API first desing
+* Cloud Resilient: 
+  *	Fault tolerant and resilent desing
+* Cloud Friendly
+  *	12 factor/ horizontally scalable / leverages platofrm for HA
+* Cloud Ready
+  * No permanent disk access / Self contained app / Platform managed ports and networking
+
+## Notes
+A lot of these are common e.g. 
+#### Codebase:   			
+git / svn etc. Make sure to only have one deploy per repo (maybe split multiple deploys into multiple apps), and use dependency mgmt to load back in
+For serverless break functions along event sources into their own repositories
+
+
+
+#### Dependencies  		    
+maven/ npm / etc
+•	Maven (Java)
+•	Bundler (Ruby)
+•	Pip (Python)
+•	Lambda with Node.js https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html
+•	Lambda with Python 
+•	Lambda with Maven (java)  https://docs.aws.amazon.com/lambda/latest/dg/java-create-jar-pkg-maven-no-ide.html
+•	Lambda with .Net 
+•	Lambda with Go
+
+
+#### Config    			    
+dont store config (e.g. passwords urls etc) in codebase, e.g. @ConfigurationProperties (spring boot), Config server (Spring cloud), PropertyPlaceholderConfigurer (original spring) https://spring.io/blog/2015/01/13/configuring-it-all-out-or-12-factor-app-style-configuration-with-spring
+For serverless do something like  Lambda, these are called environment variables
+
+#### Backing services   	
+#### Build, release, run	
+•	Strictly separate build and run stages
+•	MS TFS  (for CI part)
+•	Automate deployments for everything the app needs to run
+•	Use Jenkins / Nexus / UDeploy
+•	Ensure test automation is in place prior to migration to cloud
+•	Containers / Docker
+•	Note:  the automation provided within this principle should be reused for rehydration (per the admin process principle, we recommend this is done via blue / green deployments)
+o	to terminate an instance at AWS follow their instructions Terminate Your Instance - Amazon Elastic Compute Cloud. http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html
+
+#### Processes			
+#### Port binding			
+#### Concurrency
+•	Ensure the application can scale horizontally to address performance and eliminate single points of failure at this tier.
+•	Multi-thread internal processes when additional scaling is needed..
+Need all architecture to scale horizontally, so need to design app to be able to run in parallel, and may need to move from traditional rdbms to more cloud friendly soln.
+•	Preferred:  Stateless app’s
+If stateful…
+•	Convert as much as possible to stateless
+o	Technique 1:  Simple
+	pass the data with each request with the data stored in the db;
+	so starting with a stateful app, we could....
+	if stored in jvm in jsession....
+	look at each jsession when reading info and substitute a read from a db
+	look at each jsession when writing to it and substitute a write to a db
+	generic storage on jvm
+	look at each read and instead read from db
+	look at each write and instead write to a db
+o	Technique 2:  distributed cache
+	move to this technique when the simple option is performance restrictive.
+o	Technique 3:  discouraged technique, but common with vendor app's - sticky sessions
+	if the business is willing to accept the risk of customers restarting their browser upon failure, and there is not a risk for long workflow information to be lost, then sticky sessions can be an option.
+o	Limited to same site concurrency when exchanging large amounts of data and or chatty protocols due to performance impacts;
+	jdbc, informatica,
+	large amounts of data
+	co-located instances
+o	When SLA's are not met, take appropriate mitigation steps to improve performance, if these fail, consider
+o	Use a distributed persistence framework when SLA’s not met with stateless
+
+			
+#### Disposability		
+#### Dev/prod parity		
+#### Logs					
+#### Admin processes		
+
+
+## AWS Design
+	Scalability
+		Conceptually limitless resources
+		Efficient use of resources
+		Lower TCO  Operational costs lowered. 
+			OpEx can be lower with cloOperational costs can be eroded without proper planning and architecting of services. 
+			CapEx lowered significantly   Can do reserved services
+	Elasticity
+		Proper design of elastic services shoudl maintain OpEx stays lowers than trad design. Reduce servers as they become unavailable.
+	Deploymnet
+		Global reach
+		Programmatic access to resources
+		Virtual administration
+	Cost
+		Eliminate CapEx
+			Lots of times it is better to have some capex, via reserved reouses to lock in vendor to commitments.
+		Utility pricing
+	Limitiation
+	
+	'Dedicated Instance' (not shared with our customers, but still just an instance) vs 'Dedicated Host      (barebones. access to cores etc. more expensive. Probably more powerful)
+	
+	
+### Best Practises
+	Use tags to help identify resources
+	 can define 50 tags per instance
+	 Can have things like type (ec2, s3), department, project, az, region, cidr, 
+	
+	Patterns
+		Event based .. ser
+	
+	
+S3  
+	Object storage.
+	Up to 5 TB
+	Object stored eventually consistent, replicated accross AZ's (New objects consistent after 1st write, but updates are eventually consistent (Read after write consistency not guarenteed for updates.)
+	Similar products
+		EBS (Elastic Block Storage) is a disk like storage only for ec2 instances. It is only in 1 AZ 
+		EFS (Elastic filesystem.) similar to NFS
+	Designed for 99.99% (4 9s)availability over a given year	
+	Object durability (11 9s) 99.999999999%
+		Can pay less for reduced durability
+	
+	Metdata can be added. 
+	Metadata is not encrypted (data can be)
+	
+S3 IA (Infrequent Access)
+	Same as above except
+	Designed for 99.9% availability over a given year
+	Cheaper for storage.. higher cost for retrieval.
+	Min size and min storage time (30 days)
+	
+	
+Amazon VPC Virtual Private Cloud (over and above EC2 classic link) https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html
+
+		Allows us to isolate various parts of network CIDR (classless InterDomain routing) block. Contiguous IP range from 16 (65k ip range) to 28
+		Elastic IP address can be used to provide publicly facing IP address. Normally sits behind load balanceer
+		Can have peer VPCs (only pairs though)
+		restricted to single AWS region. Will need VPC per region
+	Provides networking
+	Subnet  (just a range of ip address )
+		talkes to internet gateway
+		Can be public or private
+	Route table
+	Network Access Control NACL  subnet level.. lower level to security groups.. Has Allow and Deny. stateless... In and Out independent. In does not imply out, must explicitly call.
+		Create them with line numbers e.g. 10, 20, 30..
+	Internet Gateway (IGW)
+	Security groups .. Instance level. higher level to NACL (i.e. NACL first then SG). Only Allow rules. stateful, out configured in parallel with IN.
+	
+	
+	VPC spans AZ.
+		Create subnet per AZ using CIDR which is subset of vpc cidr
+		Within IP range following are reserved/ 0, 1 (router), 2, 3 (reserved), 255 (to block broadcast)
+		when creating VPC netmask is in range /28 netmask (2^(32-28) = 16) and /16 netmask. 65k
+		See limits page for information like 5 vpcs/ dns per region..  200 subnets per VPC .. https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Appendix_Limits.html
+
+		If a subnet's traffic is routed to an internet gateway, the subnet is known as a public subnet. can be ip4 or 6
+		If a subnet doesn't have a route to the internet gateway, the subnet is known as a private subnet. 
+		If a subnet doesn't have a route to the internet gateway, but has its traffic routed to a virtual private gateway for a VPN connection, the subnet is known as a VPN-only subnet.. Currently, we do not support IPv6 traffic over a VPN connection.	
+
+
+	Online IP CIDR / VLSM Supernet Calculator
+		http://www.subnet-calculator.com/cidr.php
+
+
+
+	
+	AWS deploys default VPC for each of us in each region (if account created after certain date)
+	
+	To Link	
+		Software VPN (eg open VPN)
+		Harware VPN.. 2 IPSEC tunnels to VPG (gateway).
+			For full HA need 2 hardware VPNs in different sites taking to both VPCs (in different regions). End up with 4 ipsec tunnels
+		AWS Direct Connect.. directly connect from on-premises to AWS. Can offer higher troughput.
+			Point to point (so may need 2 (redundant links) 
+			Can fall back to VPN backup
+	
+	VPC Options
+		Endpoints e.g.
+		A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3 A private direct connection between a VPC and S3
+A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and A private direct connection between a VPC and DynamoDB DynamoDB
+PrivateLink PrivateLinkfor AWS services for AWS servicesfor AWS servicesfor AWS services for AWS services for AWS services
+Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps: Endpoint Creation Steps:
+1. Specify the VPC Specify the VPC
+2. Select S3 bucket or DynamoDB table Select S3 bucket or DynamoDB table Select S3 bucket or DynamoDB table Select S3 bucket or DynamoDB tableSelect S3 bucket or DynamoDB table Select S3 bucket or DynamoDB tableSelect S3 bucket or DynamoDB table Select S3 bucket or DynamoDB table Select S3 bucket or DynamoDB table
+3. Define the policy Define the policy Define the policy
+4. Specify the route tableSpecify the route table Specify the route table Specify the route table Specify
+			Private direct connection between VPC and S3
+			Private direct connection between
+			PrivateLink 
+				Access AWS through
+				on premises resources accessed through AWS direct connect
+			
+			Creation
+			Specify souteTable
+			
+	
+Availability
+	SLAs and AFR(Annual Failure Rates)
+	Availability 
+		in series (all needed) Total A = A1*A2*An
+		in parallel (1 needed) A = 1-(1-A1)*(1-A2)
+			so we have 2 servers wach with 95% availability in different regions. Total availability is 1-(1-.95)*(1-.95)  = 99.75 %
+				Add another in parallel now A = 99.98
+	So by increaings items in parlallel we can increase availability.
+		So more AWS regoins etc.
+		
+		Microservices tend to be more reliable than old monolithic servers
+	
+		Calculate availabley of web app to be based on it, not EC2 instance. Normally lower (e.g. 95% above, not 99.95)
+
+	Geographal location of resourses
+		Regions (2 or more AZs)
+		Edge locations for cloudFront
+		AWS direct connect locations
+		
+	Affinity
+		Global affinity e,g, IAM
+		Regional affinity  e.g. s3
+		AZs  ec2
+		
+	Reserved reseources are tied to a region (/az) so we shoudl plan this when reserving resources
+		
+
+
+
+
+			
+VPC	
+	subnet routes, NACLs
+	
+	IPSEC
+	
+	AWS direct connect. Multiple redundant connections. More highley availble
+	
+ECS Elastic Compute Service
+	Pattern:
+	Provider: Amazon
+	
+	
+	
+NACL  Network ACL
+	Used in VPC
+	
+Scaling	
+	CloudWatch / Autoscaling and Loadalancing
+		People say cloudwatch is only  for autoscaling
+	
+Term
+   Description
+   List links
+   List diagram links <display inline>
+   List LinkedTerms <Term, LinkType>
+	   Link types:
+			Used by
+			Equivilenet of
+	
+AWS Storage
+	
+AWS Load Balancer 3 types Classic, network (up to layer 4) and application. (up to layer 7)
+	For Ec2 instances.
+	Distibute incoming traffic accross multiple EC2 instaces or container
+	Charged for ELB and traffic flow (e.g. route 53 (dns) traffic in and out)
+	Classic load blancer for classic netowrk (deprecated)
+	Network Load Balancer .. VPC based
+	Application Load Balancer use for containers
+	Define helthChecks, and have unhealthy instances pulled
+	Security managed by Security groups and NACLs  in VPC
+	
+	https/ ssl offloading, access logging, delete protection
+	
+	ALB (app LB)
+		Layer 7 LB
+		WAF Web access Filter .support of ALB  Not on NLB
+		suports websockets and http/2
+		supports routing requests to containers
+	
+	Best Practise: Integrate with Auto Scaling Groups
+	
+	
+	
+	
+Serverless
+	
+	
+	AWS  (talk)
+		When to use EC2
+			Like for like legacy applications. list and shift
+			Monolithic apps with large Mem and CPUEC2/latest/UserGuide/terminating-instances
+			Commercial Apps
+			
+		When to use Containers
+			Custom microservice architectures
+			App portability accross environments
+			Mine: Distributing commercial app. (Non cloud). Have it running in Docker container.
+			
+		When to use Serverless	
+			Simplicity and Cost
+			Greenfield apps: MNet-new projects Consider serverless firstOps, Security and Monitoring automation tasks
+	
+		Advantages
+			Agility:
+				Focus on writing task logic
+				Less ops overhead
+				Less InfoSec overhead (Patching/ change managment/ data encryption/ monitoring/ Acess Loggin / Anti virus => SOC 2 reports) => 
+					Soc 2, pronounced "sock two" and more formally known as Service Organization Control 2, reports on various organizational controls related to security, availability, processing integrity, confidentiality or privacy.
+				
+			Cost	
+				Pay per execution
+				Dont pay for idle
+				No capacity planning
+				No overprovisioning
+			
+			Scale (Scales elasticly by default (maybe pricing should be considered)
+				OnDemand scaling
+				High concurrancy
+				Microservices
+				Easier to deploy globally
+				
+			Resiliancy
+				Managed HA
+				Stateless compute
+				Durable HA storage
+				
+		Stateless design 1st step.  State shoudl not be sotred on compute nodes (to where? DB/ storage?), avoid sticky sessions where possible
+		
+		Use S3 as central storage
+		
+		AI/ ML going serverless
+		DevOps 
+			Aws offerings
+				CodeStar 
+				X-ray
+				CloudWatch
+				CodeDeploy
+				CodeBuild
+				Code Pipeline
+				CodeCommit
