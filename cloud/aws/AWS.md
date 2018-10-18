@@ -5,7 +5,7 @@
 	## Compute  **
 	..* EC2
 	..* EC2 Container Service (ECS)
-	..* Elastic Beanstalk (in developper associate exam)
+	..* Elastic Beanstalk (in developper associate exam).. designed to run a developer's code on an infrastructure that is automatically provisioned to host that co
 	..* Lambda
 	..* LightSail VPS service.. Easier th
 	..* Batch  
@@ -34,7 +34,7 @@
 	..* Direct Connect (connet to AWS)
 	
 	## Devloper Tools
-	..* Code STar .. Project managing code . .with CDN tool chain 
+	..* Code Star .. Project managing code . .with CDN tool chain 
 	..* Code Commit .. like Github
 	..* Code Build  builds
 	..* Code Deploy .. deploys to Ec2 or in house
@@ -225,11 +225,19 @@ Can turn on MFA delete. Which means you have to multifactor confirm if you want 
 99.99 availability guarantee (built for 99.99 availability)
 99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
 
+s3 Performance
+	S3 can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET requests per second PER PREFIX IN A BUCKET.
+	So if there are a lot of read writes one way to increase performance is to use hexidecial hash (e.g. md5) PREFIX to  bucket names to parallelize this
+	
+	for reads only CloudFront can improve performance since it servers a cached version of doc.
+	
+	Faster upload if you allow multipart files for big files.
+	Also to increase performance you can use hexidecial hash (e.g. md5) PREFIX to 
+
 IA Infrequent access. Pay for retrieval 
 RRS Reduced Redundancy storage (is this IA 1 zone?)
     availability 99.99   Durability 99.99 (4 9s intead of 11)
 
-Faster upload if you allow multipart files for big files.
 Upload objects in a single operation—With a single PUT operation, you can upload objects up to 5 GB in size. ...
 Upload objects in parts—Using the multipart upload API, you can upload large objects, up to 5 TB.
     
