@@ -94,8 +94,15 @@ Additional volumes can be encryptrd. By default root can't but can by either 3rd
 	
 	Error 504 is a gateway  error which means that https server somewhere has failed, and LB can't communicate with it.
 	
-	LoadBalancers are access via DNs (IP not given , it is managed by AWS)
+	LoadBalancers are access via DNS name (IP not given , it is managed by AWS)
 	Readt ELB faq for classic Load Balancers (for q's)
+	
+	When Setting up LoadBalancer
+	We assign it accross Aailability zones (subnets) . but it is only per region. Note our example had LB spanning 3 az's but target was only in one.
+	We give it a security group (normally webDMZ ) to open ports
+	We assign listeners, which is what is listens on e.g. port 80
+	We assign Target groups, as in what it forwards to, which can be added by instance name or ip
+		In the target we set things like healthy threshold (how many sucess pings before its declared healthy), unhealth thrshld , timeout, interval, success codes.
 
 ##CloudWatch
 
@@ -109,6 +116,45 @@ CloudWatch for performance  monitoring
 CloudTrail is for auditing what is been done on Aws account
 Note for traffic monitoring should maybe use VPC Flow logs
 
+
+##Launch Configuraiton and AutoScaling
+  Like Elastic LoadBalancer it can monitor for healthCheck page
+  
+  When creating AutoScaling Group must 1st create Launch configuration (like ec2). This is the instance the autscaling group will launch. Note cannot edit launch instance config, must create new one if changing
+  Can edit AutoScale config
+  Add policy for when auto scling/ shrinking should occur.
+  
+  Attach ELB, so we can balance accross all instances. This will also check for failures nad not route if instance is down.
+  
+  
+  Then create autscaling group accross AZ (not region).  Ec2 autoscale group is assigned per Network vpc (which can only span since region).. Subnets can only span single AZ
+  If it sees instances going down it will recreate them, and loadbalancer will only route to up instanecs
+  Deleting Autoscaling group will delete all instances also
+  
+  A VPC spans all the Availability Zones in the region. After creating a VPC, you can add one or more subnets in each Availability Zone. When you create a subnet, you specify the CIDR block for the subnet
+ 
+## EC2 Placement group
+ ..* Custered placement groups
+	Grouping of instances within a single AZ. PLacement groups are recommended for apps that need low latency e.g. cassandra, and big data cluster
+	Only certain instances can be launched into a Clustered Placement Group.
+		Cant do t2 micro or nano... Compute Optimized, Gpu, Memory Optimized, Storage Optimized
+ ..* Spread Placement Group(Newer)
+	Group of instances that are placed on distict underlying hardware (i.e. not sharing host). Can spread AZs
+	Recommended for apps that have a small number of critical instances that shoudl always be kept away from each other.
+	
+	AWS recommend homogonous instances within placement group (i.e. same instance type)
+	You can't merge placement groupsYou can;t move existin ginstance into a placement group. (Need to create an AMI from instance and launch it that way)
+  
+  ## EFS
+  File service
+  Only pay for storage you No preprovisionily
+  Data i stored accroos multiple AZs withinn a regionCAn siupport 000's o concurrent connections
+  REad after write consistency
+  upto petabytes
+  
+
 	
 	### VPC
 	VPCFlow logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces. Flow log data is stored using CloudWatch Logs. Use it for monitoring IP traffic for instance.
+	
+	

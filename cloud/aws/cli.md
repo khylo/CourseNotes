@@ -31,3 +31,38 @@ goto Ec2/ Actions / Instance Settings/ Attach/ Replace IAM roles .
 Can add / rmove roles to running instance.. Once it has roles it does not need credentials
 
 e.g. s3 roles mean it can run aws s3 ..., ec2 roles would mean aws ec2 ...
+
+##jq
+The command-line JSON processor, jq[2], is “like sed for JSON data -
+  you can use it to slice and filter and map and transform structured
+  data with the same ease that sed, awk, grep and friends let you play
+  with text.” With just a few operators you can do amazing things such
+  as transform lists into CSV output (shown below).
+
+    $ echo '{"x":["a","b"], "y":["d","e"]}' | jq -r '.[] | @csv'
+    "a","b"
+    "d","e"
+	
+aws iam list-roles --output=json | jq -r -f ~/aws-iam-roles-to-csv.jq 
+
+aws-iam0roles-to-csv.jq
+["Roles", "Effect", "Federated"],   # Output header
+        (
+            .Roles[] |                      # For each role ...
+            .RoleName as $role |            # ... store role name
+            .AssumeRolePolicyDocument |     # Descend into structure
+            .Statement[] |                  # For each policy statement ...
+            .Effect as $effect |            # ... store effect
+            .Principal |                    # Descend into structure
+            select(.Federated) |            # Continue *if* Federated exists
+            .Federated |                    # For each Federated value ...
+            if type == "string" then        # If value is string ...
+                [.]                         # ... create Federated list
+            else                            # Otherwise ...
+                .                           # ... output list
+            end |
+            .[] |                           # For each Federated item ...
+            [$role, $effect, .]             # ... output item list
+        ) | @csv                            # Convert all output to CSV
+
+
