@@ -15,7 +15,7 @@
 	## Sample of services
 	..* EC2
 	..* EC2 Container Service (ECS)
-	..* Elastic Beanstalk (in developper associate exam)
+	..* Elastic Beanstalk (in developper associate exam).. Paas
 	..* Lambda
 	..* LightSail VPS service.. Easier th
 	..* Batch  
@@ -132,6 +132,8 @@ Note for traffic monitoring should maybe use VPC Flow logs
   Deleting Autoscaling group will delete all instances also
   
   A VPC spans all the Availability Zones in the region. After creating a VPC, you can add one or more subnets in each Availability Zone. When you create a subnet, you specify the CIDR block for the subnet
+
+  Can also use launch templates now instead of lauch configuration
  
 ## EC2 Placement group
  ..* Custered placement groups
@@ -152,9 +154,48 @@ Note for traffic monitoring should maybe use VPC Flow logs
   REad after write consistency
   upto petabytes
   
-
+  Chooises for 
+  ..* Performance Mode
+	Default, or MaxIO if 100's or thoughsands of clients connecting to it
 	
-	### VPC
+..* THroughput Mode
+    Bursting (normal)
+	Proviioned ..  Use Provisioned throughput mode for applications that require more throughput than allowed by Bursting 
+
+
+## Lambda
+can use API gateway to http requests
+languages: Node.js, Java, C#, Go and Python
+
+Charge per request and duration (per GB second) (emory used by time)
+1st million requests free.. .20c per million after that
+max time increased from 5 mins to 15 mins
+
+no servers
+continuous scaling (better than autoscaling).. scales out automatically
+serverless, s3, dynamoDB
+can trigger other lamdba functions
+
+Can get compicated to debug, so can use XRay to help debug
+
+###Lab
+Create serverless website with Route 53, S3, Api Gteway lambda
+
+### Triggers
+..*	API Gateway
+..* IOT
+..* Alexa skills kit
+..* Alexa Smart Home
+..* CloudFront
+..* Cloudwatch events
+..* Cloudwatch logs
+..* Cognito
+..*Kinesis
+..* S3
+..* SNS
+..* CodeCommit*
+
+## VPC
 	VPCFlow logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces. Flow log data is stored using CloudWatch Logs. Use it for monitoring IP traffic for instance.
 	
 	
