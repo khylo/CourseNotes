@@ -49,8 +49,15 @@ So EBS volume's placed in a specific availabilities zones where they are automat
 
 by default EBS deleted with Ec2 instance, but can change
 Additional volumes can be encryptrd. By default root can't but can by either 3rd part apps or creating custom AMI can allow you to do it	
+EBS types
 
-	### Raid
+Ec2. .termination protecteion is off by default, ebs isdeleted
+EBS root can be encrypted
+volumes are ebs
+snapshots are stored in S3.. snapshots are incremental
+
+
+### Raid
 	Can use Raid 0 (striped) to increase IOPS of EBS volumes.
 	In lad he created windows VM with 5 EBS volumes. THen login to windows. Delete 4 volumnes/ drives (leave root drive). Then right click in Disk 1 and select New Striped Volume, and add all diskss, and assign to single drive letter
 	This now maps all drivees to 1 logical drive so can increase performance.
@@ -194,6 +201,29 @@ Create serverless website with Route 53, S3, Api Gteway lambda
 ..* S3
 ..* SNS
 ..* CodeCommit*
+
+## ec2 sUMMARY
+### Diffrent Pricing models
+..* On Demand by secondc
+..* spot
+..* REserved
+..* Dedicatd hosts/ ;icensing or tenent doesn't want to share
+
+### Instnce types
+Fight DrMcPx
+
+FPGA
+IOPS high speed storage,for dbs etc
+Graphics
+High disk throughput .. map reduce , hdfs etc
+t cheap
+D Dense storage fileservers/  hadopo
+Ram  memory optimized
+M mid
+Compute  cpu intensice
+p  GPU
+Xtreme memory   .. Spark, 	
+
 
 ## VPC
 	VPCFlow logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces. Flow log data is stored using CloudWatch Logs. Use it for monitoring IP traffic for instance.
