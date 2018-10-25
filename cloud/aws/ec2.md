@@ -1,4 +1,6 @@
 # EC2
+(termination protection off by default)
+Types (pricing)
     on demand   per hour or per second depending on 
         short term spike
     RI Reserved i=Instances reserved for 1 to 3 years
@@ -22,34 +24,48 @@
 
 ## Host types
     Dr Mc GiftPx
-    Density
+    Dense storage fileservers/ data warehouse/ hadoop
     Ram
     Main choice
-    Compute
-    Graphics
+    Compute CPU intensive apps
+    Graphics intensive e.g. video encoding
     Iops
-    FPGA
+    FPGA   financial transaction/ realtime graphics processing
     T cheap main use e.g. t2
-    Pix (Graphics)
-    Xtreme Memory
+    Pix (GPUs)
+    Xtreme Memory  Spark etc (how is it different from R?)
 now
     Fight Dr McPx
     High Disk Tru put
 
+	
+	
 ## EBS Elastic Block Storage
 So EBS volume's placed in a specific availabilities zones where they are automatically replicated to protect
     Root volumne must be either SSD.. 2 types or magnetic standard
-    	- General purpose ssd GP2 ... 3IOPs per gig => 3000 IOPS for volumes 3334GB and above
+    	- General purpose ssd GP2 ...Up to 10000 IOPs 3IOPs per gig => 3000 IOPS for volumes 3334GB and above
         -Provisioned IOPS SSd.. For high perf >10000 IOPS
 
     Magnetic types
-        Magnetic Standard (previous generation )
-        throughput optimized HDD.. big data, data warehouse. frequenctly acessed
-        sc1.. cold HDD .. less frequent. lowest cost hdd
+        Magnetic Standard (previous generation ).. Can be root /bootable 
+        throughput optimized HDD.. big data, data warehouse. frequenctly acessed  (not bootable)
+        sc1.. cold HDD .. less frequent. lowest cost hdd   (not bootable)
+
+by default EBS deleted with Ec2 instance, but can change.
+By default root volumne not encrypted, 
+	Can encrypt it but must jump  through some hoops.
+		By default root can't but can by either 3rd part apps or creating snapshot. Then deploy snapshot and click encrypt volume custom AMI can . Or can use 3rd party tools. 
+Additional volumes can be encryptrd. 
 
 by default EBS deleted with Ec2 instance, but can change
 Additional volumes can be encryptrd. By default root can't but can by either 3rd part apps or creating custom AMI can allow you to do it	
 EBS types
+Volumnes exist on EBS
+Snapshots exist on S3 (incremental)
+encrypted volumnes produce encrypted snapshots and they in turn produce encrypted volumnes if created as AMI.
+You can share snapshots but only non-encrypted
+
+For AMIs to be created you need to keep EBS snapshot of the root device
 
 Ec2. .termination protecteion is off by default, ebs isdeleted
 EBS root can be encrypted
@@ -59,7 +75,7 @@ snapshots are stored in S3.. snapshots are incremental
 
 ### Raid
 	Can use Raid 0 (striped) to increase IOPS of EBS volumes.
-	In lad he created windows VM with 5 EBS volumes. THen login to windows. Delete 4 volumnes/ drives (leave root drive). Then right click in Disk 1 and select New Striped Volume, and add all diskss, and assign to single drive letter
+	In lab he created windows VM with 5 EBS volumes. THen login to windows. Delete 4 volumnes/ drives (leave root drive). Then right click in Disk 1 and select New Striped Volume, and add all disks, and assign to single drive letter
 	This now maps all drivees to 1 logical drive so can increase performance.
 	
 	..* How to take snapshot
@@ -72,18 +88,19 @@ snapshots are stored in S3.. snapshots are incremental
 	
 ### How to encrypt volumne.
 		..* Create snapshot. (Best practise is to stop EC2 instance first)
-		..* Copy snapshot to new region (this allows us to encrypt.)
-		..* Create Image from snapshot
-		..* Note can share encrypted volumes/ images with others (since they wont have key)
+		..* Copy snapshot to new region (*this allows us to encrypt.*)
+		..* Create Image from snapshot (AMI)
+		..* Note can't share encrypted volumes/ images with others (since they wont have key)
 
-### SElect AMI based on (most root Volumes are EBS)
-..* REgion
+### Select AMI based on (most root Volumes are EBS)
+..* Region (Amis can only be launched from the region where they are stored, but can copy amis to other regions.)
 ..* OS
 ..* Architecture (32 vs 64)
 ..* Launch Permissions
-..* Storage for the Root Device (Root evice Volume)
-			Instance Store (Ephemeral Storage).. Can't stop instance.. Can't detach volume. Can't add Instance Store volumnes after device is started . If uderlying host fails you will lose your data.
-			EBS backed volumes. When deleteing Ec2 instance can choose not to dlete root volume,
+..* Storage for the Root Device (Root device Volume)
+			Instance Store (Ephemeral Storage).. Can't stop instance.. Can't detach volume. Can't add Instance Store volumnes after device is started . 
+				*If uderlying host fails/ stops you will lose your data.*
+			EBS backed volumes. When deleteing Ec2 instance can choose not to delete root volume,
 			
 	Cannot stop Instance Store instances
 	Sometimes stop and start instance if you want o restart it on new Hypervisor (e.g. if issue with hypervisor) but can't with Ephemeral/ Instance Store.
@@ -102,7 +119,7 @@ snapshots are stored in S3.. snapshots are incremental
 	Error 504 is a gateway  error which means that https server somewhere has failed, and LB can't communicate with it.
 	
 	LoadBalancers are access via DNS name (IP not given , it is managed by AWS)
-	Readt ELB faq for classic Load Balancers (for q's)
+	*Read ELB faq for classic Load Balancers (for q's)*
 	
 	When Setting up LoadBalancer
 	We assign it accross Aailability zones (subnets) . but it is only per region. Note our example had LB spanning 3 az's but target was only in one.
@@ -119,7 +136,7 @@ snapshots are stored in S3.. snapshots are incremental
 ..* Logs .. aggregate, store, moitor logs.. must install agent on device
 
 CloudWatch for performance  monitoring
-    e.g. setup event whenever ec2 state is changed to running and had t forwarded to lambda function (which just prints info)
+    e.g. setup event whenever ec2 state is changed to running and had it forwarded to lambda function (which just prints info)
 CloudTrail is for auditing what is been done on Aws account
 Note for traffic monitoring should maybe use VPC Flow logs
 
@@ -131,7 +148,7 @@ Note for traffic monitoring should maybe use VPC Flow logs
   Can edit AutoScale config
   Add policy for when auto scling/ shrinking should occur.
   
-  Attach ELB, so we can balance accross all instances. This will also check for failures nad not route if instance is down.
+  Attach ELB, so we can balance accross all instances. This will also check for failures and not route if instance is down.
   
   
   Then create autscaling group accross AZ (not region).  Ec2 autoscale group is assigned per Network vpc (which can only span since region).. Subnets can only span single AZ
@@ -142,7 +159,7 @@ Note for traffic monitoring should maybe use VPC Flow logs
 
   Can also use launch templates now instead of lauch configuration
  
-## EC2 Placement group
+## EC2 Placement group (makes sense only for AutoScaling surely? )
  ..* Custered placement groups
 	Grouping of instances within a single AZ. PLacement groups are recommended for apps that need low latency e.g. cassandra, and big data cluster
 	Only certain instances can be launched into a Clustered Placement Group.
@@ -154,16 +171,19 @@ Note for traffic monitoring should maybe use VPC Flow logs
 	AWS recommend homogonous instances within placement group (i.e. same instance type)
 	You can't merge placement groupsYou can;t move existin ginstance into a placement group. (Need to create an AMI from instance and launch it that way)
   
-  ## EFS
+  ## EFS   (NFS v4)
   File service
   Only pay for storage you No preprovisionily
-  Data i stored accroos multiple AZs withinn a regionCAn siupport 000's o concurrent connections
+  Data is stored accroos multiple AZs withinn a region. Can siupport 000's o concurrent connections
   REad after write consistency
   upto petabytes
   
   Chooises for 
   ..* Performance Mode
 	Default, or MaxIO if 100's or thoughsands of clients connecting to it
+## Instance Meta Data . .get information e.g. public IP
+curl http://169.254.169.254/latest/meta-data
+curl http://169.254.169.254/latest/user-data
 	
 ..* THroughput Mode
     Bursting (normal)

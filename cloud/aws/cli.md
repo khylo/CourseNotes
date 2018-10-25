@@ -20,6 +20,10 @@ bucket corresponds to url... https://s3-amazonaws.com/<name> e.g. https://s3-eu-
 s3 global though??   Wrong.   S3 managment is global but the buckets are in a region.
 
 ##EC2
+Instance Meta Data
+curl http://169.254.169.254/latest/meta-data
+curl http://169.254.169.254/latest/user-data
+
 aws ec2 describe-instances
 aws ec2 start-instances --instance-ids=i-0621e8fd49f78d318
 aws ec2 terminate-instances --instance-ids=i-0621e8fd49f78d318
