@@ -1,0 +1,4 @@
+Data Analysis
+
+
+gradle -b d:\AppHomes\buildFiles\build.gradle war -Pargs0=dcu.war 
