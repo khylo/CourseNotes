@@ -1,0 +1,38 @@
+
+                                                                                             ||  eqn = pi(100 -p1 +Sum(pj/2))
+node i has 5 neighbours.. Each at price 3                                                    ||
+                                                                                             ||   1 friend => 
+Profit for i at price 3 => 100 - 3 + sum((3/2))3                                             ||                3,3 => 100 - 3 + 3/2 *3 => 295.5
+																							 ||			       5,3 => 100-5+3/2 *5 => 482.5 
+						=> 97 + 5*1.5)*3                                                     ||
+						=> 313.5                                                             ||
+						                                                                     ||
+						                                                                     ||
+		at price 5 => 100 -5 + 5.(3/2)) *5                                                   ||
+					=>512.5                                                                  ||
+					                                                                         ||
+		if all neighbours low p then we are tempted to high p                                ||
+					                                                                         ||
+					                                                                         ||
+		if all neighbours have price =5                                                      ||
+					pi=3 => 100 - 3 + 5.((5/2))3                                             ||
+						=> 331.41                                                            ||
+						                                                                     ||
+					pi = 5 => 95 + 5.(5/2))*5                                                ||
+					 => 537.5                                                                ||
+					                                                                         ||
+			More neighbours increases our profits...Strange                                  ||
+			still preference is to goto 1                                                    ||
+			                                                                                 ||
+			                                                                                 ||
+		Same for 1 friend                                                                    ||
+			3,3 => 100 - 3 + 3/2 *3 => 295.5                                                 ||
+			5,3 => 100-5+3/2 *5 => 482.5   ... Here temptation is to set price higher        ||
+			
+			3,5 => 100 -3 +5/2 => 298.5
+			5,5 => 100-5+5/2 => 486
+			
+		0 friends => 100 -3 *3 < 100-5*5
+			
+		always tempted to put price up
+			

@@ -1,0 +1,226 @@
+Graph Intro.. Taken from http://www.neo4j.org/learn
+
+Basic graph types     *  
+	Diamond          / \
+					*---*
+					 \ /
+	                  *
+					  
+	Butterfly  (Bow Tie)  |><|
+	
+	Star   * (Single point of connectivness (failure)
+	
+	Bull       \_/
+				V
+				
+	Franklin  
+		12 vertices and 18 edges.. Hamiltonian and has chromatic number 2, chromatic index 3, radius 3, diameter 3 and girth 4. It is also a 3-vertex-connected and 3-edge-connected perfect graph.
+	
+	Robertson 
+		19 vertices and 38 edges   chromatic number 3, chromatic index 5, diameter 3, radius 3 and is both 4-vertex-connected and 4-edge-connected.
+	
+	Horton
+	
+	Hall-Jenko
+
+4 nodes has 2^6 networks
+
+Walk..any path between nodes
+Path any walk that does not repeat nodes
+Geodsic . Shortest path between nodes
+
+Diameter -> How close are nodes to each other..
+	largest geodesic (largest shortest path.. in general between any 2 nodes)
+	if unconnected, of largest component
+	
+	e.g. circular network diameter is n/2 or (n-1)/2 (depending on odd or even)
+		Tree node => 2log2(n+1) (Diameter is distance from bottem corner on left to bottem corer on right.. thats why we multiply by 2)
+		In general K levels deep.
+			diameter is 2K where K = log2(n+1)
+
+	Average path length.. is another measure.. less prone to outliers
+	
+	Neighbourhood Ni(g) = Pj|ij in g}
+	
+	Degree of node i = #Ni(g).. Number of connecting nodes to Node i in network g. e.g. highest degree = node with max number of connections
+	
+	higher degree  means network is more than likely connected
+	d(n) [degree] >= (1+epsilon)log(n) for some epsilon>0... d= number of connections
+		links are dense enough so network is almost surely connected
+	
+	d(n)/n -> 0 network is not too complete (ie. lots of nodes not connected to each other .. typical of a large network)
+	
+	Theorem on network structure
+		if d(n) >= (1+epsilon)log(n) for some epsilon>0 and d(n)/n -> 0 
+		Then for large n average path length and diameter are approx proportional to 
+			log(n)/log(d)
+		also
+		
+			avgDist(n)/(log(n)/log(d(n))) -> 1 ... same for diameter
+			
+			or log(n)/log(d) tends to the average distance or diameter
+	
+	Intuition on theorem
+		Cayley tree.. Each node besides leaves has degree d (leaf nodes only have one connetion up)
+			e.g.
+				step 1 tree... reach d nodes
+				step 2 d (d-1).. Note (d-1 since actually has d connections, but we have already included the root node)
+				step 3 d (d-1) (d -1) = d(d-1)^2
+				
+				
+			Cayley Tree with d=3, after two steps. How many nodes in total are there after 3 steps)? 
+				= 3(2^2) = 12  (12 nodes after 3 steps)
+				+ 3(2) = 6   (6 nodes after 2 steps)
+				+ 3    (3 nodes after 1st step)
+				+1 (root node)
+				=22
+				Rougly this is (d-1) ^ m (steps) for large m
+				this is d+d(d-1)+ d(d-1)^(m-1) nodes
+				 = d
+				
+				log(22)/log(3) =  2.8136
+				
+				
+	Erdos number. .Erdos did original paper on random network
+		Erdos write 1400 papers and has 509 co-authors
+
+		
+		
+	Example of network degree (densite = average degree)
+		Facbook 120 (average number of friends = d)
+		Highschool friendships = 6.5
+		Highschool Romances =0.8
+		
+		World
+			n = 6.7 billion (world population)
+			• d = 50 (friends, relatives...)
+			• log(n)/log(d) is about 6 !!
+			
+	Degree Distribution, How degree varies accross RANDOM network .. .G(n,p):
+		• probability that node has d links is binomial
+		[ (n-1)! / (d!(n-d-1)!) ] p^d (1-p)^(n-d-1)
+		 = (n choose d)
+		• Large n, small p, this is approximately a Poisson distribution:
+		[ (n-1)^d / d! ] p^d e^-(n-1)p
+		• hence name ``Poisson random graphs’’
+		
+	Fat tail is more represetations at high value and low value.. not distributed along expected curve exactly
+		so log(freq) vs log(deg) is often linear
+		
+	romance network doesn't have fat tails.. curve is less linear.. fits expected better.
+	
+		e.g. 5 has 3 friends.. but only one pair of them are firends of each other => 1/3
+		
+						
+	Centrality Measures
+		Centrality,
+			Four different things to measure:
+			• Degree – connectedness.. but can be high degree node is still on periphery. This doesn't capture that
+			• Closeness, .. (n-1) / SUMj( len(i,j)) .. ie. number of nodes divided by sum of distances to other nodes
+			Decay – ease of reaching other nodes 
+			• Betweenness – role as an intermediary, connector
+			• Influence, Prestige, Eigenvectors –
+			``not what you know, but who you know..’’
+	
+	Clustering
+		e.g. What fraction of my friends are friends of each other
+		cl(g) = # frieds who are firends / #friends... (do it over pairs of friends)
+		
+Growing networks
+	Lots of matural networks have high clustering so not at all like random networks.#Can sumulate this by creating high level of clustering and then addnig some random links.
+	`
+		e.g. 5 has 3 friends.. but only one pair of them are firends of each other => 1/3	
+		Difference in clustering.. Average could tend to 1 as # friends increase
+			but friends are grouped.. Overall tends to 0
+	
+	Homophily
+		Birds of a feather flock together
+			e.g. interracial marriages (1% of whites.. 5% blacks... 14% asians).. Not what we'd expect for uniform or random..
+				closest friend 10% men name a woman.. 32% of women name a man
+
+	
+	
+	Closeness
+	
+	Betweeness.. Measure if it is an intermediary.
+	
+	For Question in homework
+from	   1  2  3  4  5  6  7    how often is this node on geodesics?
+		1. -  2  0  3  1  0  1
+		2. 0  -  0  3  1  0  1
+		3. 0  4  -  3  5  0  1
+		4. 0  4  0  -  1  0  1
+		5. 0  4  0  3  1  -  0  
+		6. 0  2  0  3  1  -  0
+		7. 0  2  0  3  1  0  -
+Totals     0 18  0 18 11  0  4.. so max betweenness is nodes 2 and 4
+
+
+Fandom networks
+	Adding nodes.
+		THi forms natural hetrroenity whihc matches many natural networks (i.e older nodes have more links than newer nodes)
+		Each new node has m links (assume only new links added to new nodes)
+		As each node gets added the degree of existing nodes changes
+		Probability  => m+m/(t+1)+m/(t+2) + .. tn
+		For node i born at time m<i<t (i.e. after start (m) and before end time t)
+		THis approximates to m(1+ln(t/i))   plots to log curve (like reverse J)
+		
+		so say m=20 and t = 100. What probability is there that nodes have degree<35
+			Expected degree = 20(1+ln(100/i)< 35
+			=> 20ln(100/i) < 15  => 100/i < e(3/4) => i> 100 e-(3/4)  => i> 47.2
+			So Probability is (100-47.2) / 100 => 62.8% that nodes have >35 degre		
+		
+		
+		Preferential node forming
+			Previous models don't have fat tails as before (i.e. more links than expected for random network	
+			
+			Probability of attaching to i is di(t)/2tm
+			
+			Distribution of Expected Degrees
+			• ddi(t)/dt = m(di(t)/2tm) and di(i)=m
+			• ddi(t)/dt = mdi(t)/2tm = di(t)/2t and di(i)=m
+			• di(t) = m (t/i)1/2
+			
+			Form links with probablilty.. 
+				e.g. Rich get richer
+				"Rich get richer", i.e. links are formed with probability proportional to number of links a node already has
+				
+			Consider a Preferential attachment model described in the lecture, with m=10 and t=50.
+				What is the fraction of "nodes with degree < 20", F50(20)?
+					eqn = di(t) = m (t/i)^.5
+					di(t) = di(50) => 20 > 10 (50/i)^.5.. Nodew with degree 20 or less. so 20 > di(t)
+					4> 50/i =>    i > 12.5
+					
+					50-12.5/50
+					
+			Consider the "Preferential Attachment Model" described in lecture 3.3, with m=10.
+				At date t=30, what are:
+				(1) the expected degree for node 12 (born at time i=12), and
+				(2) the expected degree for node 25 (born at time i=25)?
+				[Hint: Use the approximation for the expected degree at time t of a node born at time i from the lecture which is m(t/i)0.5. You are encouraged to compare the results here to those in Question 1.]
+				
+					eqn = di(t) = m (t/i)^.5
+					  10.sqrt(30/12)
+					  
+				Power links  can be modelled by preferential attachemnt. 'Very fat tails'
+					  
+	HYbrid model
+		di(t) = (m + 2am/(1-a))(t/i)(1-a)/2 - 2am/(1-a)
+			At date t=10,000, consider a node born at date i=20 and a node born at date i=9999, with m=10. Let us compare the cases of a=0.8 and a=0.2.
+			
+				di(t) = 10+2.(0.8).10/
+				
+		
+3.6 ERGM Exponential Random Graph (aka markov model p-star models)
+
+	MCMC Markov chain monte carlo estimation.. e.g. suming up sample of all possible networks
+	
+	
+	
+Strategic Network Models
+	Nodes seen as actors actively making decisions.
+		Also agents helping form links
+		
+
+		
+		SIS = Suseptible Infected Suseptibale
