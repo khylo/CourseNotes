@@ -70,3 +70,8 @@ aws-iam0roles-to-csv.jq
         ) | @csv                            # Convert all output to CSV
 
 
+EFSMT1=`aws efs describe-mount-targets --file-system-id !Ref EFS --region !Ref AWS::Region | jq -r '.MountTargets[0].IpAddress'`
+
+EFSMT2=`aws efs describe-mount-targets --file-system-id !Ref EFS --region !Ref AWS::Region | jq -r '.MountTargets[1].IpAddress'`
+
+EFSMT3=`aws efs describe-mount-targets --file-system-id !Ref EFS --region !Ref AWS::Region | jq -r '.MountTargets[2].IpAddress'`
