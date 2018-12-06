@@ -1,8 +1,8 @@
 #VPC
 A VPC spans all the Availability Zones in the region. After creating a VPC, you can add one or more subnets in each Availability Zone. When you create a subnet, you specify the CIDR block for the subnet
+when adding all ips use 0.0.0.0/0 for all IP4, and ::/0 for all ip6
 # VPC
 
- 
 
 virtual data center in the cloud
 
@@ -44,14 +44,48 @@ Default is user firendly per region
 
 #VPC Peering
 
-Allow syou to connect mulktiple VPX via direct network route using private IP address.
+Allow syou to connect multiple VPCs via direct network route using private IP address.
 
 Instances behave as if they were on same private networkYou can peer VPCs with other AWS accounts as well as with other VPCs
 
 Peerin is in a star configuration. 1 central VPC peers with 4 others. NO TRANSITIVE PEERING. So must connect VPCs individually
 
- 
+# NATs
+## NAT Instance
+Single serer (created from community AMIs) that acts as a router between private subnets and public subnets (See lab for instructions)
+Not good idea since by default single point of failure etc. Shoudl use NAT Gateway instead
+THroughput depends on size of instance you create, e..g t2 micro => small, M4 better  but more expensive
+## NAT Gateway (for ip4 only)
+Highly available.. Implemeted with redundancy (in 1 AZ). Must create in multiple AZ's for zone redundancy
+Higher bandwith than isntance
+Maintained by AWS instead of you (no ec2 / amis etc)
+Don't need security groups , again handled by AWS
+Need to create them over multiple AZs
+More secure since you don't even login to them
+Does not support *Bastion server*, instance does
+    A bastion host is a special purpose computer on a network specifically designed and configured to withstand attacks. The computer generally hosts a single application, for example a proxy server, and all other services are removed or limited to reduce the threat to the computer.
+    A NAT (Network Address Translation) instance is, like an bastion host, an EC2 instance that lives in your public subnet. A NAT instance, however, allows your private instances outgoing connectivity to the internet while at the same time blocking inbound traffic from the internet.
+##EGresss Only Internet Gateway (for IP6)
 
+
+ #Lab
+ We created a VPC 10.0.0.0/16 with 2 subnets  10.0.1.0/24  and 10.0.2.0/24
+ MAde one publicly available via internet gateway.
+ Created EC2 in each.
+ Made the other the subnet for DB, and gave it security group with  access to SSH/ RDS/ HTTP/ HTTPS/ ICMP (ping) from 10.0.1.0/24
+
+ ## Nat Instances and NAT Gateways
+ (Not good solution. Add NAT instance to allow private instances get out to internet. Bottleneck, single point of failure, single AZ. Could do autscaling etc but gets compliated.. Should use NAT gateway instead.)
+ NAT instance from EC2 community. 
+    Create AMI instance. Add to VPC and *public* subnet
+    Add to myWebDMZ
+    Disable Source/Destination Check ->  Actions/ Networking/ Change Source/ Dest Check.. Disable (Means that instance does not have to be source or destination of traffic, which is checked by default)
+    Goto VPC, add route out of private subnet to NAT. (destination anywhere 0.0.0.0/0) to target of Nat Instance
+
+## NAT Gateway (for ip4 only)
+Add to public subnet.
+Create Elastic IP and add.
+Add route 0.0.0.0/0 to NAT gateway
  
 
 ##IP ranges
@@ -62,6 +96,14 @@ Peerin is in a star configuration. 1 central VPC peers with 4 others. NO TRANSIT
 
 192.168.0.0 -> 192.168.255.255  192.168/16 prefix -> 65k
 
+When creating subnet in AWS It reserves som eIPs
+
+5 not available... F1rst 4 Ips  (0,1,2,3) and last !P
+0 is NEtwork address
+1 reserved for VPC router
+2 reserved by AWS for DNS
+3 for futre use
+255 broadcase, not used by AWS so removed.
  
 
 https://www.nybi.org/subnet-2l.php
