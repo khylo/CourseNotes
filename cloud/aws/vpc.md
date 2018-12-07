@@ -5,8 +5,8 @@ when adding all ips use 0.0.0.0/0 for all IP4, and ::/0 for all ip6
 
 
 virtual data center in the cloud
-
-We create subnets (per AZ)
+We create VPCs pre region . By default allowed up to 5 per region.
+We create subnets (per VPC/ per AZ)
 
 Configure route talbe between subnets
 
@@ -16,7 +16,7 @@ Create internet gateway and attach to VPC (only 1 internet gateway per VPC).
 
 Internet gateways are by default spread across AZs so should be highly available.
 
-Can crate publicly facing subnet for webservers and put backend systems in private subnet with no internet access.
+Can create publicly facing subnet for webservers and put backend systems in private subnet with no internet access.
 
 Can use security Groups and NACLs (network Access control lists)
 
@@ -65,7 +65,62 @@ More secure since you don't even login to them
 Does not support *Bastion server*, instance does
     A bastion host is a special purpose computer on a network specifically designed and configured to withstand attacks. The computer generally hosts a single application, for example a proxy server, and all other services are removed or limited to reduce the threat to the computer.
     A NAT (Network Address Translation) instance is, like an bastion host, an EC2 instance that lives in your public subnet. A NAT instance, however, allows your private instances outgoing connectivity to the internet while at the same time blocking inbound traffic from the internet.
+
+### NAT vs Bastion 
+    NAT is used to provide Internet access to a private subnet (sits in public subnet)
+    Bastion (Jump box) is use dto provide secure access to administer EC2 instances in private subnets. Only need to harded Bastion server.. Other servers are only accessable via it.
+
+    For EC2 in private subnet to send traffic out (e..g to S3, it must have route to get out via NAT, and a role to write to S3)
 ##EGresss Only Internet Gateway (for IP6)
+
+## NACLs
+..* By default Aws create NACL for VPC. All subnets are by default associated with it.
+..* It allows all traffic in and all traffic out. (separate rules for IP4 and IP6)
+..* Note subnets can only be associated with one NACL.
+..* NACLs can be associated with many subnets
+..* NACLs can only be associated with 1 VPC (but multiple subnets) => NACLs can span AZs (like VPCs)
+..* NACLs define inbound and outbound rules separately (unlike security groups)
+..* Rules are incremented in numeric order
+..* NACLs kick in before security groups
+..* Each subnet MUST be associated with exactly one NACL. If none specified it will goto default (all open) NACL
+
+ 
+If you create a NACLs by default it is DENY to all. (exact opposite to one that AWS creates by default)
+
+Recommend as you add rules use rule #s in 100s
+
+e.g. in example for inbound  (protocol tcp(6)?? Not sure what this is )
+
+we add rule 100 for port 80 http, 200 for port 443 https , rule #300, port 22 SSH.. Deny all else
+
+for outbound we allow port 80, port 443. Not port 22, but then we allow ephermeral ports 1024 -> 65535 so actualy streaming communication ports
+
+## Load Balancers with VPCs
+
+Note when setting up ALB you must balance over 2 subnets in 2 different AZs, and both must be publicly facing
+
+So in lab we currently can’t do this since only 1 subnet is publicly facing
+
+## VPC Flow Logs
+Capture information aobut the IP traffic going to and from network
+Stored using CloudWatch logs
+
+Can be at VPC level
+Subnet level
+At network interface level.
+Not all IP traffic is monitored. Not monitored. 
+    DNS, 
+    windows license activation, 
+    trafiic to and from 169.254.169.254 for instanse metadata,
+    DHCP traffic
+    traffic to the reserved IP address for default VPC router
+
+##VPC Endpoints
+Another way for private hosts to get access to say AWS services is to use a VPC endpoint.
+e.g in lab we delteed route from private subnet to NAT so "aws s3 ls " failed.
+To fix we created an Endpoint (unde VPC) to S3 Gateway
+Endpoints can be Interface (single instance) or gateway (like NAT gateway, highly avaialbe.)
+Note when you create make sure no existing connections as they may get dropepd.
 
 
  #Lab
@@ -86,6 +141,11 @@ Does not support *Bastion server*, instance does
 Add to public subnet.
 Create Elastic IP and add.
 Add route 0.0.0.0/0 to NAT gateway
+
+Question 5:
+You have a VPC with both public and private subnets. You have 3 EC2 instances that have been deployed in to the public subnet and each has internet access. You deploy a 4th instance using the same AMI and this instance does not have internet access. What could be the cause of this?
+
+ANS: THe instance needs either an Elastic IP address or Public IP address assigned to it. ??
  
 
 ##IP ranges
