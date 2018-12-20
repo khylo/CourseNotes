@@ -12,15 +12,15 @@ Automate security best practises
 Classify your data in segments e.g.g public, groups, etc.
 Implement Least privililge.
 Encrypt data at rest and in motion
-..* Privilege managment
+* Privilege managment
 Only authorized and authenticated users allows
 ACLs
 Roles based access password managment
-..* Infrastructure protection
+* Infrastructure protection
 How are yopu enforcing network and host level boundary
 How are you enforcing AWS service level protection
 How are you protecting OSs e.g.g virus protector.
-..* Detective controls
+* Detective controls
 CloudTrail .. log ever change (per VPC/ region)
 CloudWatch .. e.g. CPU or ram goes up
 S3
