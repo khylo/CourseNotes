@@ -1,6 +1,6 @@
 # Security
 
-### SEcurity
+### Security
 #### Design Principles
 Apply security on all layers . Firealls, NACLs, etc
 Enable traceability
@@ -8,7 +8,7 @@ Automate responses to security events
 Focus on securing your system
 Automate security best practises
 #### Definition
-..* Data protection
+* Data protection
 Classify your data in segments e.g.g public, groups, etc.
 Implement Least privililge.
 Encrypt data at rest and in motion
@@ -137,3 +137,42 @@ CloudFront  (dupliate data to increase throughput/ decrease latency)
 ElastiCache (again suplicates to reduce DB calls)
 Direct Connect
 RDS Read Replicas
+
+# Cost Optimization
+
+Transparently attribute expenditure. Can see where expense spent. (e.g. using tags can help attribute to groups. Alternatively have differnet accounts/ consolidated billing)
+Trade capex for opex.
+Benefit from economies of scale
+Stop spending money on data centers
+
+## 4 areas of cost optimization
+1. Matched supply and demand. 
+(No need to over or undersupply. Use lambda or autoscaling, cloudWatch)
+1. Cost-effective resources.  
+Using the correct EC2 instance type. E.g. you might have a reporting taks that takes 7 hours to complete on a t2-micro, but could be done in minutes on a m4.2xlarge. Might be cheaper on bigger box.
+Reserverd Instances/ Spot instances
+AWS trusted advisor.
+1. Expenditure awareness. 
+Be aware of where costs occur and do things like scaling down of servers if not needed. Turn off servers if not needed. Use Cost allocation tags, and alerts. 
+Also data ingress and egress.
+Use Cloudwatch alarms/ SNS to be aware, consolidated billing
+1. Optimizing over time
+Need to stay aware of changes. e.g. follow AWS blog. e.g. shoudl we move from mysql to aurora? Shoudl we go serverless?
+Trusted Advisor
+
+
+# Operation Excelence
+Operational practises and procedure used to manage producito nworkloads
+How are planned changes executed.. (Deploy process/ Approval process etc)
+How are unexcpected operational events handled. (maybe chaos engineering etc.)
+Monitoring only what we need to meet business objectives
+Make regular small incremental changes (e.g. like windows 10)
+Learn from operation events and failures.
+Keep operational procedures current. Runbooks and playbooks
+
+## 3 best practises
+1. Preparation
+Operation checklists ensure workload ready for Production. (e.g. approval, testing, etc.). Prevent unintntional promotion to prod.
+Runbooks .. Operation guidance that ops teams can refer to .. e.g. day to day operations. 
+Playbooks. . Guidance for unexpected op events. e.g.g retries.. restarts.. escalation paths, contact info. common problems. restart procedures. etc.. Like SOD wiki
+
