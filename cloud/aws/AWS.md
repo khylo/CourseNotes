@@ -1,5 +1,104 @@
 # High Level Overview
-	## AWS Global Infrastructure
+
+## AWS Cloud Best practises
+### Benefits
+REduced up front fees (captial)
+Just in time infrastructure
+Pay for what you use (usage based costing)
+reduced time to market
+automation - Scriptable infrastructure
+Auto scaling
+Pro-active scaling
+Disaster recovery and Business continuity
+
+### Design for failure
+Assume fialure will occur. Desgin for this.
+
+###Decouple you components
+#### SQS Simple Queue service (Pull based as opposed to SNS)
+First public AWS service.
+
+*SQS always pull based system*
+
+If you want push then Simple Notification Service (SNS)
+
+When a consumer client reads a message, message gets marked invisible (1st phase) so other don’t pick it up. When job finishes it is deleted. If job fails (e.g.g consumer dies) then message will timeout and appear again in queue
+Visibility timeout is the amount of time that the message is invisible in SQS queue after a reader picks up the message. If job is not processed in this time message will become visible again and another reader will process it. Default = 30 seconds. Max is 12 hours. So jobs that take longer should not use  this.
+Messges can contain up to 256KB of text .
+Messages can stay in queue from 1 minute to 14 days. Default retention is 4 days
+Could use monitoring to check size of queue and grow # consumers
+
+##### 2 types
+..* Standard Queues . Guarantee message is delivered AT LEAST once. Can deliver more than one. Messages are generally delivered in order they are added to queue. But not guaranteed *High throughput*
+
+..* FIFO Queues. Guarantee messages delivered in order they arrive, and delivered only once> *limit of 300 transactions per second.*
+
+Sql Long Polling.. waits (up to a timeout) for an item to appear in queue. Don’t need to keep polling over and over (default -> short polling)
+1 million free per month then.
+40 c per 1million requests standard
+50 c per 1million requests fifo
+plus egress pricing (for over 1GB) 
+
+#### SWF -> Simple Workflow service
+SWF stores tasks and assigns them to workers when they are ready and monitors their progress. It ensures a task is assigned only once and never duplicated.
+Workers and Deciders run on cloud infrastructure like EC2 or on machines behind firewalls. SWF brokers bewtween workers and deciders. SWF maintains state so workers and deciders don't have to.
+SWF Actors
+..* Workers.
+Can start a workflow. Interact with SWF to get tasks, process them and return results
+..* Deciders
+Split flow, ordering, scheduling
+..* Domain
+Is a set of items for a given problem.
+
+*Note tasks never repeated.*
+With SQS they can be. Even with FIFO if message visibility exceeded.
+
+SQS has retention of 14 days. SWF can be up to 1 year
+
+#### SNS  (Push based as opposed to SQS). Under Mobile Services
+Deliver notifications to
+	SMS
+	Email/ JSON  (SES Simple Email Server)
+	any HTTP endpoint
+	SQS
+	Lambda
+
+	Group multiple recipients using Topics
+
+	All messages in SNS are stored redundanly accross multiple AZs to stop message loss
+
+	E.g.g in lab create email SNS. Emails gets sent to address to confirm subscription to message topic. Subscription is marked as pending until confirmed
+	50c per 1 million SNS requests
+	then after
+	6c per 100k notification delivieries over http.. Why not have a http service that sends emails?
+	75c per 100 notiifcation over SMS   so .75c per message
+	$2 per 100k over email
+
+### Implement Elasticity
+Proactive cyclic scaling for known peaks, e.g.g month end
+Proactive event based scaling e.g. Christmas, black friday
+Auto scaling based on demand (e.g. CPU utilization)
+
+### SEcurity
+
+## Well Architecte Framework
+Allow for evolutionary architectures.. 
+Data Driven architecures
+Improve through game days (e.g. test days)
+
+5 pillars.. Securty, Reliability, Performance Efficiency, Cost Optimization, Operationl Excellence
+
+
+
+###
+Design Principles
+Definition
+Best Practises
+Key Aws SErvices
+REsources
+
+
+## AWS Global Infrastructure
 	..* REgions, AZs, CloudFront
 	
 	## Compute  **
@@ -30,7 +129,11 @@
 	..* VPC
 	..* CloudFront  .. CDN
 	..* Route 53  .. DNS
-	..* API Gateway (mmore on developer) Create api for other serives to talkj to
+	..* API Gateway (mmore on developer) Create api for other serives to talk to
+	    API caching. Reduce calls to endpoint. Results can be cached and used instead of calling endpoint eachtime.
+		auto scaling
+		Can throttle to prevent atacks
+		CORS cross origina Resource sharing .. might need to be turned off, if using javascript and differnt domains are used
 	..* Direct Connect (connet to AWS)
 	
 	## Devloper Tools
@@ -55,6 +158,7 @@
 	
 	## Media Services
 	..* Elastic Transcoder ... media trnsforming
+		media transcoder. Covert between formats Pay per minutes for 
 	..* Media Convert .. Video transcoding 
 	..* Media Live .. Live video processing service
 	..* Media Package
@@ -78,6 +182,10 @@
 	..*  CloudSearch
 	..*  Elastic Search
 	..* Kinesis .. used in big data. .Injest large amount of data into AWS e.g. tweets
+	  e.g.  geospacial data like uber, social network data, game data, stock prices etc.
+	    Kineseis streams . Stored day in  numnber of shards (default 24hr up to 7 days) goto consumers (EC2) then onto output. 
+		Kineseis firehose. No shards. more automated than streams. data analysed immediatly e.g.g with Lambda, then to - S3 then to RedShift.
+		Kineseis Analytics.. run sql queries against data in streams or firehose
 	..* Kinesis Video Stream
 	..* QuickSight  Business Intelligence tool.. 
 	..* Data Pipeline. Move data between AWS service
@@ -108,7 +216,7 @@
 	..* Sumerian, tool and language for 3d ar vr modelling
 	
 	## Application Integration **
-	..* STep Functions
+	..* Step Functions
 	..* Amazon MQ
 	..* SNS .. Notificaition service	 
 	..* SQS .. Queue service 
