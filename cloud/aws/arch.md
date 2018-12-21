@@ -27,7 +27,7 @@ S3
 glacier
 #### Best Practises
 #### Key Aws SErvices
-#### REsources
+#### Resources
 
  
 
@@ -161,7 +161,7 @@ Need to stay aware of changes. e.g. follow AWS blog. e.g. shoudl we move from my
 Trusted Advisor
 
 
-# Operation Excelence
+# Operation Excellence
 Operational practises and procedure used to manage producito nworkloads
 How are planned changes executed.. (Deploy process/ Approval process etc)
 How are unexcpected operational events handled. (maybe chaos engineering etc.)
