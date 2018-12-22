@@ -172,7 +172,36 @@ Keep operational procedures current. Runbooks and playbooks
 
 ## 3 best practises
 1. Preparation
-Operation checklists ensure workload ready for Production. (e.g. approval, testing, etc.). Prevent unintntional promotion to prod.
-Runbooks .. Operation guidance that ops teams can refer to .. e.g. day to day operations. 
-Playbooks. . Guidance for unexpected op events. e.g.g retries.. restarts.. escalation paths, contact info. common problems. restart procedures. etc.. Like SOD wiki
+* Operation checklists ensure workload ready for Production. (e.g. approval, testing, etc.). Prevent unintntional promotion to prod.
+* Runbooks .. Operation guidance that ops teams can refer to .. e.g. day to day operations. 
+* Playbooks. . Guidance for unexpected op events. e.g.g retries.. restarts.. escalation paths, contact info. common problems. restart procedures. etc.. Like SOD wiki. What do you do if RDS goes down etc.
+Consider Cloud Formation for automating environemnt creation using best practises.  Auto scaling to grow/ shrink as you need. AWS config . Tag
+1. Operations
+Automation / test/ track (logs / cloudwatch)  audit (cloudtrail) and roll back steps.
+Try to release small and often rather than infrequent large batches.
+Alerting . SNS
+CodeCommit, CodeDeploy, Code Pipeline, CodeStar
 
+
+
+# ECS and ECR and Docker
+
+ECS is a regional service that you use in 1 or more AZ's accross a VPC.
+containers are created from an image (e.g. dockr image).. bit like AMI.
+Runs on a cluster of EC2 instances 
+
+Store images in ECR.. Elastic Container Registry,, ,or DockerHub
+ECR can be private using IAM .. can restric tto certain EC2 instances
+
+*Task Definition* required to run dcker on ECS
+Text file in JSON format that describ e1 or more containers that form application
+e.g. ehat docker images to use. How much CPU and memory, wherther containers are .
+link toger in a task
+
+Like Autoscaling for containers.
+
+*ECS Clusters* . DEfailt cluster created by defdalt. But you can cfreate multiple clusters. REgion sepcific.
+Could have developer cluster, and not allow devs to write to prod cluster.
+
+*ECS agent* allows to connect EC2 instances to your ECS cluster. Linux only
+   It is pre-installed on ECS Ami's
