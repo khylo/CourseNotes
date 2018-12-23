@@ -185,3 +185,32 @@ Example policy (build using policy generator) fora llowing user access to buckt
     }
   ]
 }
+
+# DataBases
+
+## RDS - OLTP .. Note scaling requires downtime
+* Sql
+* MySql
+* PostgresSql
+* Aurora   .. 2 copies of data contained in each AZ with min of 3 AZ's => 6 copies of data
+If you want more copies of DB server running, can create Aurora replaics
+2 types of replicas A/ Aurora replicas (up to 15), mysql read replicas (5)
+* Maria DB
+
+Can turn on MultiAZ And read replicas
+Read REplica is good for increasing performance
+Can have read replicas of read replicas
+Up to 5 read replicas
+
+## NoSql
+* DynamoDB   .. Push butotn scaling (easier than RDS) without downtime
+SSD storage.. 3 geographic data centers
+Eventual Consistent or strong consistent options
+* Neptune .. graphDb
+
+## OLAP .. RedShift
+Single Node up to 160 GB
+Multi Node.. Leader and Compute notes... up to 128 compute nodes
+
+## Elasticache
+MemcacheD, redis
