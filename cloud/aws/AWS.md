@@ -23,7 +23,7 @@ First public AWS service.
 If you want push then Simple Notification Service (SNS)
 
 When a consumer client reads a message, message gets marked invisible (1st phase) so other don’t pick it up. When job finishes it is deleted. If job fails (e.g.g consumer dies) then message will timeout and appear again in queue
-Visibility timeout is the amount of time that the message is invisible in SQS queue after a reader picks up the message. If job is not processed in this time message will become visible again and another reader will process it. Default = 30 seconds. Max is 12 hours. So jobs that take longer should not use  this.
+Visibility timeout is the amount of time that the message is invisible in SQS queue after a reader picks up the message. If job is not processed in this time message will become visible again and another reader will process it. Default = 30 seconds. Max is 12 hours. So jobs that take longer should not use this.
 Messges can contain up to 256KB of text .
 Messages can stay in queue from 1 minute to 14 days. Default retention is 4 days
 Could use monitoring to check size of queue and grow # consumers
@@ -55,10 +55,10 @@ With SQS they can be. Even with FIFO if message visibility exceeded.
 
 SQS has retention of 14 days. SWF can be up to 1 year
 
-#### SNS  (Push based as opposed to SQS). Under Mobile Services
+#### SNS (Push based as opposed to SQS). Under Mobile Services
 Deliver notifications to
 	SMS
-	Email/ JSON  (SES Simple Email Server)
+	Email/ JSON (SES Simple Email Server)
 	any HTTP endpoint
 	SQS
 	Lambda
@@ -71,7 +71,7 @@ Deliver notifications to
 	50c per 1 million SNS requests
 	then after
 	6c per 100k notification delivieries over http.. Why not have a http service that sends emails?
-	75c per 100 notiifcation over SMS   so .75c per message
+	75c per 100 notiifcation over SMS so .75c per message
 	$2 per 100k over email
 
 ### Implement Elasticity
@@ -99,138 +99,138 @@ REsources
 
 
 ## AWS Global Infrastructure
-*  REgions, AZs, CloudFront
+* REgions, AZs, CloudFront
 
-## Compute  **
-*  EC2  (see metaData)
-*  EC2 Container Service (ECS)
-*  Elastic Beanstalk (in developper associate exam).. designed to run a developer's code on an infrastructure that is automatically provisioned to host that co
-*  Lambda
-*  LightSail VPS service.. Easier th
-*  Batch  
+## Compute **
+* EC2 (see metaData)
+* EC2 Container Service (ECS)
+* Elastic Beanstalk (in developper associate exam).. designed to run a developer's code on an infrastructure that is automatically provisioned to host that co
+* Lambda
+* LightSail VPS service.. Easier th
+* Batch 
 
-## Storage  **
-*  S3 
+## Storage **
+* S3 
 
 ## Databases **
-*  RDS (aurora/ mysql etc)
-*  DynamoDB (noSql)
-*  Elasticache
-*  Red Shift ... Data warehouse
+* RDS (aurora/ mysql etc)
+* DynamoDB (noSql)
+* Elasticache
+* Red Shift ... Data warehouse
 
 ## Migration **
-*  Aws Migration Hub
-*  Application Discovery Service (tracking depndency for apps)
-*  Database Migration Service (migration in house DBs to AWS)
-*  Server Migration Service
-*  Snowball
+* Aws Migration Hub
+* Application Discovery Service (tracking depndency for apps)
+* Database Migration Service (migration in house DBs to AWS)
+* Server Migration Service
+* Snowball
 
 ## Network and Content Delivery **
-*  VPC
-*  CloudFront  .. CDN
-*  Route 53  .. DNS
-*  API Gateway (mmore on developer) Create api for other serives to talk to
-    API caching. Reduce calls to endpoint. Results can be cached and used instead of calling endpoint eachtime.
+* VPC
+* CloudFront .. CDN
+* Route 53 .. DNS
+* API Gateway (mmore on developer) Create api for other serives to talk to
+ API caching. Reduce calls to endpoint. Results can be cached and used instead of calling endpoint eachtime.
 	auto scaling
 	Can throttle to prevent atacks
 	CORS cross origina Resource sharing .. might need to be turned off, if using javascript and differnt domains are used
-*  Direct Connect (connet to AWS)
+* Direct Connect (connet to AWS)
 
 ## Devloper Tools
-*  Code Star .. Project managing code . .with CDN tool chain 
-*  Code Commit .. like Github
-*  Code Build  builds
-*  Code Deploy .. deploys to Ec2 or in house
-*  Code pipeline
-*  XRay. .analyse serverless 
-*  Cloud 9.. IDE env so you can build directly into cloud
+* Code Star .. Project managing code . .with CDN tool chain 
+* Code Commit .. like Github
+* Code Build builds
+* Code Deploy .. deploys to Ec2 or in house
+* Code pipeline
+* XRay. .analyse serverless 
+* Cloud 9.. IDE env so you can build directly into cloud
 
 ## Management Tool **
-*  CloudWatch   monitoring 
-*  CloudFormation   scripting infrastructure into code like firewalls 
-*  CloudTrail logging / auditing changes to AWS environment (1 week by default)
-*  Comnfig .. Keeps snapshots of AWS env and view
-*  OpsWorks. .Uses chef and puppet to manage env
-*  Service Catalog .. Managing catalog of serivces approved for use use d for governance	
-*  Systems Manager .. Patch maintenance accross servers .. Group all resources by dept etc.
-*  Trusted Advisor .. gives advice e.g. ports open..
-*  Managed Services .. Will look after Ec2 etc.
+* CloudWatch monitoring 
+* CloudFormation scripting infrastructure into code like firewalls 
+* CloudTrail logging / auditing changes to AWS environment (1 week by default)
+* Comnfig .. Keeps snapshots of AWS env and view
+* OpsWorks. .Uses chef and puppet to manage env
+* Service Catalog .. Managing catalog of serivces approved for use use d for governance	
+* Systems Manager .. Patch maintenance accross servers .. Group all resources by dept etc.
+* Trusted Advisor .. gives advice e.g. ports open..
+* Managed Services .. Will look after Ec2 etc.
 
 ## Media Services
-*  Elastic Transcoder ... media trnsforming
+* Elastic Transcoder ... media trnsforming
 	media transcoder. Covert between formats Pay per minutes for . Note you can select target (e.g. iphone, ipad) and it will know what format to goto
-*  Media Convert .. Video transcoding 
-*  Media Live .. Live video processing service
-*  Media Package
-*  Media Store
-*  Media Tailor
+* Media Convert .. Video transcoding 
+* Media Live .. Live video processing service
+* Media Package
+* Media Store
+* Media Tailor
 
 ## Machine Learning 
-*   SageMake .. Deep learning (neural nets)
-*   Comprehend .. Sentiment analysis
-*   Deep Lens  .. Camera with smarts e.g.g face recognition
-*   Lex .. Alexa  AI chatbot
-*   Machine learning e.g. regression, e.g. recommendation
-*   Polly .. takes text and turns into speech
-*   Rekognition.. upload image/video. .It recognises items in media .. pe
-*   Amazon Translate
-*   Transcribe .. Automatic speech reconition.. Speech to text
+* SageMake .. Deep learning (neural nets)
+* Comprehend .. Sentiment analysis
+* Deep Lens .. Camera with smarts e.g.g face recognition
+* Lex .. Alexa AI chatbot
+* Machine learning e.g. regression, e.g. recommendation
+* Polly .. takes text and turns into speech
+* Rekognition.. upload image/video. .It recognises items in media .. pe
+* Amazon Translate
+* Transcribe .. Automatic speech reconition.. Speech to text
 
 ## Analytics **
-*   Athena  run sql queries against S3   serverless
-*   EMR Elastic Map Reduce
-*   CloudSearch
-*   Elastic Search
-*  Kinesis .. used in big data. .Injest large amount of data into AWS e.g. tweets
-  e.g.  geospacial data like uber, social network data, game data, stock prices etc.
-    Kineseis streams . Stored day in  numnber of shards (default 24hr up to 7 days) goto consumers (EC2) then onto output. 
+* Athena run sql queries against S3 serverless
+* EMR Elastic Map Reduce
+* CloudSearch
+* Elastic Search
+* Kinesis .. used in big data. .Injest large amount of data into AWS e.g. tweets
+ e.g. geospacial data like uber, social network data, game data, stock prices etc.
+ Kineseis streams . Stored day in numnber of shards (default 24hr up to 7 days) goto consumers (EC2) then onto output. 
 	Kineseis firehose. No shards. more automated than streams. data analysed immediatly e.g.g with Lambda, then to - S3 then to RedShift.
 	Kineseis Analytics.. run sql queries against data in streams or firehose
-*  Kinesis Video Stream
-*  QuickSight  Business Intelligence tool.. 
-*  Data Pipeline. Move data between AWS service
-*  Glue .. ETL  .. maybe middware Soa?
+* Kinesis Video Stream
+* QuickSight Business Intelligence tool.. 
+* Data Pipeline. Move data between AWS service
+* Glue .. ETL .. maybe middware Soa?
 
 ## Security Identity and Compliance **
-*  IAM
-*  Cognito   device authentication e.g. mobile apps, facebook, gmail , etc, use cognito to reguest temproary access
-*  GuardDuty. Monitors for amlicious activity on AWS
-*  Inspector. .Agent that runs and checks for vulnerabilities.
-*  Macie. Scan S3 buckets and look for PPI (personally Identifieble Information)
-*  Certificate Manage SSL certs
-*  CloudHSM Hardware security Modules.. store keys
-*  Directory Service. .Integrate Active Directory into IAM
-*  WAF Web access firewall. XXS, check for amicioul activity
-*  Shield   DDoS .. also shield advance 
-*  Artifact.. .For audit and compliance.. docs from amaozon
+* IAM
+* Cognito device authentication e.g. mobile apps, facebook, gmail , etc, use cognito to reguest temproary access
+* GuardDuty. Monitors for amlicious activity on AWS
+* Inspector. .Agent that runs and checks for vulnerabilities.
+* Macie. Scan S3 buckets and look for PPI (personally Identifieble Information)
+* Certificate Manage SSL certs
+* CloudHSM Hardware security Modules.. store keys
+* Directory Service. .Integrate Active Directory into IAM
+* WAF Web access firewall. XXS, check for amicioul activity
+* Shield DDoS .. also shield advance 
+* Artifact.. .For audit and compliance.. docs from amaozon
 
 ## Mobile Serices
-*  Mobile Hub
-*  Pinpoint. .push notificatoins to mobile users e.g. 
-*  App Sync.. Updates data in web and mobile apps
-*  Device Farm.. test on different devices
-*  Mobile Analytics
+* Mobile Hub
+* Pinpoint. .push notificatoins to mobile users e.g. 
+* App Sync.. Updates data in web and mobile apps
+* Device Farm.. test on different devices
+* Mobile Analytics
 * 
 
-## AR/ VR   Augment Reality.. Virtual Reality .. 
-*  Sumerian, tool and language for 3d ar vr modelling
+## AR/ VR Augment Reality.. Virtual Reality .. 
+* Sumerian, tool and language for 3d ar vr modelling
 
 ## Application Integration **
-*  Step Functions
-*  Amazon MQ
-*  SNS .. Notificaition service	 
-*  SQS .. Queue service 
-*  SWF .. Simple Workslow service.. used by amazon shop floor.  ACtors in SWF are . .Workers, deciders (split, or decide on next step), starters (e.g. sources of data, like lambda, ecommerce site)
+* Step Functions
+* Amazon MQ
+* SNS .. Notificaition service	 
+* SQS .. Queue service 
+* SWF .. Simple Workslow service.. used by amazon shop floor. ACtors in SWF are . .Workers, deciders (split, or decide on next step), starters (e.g. sources of data, like lambda, ecommerce site)
 
 ## Customer Engagement
-*  Connect .. Call center in cloud. 
-*  Simple Email Service.. Bulk emails
+* Connect .. Call center in cloud. 
+* Simple Email Service.. Bulk emails
 
 ## Business Productivity
-*  Alexa for Business, e.g. book meeting room, talk to IT
-*  Chime .. Video conferencing
-*  Work Docs.. dropbox for AWS
-*  Workmail.. like gmail
+* Alexa for Business, e.g. book meeting room, talk to IT
+* Chime .. Video conferencing
+* Work Docs.. dropbox for AWS
+* Workmail.. like gmail
 * AWS ORganizations. Account Managment service to consolidate multiple AWS accounts into an organization and manage. Link all acounts to paying account for consolidated billing. Also has Organization units (like folders). Current limit of 20, but can add more.. Don't deploy to paying account
 Can save money e.g.g with S3. Price goes down for more data. When all combined we might get lower rate.
 E.g.g Also reserved accounts. Differnt teams can use spare reserved account of other groups
@@ -238,22 +238,22 @@ Note cloudTrail has to be setup on an account level.
 But can have cloudTRail write to central S3 bucket (in paying acocunt) but enabling cross account access
 
 ## Desktop and App Streaming **
-*  Workspaces  .. Virtual Desktop
-*  App Streaming .. streaming application. .Running in cloud but streamed to device.. Like citrix.
+* Workspaces .. Virtual Desktop
+* App Streaming .. streaming application. .Running in cloud but streamed to device.. Like citrix.
 
 ## IOT
-*  IOT Device Management, including machine learning
-*  FreeRTOS.. Free OS for microcontrollers
-*  Greengrass 
+* IOT Device Management, including machine learning
+* FreeRTOS.. Free OS for microcontrollers
+* Greengrass 
 
 ## Games
-*  GameLift.
+* GameLift.
 	
 	
 
 # IAM
 	AWS: Identity Access maanagement. .. Global (not tied to a region)
-		Create users, group => permissions,  Groups policies.  
+		Create users, group => permissions, Groups policies. 
 			User/ password for console, or accessKeyId / secret access key for programatic
 			Can attach permissions individually, or through groups
 			
@@ -266,7 +266,7 @@ But can have cloudTRail write to central S3 bucket (in paying acocunt) but enabl
 ## Security Token Service (STS)
 Grants users limited and temporary access to AWS resources. Users can come from 3 sources
 1. Federation (joining users from one domain to another.. with help from Idenetity Broker)
-* SAML (Security Assertion Marrkup language)  for authenticating with Active directory among others
+* SAML (Security Assertion Marrkup language) for authenticating with Active directory among others
 * active directory credentials (does not have ot be IAM user)
 * sso users without IAM credentials
 1. Federation with Mobile apps 
