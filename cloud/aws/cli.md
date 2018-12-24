@@ -4,10 +4,12 @@
 aws configure
 aws s3 ls   # list buckets
 aws s3 cp --recursive s3://khylo s3://khylo-syd   # copy from one to another
-..* if oyu get an error about Signature Version 4, then you need to specigy thje --region argument
+* if you get an error about Signature Version 4, then you need to specigy thje --region argument
 aws s3 cp --recursive s3://khylo s3://khylo-syd  --region eu-west-1 # Note some regions insist you have the --region flag set. But not all (weird).. set region to the region where the bucket is
-..* Can also do to local , or ec2 instance
+* Can also do to local , or ec2 instance
 aws s3 cp --recursive s3://khylo .
+* Create bucket 
+aws s3api create-bucket --bucket mybucket1
 
 Control List and Bucket policie
 

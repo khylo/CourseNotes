@@ -31,13 +31,13 @@
 	read s3 faq
 
 ## Types
- ..* S3
- ..* EFS (NFS)
- ..* Glacier 
- ..* Snowball 
- ..* Storage Gateway (4 types) 
+ * S3
+ * EFS (NFS)
+ * Glacier 
+ * Snowball 
+ * Storage Gateway (4 types) 
 
-##Cross Region Replication
+## Cross Region Replication
     Must enable versioning
     Only changes after replication turned on are replicated, so existing bucket structure is not (use cli)
     deletes are replicated
@@ -55,7 +55,7 @@ Can have delete rule after x time
     REad after write for consistency for puts for new objects
    Eventual consistency for update puts or deletes.. 
 
-   ## read s3 faq
+## read s3 faq
 
 Spread across multipe AZs
 Key value store.
@@ -74,6 +74,8 @@ Can turn on MFA delete. Which means you have to multifactor confirm if you want 
 99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
 
 s3 Performance
+https://aws.amazon.com/about-aws/whats-new/2018/07/amazon-s3-announces-increased-request-rate-performance/
+Is hashing needed anymore
 	S3 can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET requests per second PER PREFIX IN A BUCKET.
 	So if there are a lot of read writes one way to increase performance is to use hexidecial hash (e.g. md5) PREFIX to  bucket names to parallelize this
 	
@@ -187,6 +189,8 @@ Example policy (build using policy generator) fora llowing user access to buckt
 }
 
 # DataBases
+Dynamo DB
+Also DynamoDBMapper can be used to map to and from json
 
 ## RDS - OLTP .. Note scaling requires downtime
 * Sql
