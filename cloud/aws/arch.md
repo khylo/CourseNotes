@@ -1,6 +1,16 @@
-# Security
+# Well Architecte Framework
+Allow for evolutionary architectures.. 
+Data Driven architecures
+Improve through game days (e.g. test days)
 
-### Security
+5 pillars.. Securty, Reliability, Performance Efficiency, Cost Optimization, Operationl Excellence
+
+# Security
+At subnets / SEcurity groups / IAM / Applications etc
+Automate security events, e.g. use SNS alerts if high number of failed logins etc..
+Automate security best practise. E.g.g save harded images as AMI's and use these.
+Know shared responsibility model. AWS owns physical infrastructure. Network physical connctivity , global infra. PAAS servers etc. You own, customer data. Network firewall configurations. Encryption. Network traffic protection etc.
+
 #### Design Principles
 Apply security on all layers . Firealls, NACLs, etc
 Enable traceability
