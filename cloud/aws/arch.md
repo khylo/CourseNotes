@@ -19,7 +19,7 @@ Focus on securing your system
 Automate security best practises
 #### Definition
 * Data protection
-Classify your data in segments e.g.g public, groups, etc.
+Classify your data in segments e.g. public, groups, etc.
 Implement Least privililge.
 Encrypt data at rest and in motion
 * Privilege managment
@@ -30,13 +30,27 @@ Roles based access password managment
 How are yopu enforcing network and host level boundary
 How are you enforcing AWS service level protection
 How are you protecting OSs e.g.g virus protector.
+rfid controls.. 
+AWS handles above.
+So from AWS point of view really only VPC level. security groups/ NACL public privagte  subnects
 * Detective controls
 CloudTrail .. log ever change (per VPC/ region)
 CloudWatch .. e.g. CPU or ram goes up
+AWS config
 S3
 glacier
 #### Best Practises
-#### Key Aws SErvices
+Use encryptoin (native or KMS if you want features like key rotation etc)
+PAssowrd managment (rotation complexity etc/  MFA
+USe logging (cloudTrail etc)
+e.g. s3 11 9's durability.
+Versioning on data (e.g. S3)
+AWs never initiates data movement between regions. So data safe if that is required.
+#### Key Aws Services
+can encrypt with  EBS/ ELB/ S3 and RDS.
+What about jdbcs
+
+VPC
 #### Resources
 
  
