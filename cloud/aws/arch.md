@@ -3,13 +3,40 @@ Allow for evolutionary architectures..
 Data Driven architecures
 Improve through game days (e.g. test days)
 
-5 pillars.. Securty, Reliability, Performance Efficiency, Cost Optimization, Operationl Excellence
+5 pillars.. 
+1. Security
+1. Reliability
+1. Performance Efficiency
+1. Cost Optimization
+1. Operational Excellence
 
 # Security
-At subnets / SEcurity groups / IAM / Applications etc
+At subnets / Security groups / IAM / Applications etc
 Automate security events, e.g. use SNS alerts if high number of failed logins etc..
 Automate security best practise. E.g.g save harded images as AMI's and use these.
 Know shared responsibility model. AWS owns physical infrastructure. Network physical connctivity , global infra. PAAS servers etc. You own, customer data. Network firewall configurations. Encryption. Network traffic protection etc.
+## Definition
+* Data protection
+Classify your data in segments e.g. public, groups, etc.
+Implement Least privililge.
+Encrypt data at rest and in motion.
+* Privilege managment
+Only authorized and authenticated users allows.
+ACLs
+Roles based access password managment
+* Infrastructure protection
+How are yopu enforcing network and host level boundary.
+How are you enforcing AWS service level protection.
+How are you protecting OSs e.g.g virus protector.
+rfid controls.. 
+AWS handles above.
+So from AWS point of view really only VPC level. security groups/ NACL public privagte  subnects
+* Detective controls
+CloudTrail .. log ever change (per VPC/ region). 
+CloudWatch .. e.g. CPU or ram goes up.
+AWS config
+S3
+glacier
 
 #### Design Principles
 Apply security on all layers . Firealls, NACLs, etc
@@ -17,28 +44,7 @@ Enable traceability
 Automate responses to security events
 Focus on securing your system
 Automate security best practises
-#### Definition
-* Data protection
-Classify your data in segments e.g. public, groups, etc.
-Implement Least privililge.
-Encrypt data at rest and in motion
-* Privilege managment
-Only authorized and authenticated users allows
-ACLs
-Roles based access password managment
-* Infrastructure protection
-How are yopu enforcing network and host level boundary
-How are you enforcing AWS service level protection
-How are you protecting OSs e.g.g virus protector.
-rfid controls.. 
-AWS handles above.
-So from AWS point of view really only VPC level. security groups/ NACL public privagte  subnects
-* Detective controls
-CloudTrail .. log ever change (per VPC/ region)
-CloudWatch .. e.g. CPU or ram goes up
-AWS config
-S3
-glacier
+
 #### Best Practises
 Use encryptoin (native or KMS if you want features like key rotation etc)
 PAssowrd managment (rotation complexity etc/  MFA
@@ -121,7 +127,7 @@ using noSql. Can just deploy and use.
 1. Compute
 2. Storage
 3. DataBase
-4. Spave-time trade off
+4. Space-time trade off
 
 ### Compute
 Choose the right server. Is it more CPU or memory intensive, maybe a specialist server would suit better.

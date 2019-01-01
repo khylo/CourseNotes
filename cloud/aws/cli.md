@@ -3,6 +3,14 @@
 ##S3
 aws configure
 aws s3 ls   # list buckets
+aws s3 ls s3://mybucket --recursive --human-readable --summarize
+# Make S3 bucket into website
+aws s3 website s3://my-bucket/ --index-document index.html --error-document error.html
+# Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket.
+ 	Virtual Host: http://bucket.s3-aws-region.amazonaws.com e.g. http://my-pollylambda-website.s3-eu-west-1.amazonaws.com/  (Once bucket has public permissions to read and list)
+	Path like: http://s3-aws-region.amazonaws.com/bucket e.g. http://s3-eu-west-1.amazonaws.com/my-pollylambda-website
+
+aw
 aws s3 cp --recursive s3://khylo s3://khylo-syd   # copy from one to another
 * if you get an error about Signature Version 4, then you need to specigy thje --region argument
 aws s3 cp --recursive s3://khylo s3://khylo-syd  --region eu-west-1 # Note some regions insist you have the --region flag set. But not all (weird).. set region to the region where the bucket is
@@ -13,7 +21,7 @@ aws s3api create-bucket --bucket mybucket1
 
 Control List and Bucket policie
 
-s3, S3IA, S3 IA 1 td, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
+s3, S3IA, S3 IA 1 zone, expedited, bulk az, glacier (3 retrieveal types s,  3 - 5 hrs.
 bucket is like a folder but unique and routable to  
 
 bucket corresponds to url... https://s3-amazonaws.com/<name> e.g. https://s3-eu-west-1.amaonaws.com   

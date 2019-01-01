@@ -22,7 +22,7 @@
 	s3, S3IA, S3 IA 1 zone, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
 	bucket is like a folder but unique and routable to  
 
- * Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket.
+ * Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket. *
  	Virtual Host: http://bucket.s3-aws-region.amazonaws.com e.g. http://my-pollylambda-website.s3-eu-west-1.amazonaws.com/  (Once bucket has public permissions to read and list)
 	Path like: http://s3-aws-region.amazonaws.com/bucket e.g. http://s3-eu-west-1.amazonaws.com/my-pollylambda-website
 	
@@ -79,7 +79,7 @@ Can turn on MFA delete. Which means you have to multifactor confirm if you want 
 99.99 availability guarantee (built for 99.99 availability)
 99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
 
-s3 Performance
+### s3 Performance
 https://aws.amazon.com/about-aws/whats-new/2018/07/amazon-s3-announces-increased-request-rate-performance/
 Is hashing needed anymore
 	S3 can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET requests per second PER PREFIX IN A BUCKET.
@@ -202,20 +202,22 @@ Also DynamoDBMapper can be used to map to and from json
 * Sql
 * MySql
 * PostgresSql
-* Aurora   .. 2 copies of data contained in each AZ with min of 3 AZ's => 6 copies of data
-If you want more copies of DB server running, can create Aurora replaics
+* Aurora   .. 2 copies of data contained in each AZ with min of 3 AZ's => *6 copies of data*
+If you want more *copies of DB server running*, can create Aurora replaics
 2 types of replicas A/ Aurora replicas (up to 15), mysql read replicas (5)
+Aurora => self healing
 * Maria DB
 
-Can turn on MultiAZ And read replicas
+*Can turn on MultiAZ And read replicas.*
+Multi AZ is an option in console. When you turn it on it creates backup in seperate AZ and failsover to it (including DNS update). Can also manually failover.
 Read Replica is good for increasing performance
 Can have read replicas of read replicas
 Up to 5 read replicas
 
 ## NoSql
-* DynamoDB   .. Push butotn scaling (easier than RDS) without downtime
+* DynamoDB   .. Push button scaling (easier than RDS) without downtime
 SSD storage.. 3 geographic data centers
-Eventual Consistent or strong consistent options
+2 options. 1/ Eventual Consistent or 2/ strongly consistent options
 * Neptune .. graphDb
 
 ## OLAP .. RedShift
