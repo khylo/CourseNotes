@@ -141,7 +141,7 @@ CloudTrail is for auditing what is been done on Aws account
 Note for traffic monitoring should maybe use VPC Flow logs
 
 
-##Launch Configuraiton and AutoScaling
+## Launch Configuraiton and AutoScaling
   Like Elastic LoadBalancer it can monitor for healthCheck page
   
   When creating AutoScaling Group must 1st create Launch configuration (like ec2). This is the instance the autscaling group will launch. Note cannot edit launch instance config, must create new one if changing
@@ -207,7 +207,7 @@ can trigger other lamdba functions
 
 Can get compicated to debug, so can use XRay to help debug
 
-###Lab
+### Lab
 Create serverless website with Route 53, S3, Api Gteway lambda
 
 ### Triggers
@@ -224,7 +224,7 @@ Create serverless website with Route 53, S3, Api Gteway lambda
 *  SNS
 *  CodeCommit*
 
-## ec2 sUMMARY
+## ec2 Summary
 ### Diffrent Pricing models
 *  On Demand by secondc
 *  spot
