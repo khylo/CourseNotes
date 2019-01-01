@@ -22,7 +22,7 @@
 	s3, S3IA, S3 IA 1 zone, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
 	bucket is like a folder but unique and routable to  
 
- * Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket. *
+ *Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket.*
  	Virtual Host: http://bucket.s3-aws-region.amazonaws.com e.g. http://my-pollylambda-website.s3-eu-west-1.amazonaws.com/  (Once bucket has public permissions to read and list)
 	Path like: http://s3-aws-region.amazonaws.com/bucket e.g. http://s3-eu-west-1.amazonaws.com/my-pollylambda-website
 	
