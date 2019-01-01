@@ -1,3 +1,12 @@
+ # Types
+ * S3
+ * EFS (NFS)
+ * Glacier 
+ * Snowball 
+ * Storage Gateway (4 types) 
+ * RDS DBs
+ * NoSql Dbs (dynamoDB and Neptune)
+ 
  # S3	
 	Spread across multipe AZs
 	Key value store.
@@ -12,7 +21,16 @@
 
 	returns 200 response afer success upload
 
-	99.99 availability guarantee (built for 99.99 availability)
+## Numbers 
+Attribute | Standard | Intelligent Tiering (choses automatically) | Standard - Infrequent Access | Reduced Redundancy Storage (aka 1 zone)
+--- | --- | --- | ---
+Durability | 99.999999999% | 11 9s | 99.999999999% | 99.5%
+AZs | >= 3 | >=3 | >=3 | 1
+Availability | 99.99% | 99.9 | 99.9% | 99.5% 
+availability SLA | 99.9 | 99 | 99 | 99 
+Concurrent facility fault tolerance | 2 | 2 | 1
+
+	99.9 availability guarantee (built for 99.99 availability)
 	99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
 
 	Tiered storage (e.g. move after time to glacier)
@@ -34,12 +52,7 @@
 	   Eventual consistency for update puts or deletes.. 
 	read s3 faq
 
-## Types
- * S3
- * EFS (NFS)
- * Glacier 
- * Snowball 
- * Storage Gateway (4 types) 
+
 
 ## Cross Region Replication
 * Configured at bucket level
@@ -155,6 +168,8 @@ I see others refer to their bucket as http://s3-us-east-1.amazonaws.com/bucket/
 ## Glacier
     For archive storage that doesn't need to be accessed. (can be but takes time and costs)
     Can Retrieve 'Expedited' but costs more and must have 'provisioned capacity' created for storage of results
+    
+    ** Standard Glacier ** (can be access in minutes or hours) and ** Glacier Deep Archive ** (accesed within 12 hours)
 	
 # Cloudfront => CDN
     Edge Location. Location where content will be cached  (not related to AZs or regions). Over 50 edge locations
@@ -175,7 +190,7 @@ Note whn working with Route53	bucket name and dns name must be same!!!
 	
 
 ### Policy
-Example policy (build using policy generator) fora llowing user access to buckt
+Example policy (build using policy generator) for allowing user access to bucket
 {
   "Id": "Policy1540073941803",
   "Version": "2012-10-17",
@@ -212,7 +227,7 @@ Aurora => self healing
 Multi AZ is an option in console. When you turn it on it creates backup in seperate AZ and failsover to it (including DNS update). Can also manually failover.
 Read Replica is good for increasing performance
 Can have read replicas of read replicas
-Up to 5 read replicas
+Up to 15 read replicas for Aurora, and 5 for mysql
 
 ## NoSql
 * DynamoDB   .. Push button scaling (easier than RDS) without downtime
