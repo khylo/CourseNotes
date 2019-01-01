@@ -1,7 +1,7 @@
- S3	
-	This email is from an external source - exercise caution regarding links and attachments.
+ # S3	
 	Spread across multipe AZs
-	Key value sotre.
+	Key value store.
+	Buckets (like folders), and thewn objects and subfolders in them
 	Key = name
 	Value = data  upto 5 TB
 	VersionId
@@ -10,20 +10,24 @@
 		ACLs
 		Torrents
 
-	et 200 response afer success upload
+	returns 200 response afer success upload
 
-	99.9 availability guarantee (built for 99.99 availability)
+	99.99 availability guarantee (built for 99.99 availability)
 	99.999999999 (11 9's) durability// designed to sustain loss of 2 faclities concurently)
 
 	Tiered storage (e.g. move after time to glacier)
 	Encryption
-	Control List and Bucket policie
+	Control List and Bucket policies
 
-	s3, S3IA, S3 IA 1 td, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
+	s3, S3IA, S3 IA 1 zone, expedited, bulkaz, glacier (3 retrieveal types s,  3 - 5 hrs.
 	bucket is like a folder but unique and routable to  
 
-	bucket corresponds to url... https://s3-amazonaws.com/<name> e.g. https://s3-eu-ireland
-	s3 global though??
+ * Amazon S3 supports both virtual-hosted–style and path-style URLs to access a bucket.
+ 	Virtual Host: http://bucket.s3-aws-region.amazonaws.com e.g. http://my-pollylambda-website.s3-eu-west-1.amazonaws.com/  (Once bucket has public permissions to read and list)
+	Path like: http://s3-aws-region.amazonaws.com/bucket e.g. http://s3-eu-west-1.amazonaws.com/my-pollylambda-website
+	
+	Can setup S3 as server for static website (via console or)
+	aws s3 website s3://my-bucket/ --index-document index.html --error-document error.html
 
 	Data conistency
 		REad after write for consistency for puts for new objects
@@ -38,12 +42,14 @@
  * Storage Gateway (4 types) 
 
 ## Cross Region Replication
-    Must enable versioning
+* Configured at bucket level
+* Must enable versioning
     Only changes after replication turned on are replicated, so existing bucket structure is not (use cli)
     deletes are replicated
         delete of delete flag is not (so if you undo a delete that is not transferred)
         delete of older versions is not
-    Can't replicate to multiple buckets yet
+    Can't replicate to multiple buckets yet.
+    Used for increasing redundancy in case pof region failure, not for performance of retrieving files. Use cloudfront for this.
 
 ## Lifecycle mgmt .. versioning NOT needed
     S3 -> S3-IA -> glacier 
@@ -52,7 +58,7 @@ Can have delete rule after x time
 
 
 ## Data conistency
-    REad after write for consistency for puts for new objects
+   Read after write for consistency for puts for new objects
    Eventual consistency for update puts or deletes.. 
 
 ## read s3 faq
@@ -109,7 +115,7 @@ Encryption 4 types, client and 3 server side ..
 
 ## Storage Gateway
     Software appliance (virtual machine interface) that you run on premises and it copies data to Amazon S3 or glacier
-    Connect via internate/ Direct Gatway of vpcs
+    Connect via internet/ Direct Gatway of vpcs
     4 types
        1  File Gateway NFS
             files stored in S3 .. ownership, permissions and timestamps stored durably as metadata
@@ -202,7 +208,7 @@ If you want more copies of DB server running, can create Aurora replaics
 * Maria DB
 
 Can turn on MultiAZ And read replicas
-Read REplica is good for increasing performance
+Read Replica is good for increasing performance
 Can have read replicas of read replicas
 Up to 5 read replicas
 
