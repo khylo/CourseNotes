@@ -14,37 +14,37 @@ Types (pricing)
     Dedicated hosts
         Useful for regulatory requirements that don't allow multi tenant
 		
-	## Sample of services
-	*  EC2
-	*  EC2 Container Service (ECS)
-	*  Elastic Beanstalk (in developper associate exam).. Paas
-	*  Lambda
-	*  LightSail VPS service.. Easier th
-	*  Batch  
+## Sample of services
+*  EC2
+*  EC2 Container Service (ECS)
+*  Elastic Beanstalk (in developper associate exam).. Paas
+*  Lambda
+*  LightSail VPS service.. Easier than manually
+*  Batch  
 
 ## Host types
-    Dr Mc GiftPx
-    Dense storage fileservers/ data warehouse/ hadoop
-    Ram
-    Main choice
-    Compute CPU intensive apps
-    Graphics intensive e.g. video encoding
-    Iops
-    FPGA   financial transaction/ realtime graphics processing
-    T cheap main use e.g. t2
-    Pix (GPUs)
-    Xtreme Memory  Spark etc (how is it different from R?)
+* Dr Mc GiftPx
+* Dense storage fileservers/ data warehouse/ hadoop
+* Ram
+* Main choice
+* Compute CPU intensive apps
+* Graphics intensive e.g. video encoding
+* Iops
+* FPGA   financial transaction/ realtime graphics processing
+* T cheap main use e.g. t2
+* Pix (GPUs)
+* Xtreme Memory  Spark etc (how is it different from R?)
 now
-    Fight Dr McPx
-    High Disk Tru put
+** Fight Dr McPx **
+* High Disk Tru put
 
 	
 	
 ## EBS Elastic Block Storage
 So EBS volume's placed in a specific availabilities zones where they are automatically replicated to protect
     Root volumne must be either SSD.. 2 types or magnetic standard
-    	- General purpose ssd GP2 ...Up to 10000 IOPs 3IOPs per gig => 3000 IOPS for volumes 3334GB and above
-        -Provisioned IOPS SSd.. For high perf >10000 IOPS
+    * General purpose ssd GP2 ...Up to 10000 IOPs 3IOPs per gig => 3000 IOPS for volumes 3334GB and above
+    * Provisioned IOPS SSd.. For high perf >10000 IOPS
 
     Magnetic types
         Magnetic Standard (previous generation ).. Can be root /bootable 
@@ -60,7 +60,7 @@ Additional volumes can be encryptrd.
 by default EBS deleted with Ec2 instance, but can change
 Additional volumes can be encryptrd. By default root can't but can by either 3rd part apps or creating custom AMI can allow you to do it	
 EBS types
-Volumnes exist on EBS
+Volumes exist on EBS. EBS volumes are stored per AZ. When attaching to EC2 both ec2 and sbs must be in same AZ
 Snapshots exist on S3 (incremental)
 encrypted volumnes produce encrypted snapshots and they in turn produce encrypted volumnes if created as AMI.
 You can share snapshots but only non-encrypted
@@ -87,10 +87,10 @@ snapshots are stored in S3.. snapshots are incremental
 	*  Shutdown associated EC2 instance  (favourite)
 	
 ### How to encrypt volumne.
-		*  Create snapshot. (Best practise is to stop EC2 instance first)
-		*  Copy snapshot to new region (*this allows us to encrypt.*)
-		*  Create Image from snapshot (AMI)
-		*  Note can't share encrypted volumes/ images with others (since they wont have key)
+*  Create snapshot. (Best practise is to stop EC2 instance first)	
+*  Copy snapshot to new region (*this allows us to encrypt.*)
+*  Create Image from snapshot (AMI)
+*  Note can't share encrypted volumes/ images with others (since they wont have key)
 
 ### Select AMI based on (most root Volumes are EBS)
 *  Region (Amis can only be launched from the region where they are stored, but can copy amis to other regions.)
@@ -98,8 +98,8 @@ snapshots are stored in S3.. snapshots are incremental
 *  Architecture (32 vs 64)
 *  Launch Permissions
 *  Storage for the Root Device (Root device Volume)
-			Instance Store (Ephemeral Storage).. Can't stop instance.. Can't detach volume. Can't add Instance Store volumnes after device is started . 
-				*If uderlying host fails/ stops you will lose your data.*
+	Instance Store (Ephemeral Storage).. Can't stop instance.. Can't detach volume. Can't add Instance Store volumnes after device is started . 
+	*If uderlying host fails/ stops you will lose your data.*
 			EBS backed volumes. When deleteing Ec2 instance can choose not to delete root volume,
 			
 	Cannot stop Instance Store instances
@@ -107,13 +107,13 @@ snapshots are stored in S3.. snapshots are incremental
 	
 ### Elastic Load Balancer (ELB)
 3 types
-* 	Application Load Balancer  
+1. Application Load Balancer  
 	Best suited for http/ https
 	Operate at layer (OSI) 7/ Application aware
 	Intelligent and you can crate advanced request routing (depending on app / client )sending specific requests to specific web servers
-*  Network Load Balancer
+1. Network Load Balancer
 	Extreme performance. Level 4 (connection) Can handle millions of requests per second 
-*  Classic Load Balancer (legacy ELB.  should use one of other 2)
+1.  Classic Load Balancer (legacy ELB.  should use one of other 2)
 	Does bit of both from above (uses sticky sessions and/ or X-Forwarded-For Header-for (contians public IP of sender) not sully application aware)
 	
 	Error 504 is a gateway  error which means that https server somewhere has failed, and LB can't communicate with it.
@@ -128,7 +128,7 @@ snapshots are stored in S3.. snapshots are incremental
 	We assign Target groups, as in what it forwards to, which can be added by instance name or ip
 		In the target we set things like healthy threshold (how many sucess pings before its declared healthy), unhealth thrshld , timeout, interval, success codes.
 
-##CloudWatch
+## CloudWatch
 
 *  Dashboards
 *  Alarms .. Set alarms when thresholds are met
