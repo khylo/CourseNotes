@@ -243,5 +243,7 @@ SSD storage.. 3 geographic data centers
 Single Node up to 160 GB
 Multi Node.. Leader and Compute notes... up to 128 compute nodes
 
+REdshift allows cross region replication out of box (via console)
+
 ## Elasticache
 MemcacheD, redis
