@@ -20,6 +20,9 @@
 		Torrents
 
 	returns 200 response afer success upload
+	
+	To allow user to upload to a bucket (posibly without IAM crede tials) use a presigned url
+	A presigned URL gives you access to the object identified in the URL, provided that the creator of the presigned URL has permissions to access that object. That is, if you receive a presigned URL to upload an object, you can upload the object only if the creator of the presigned URL has the necessary permissions to upload that object.
 
 ## Numbers 
 Attribute | Standard | Intelligent Tiering (choses automatically) | Standard - Infrequent Access | Reduced Redundancy Storage (aka 1 zone)
