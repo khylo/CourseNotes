@@ -244,6 +244,7 @@ Single Node up to 160 GB
 Multi Node.. Leader and Compute notes... up to 128 compute nodes
 
 REdshift allows cross region replication out of box (via console)
+Redshift has 'Enhanced VPC routing' gives redshift VPC acess e.g.g to connect to S3 to read data via VPC endpoint (lielk we would from a  private VPC subnet to S3 (via endpoint)) 
 
 ## Elasticache
 MemcacheD, redis
