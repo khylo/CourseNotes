@@ -235,3 +235,11 @@ Could have developer cluster, and not allow devs to write to prod cluster.
 
 *ECS agent* allows to connect EC2 instances to your ECS cluster. Linux only
    It is pre-installed on ECS Ami's
+   
+   ECS is free, you just pay for underlying EC2 instances that you create. (via Json)
+   
+   EKS is kubernetes as a service. PAy forcluster
+   
+   Fargate is ECS without ec2.Instead use fargates fleet of preconfigured servers.. Pay for compute power
+   
+   See http://blog.totalcloud.io/ecs-vs-eks-vs-fargate-good-bad-ugly/
