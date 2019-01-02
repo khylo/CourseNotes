@@ -27,7 +27,7 @@ A presigned URL gives you access to the object identified in the URL, provided t
 
 ## Numbers 
 Attribute | Standard | Intelligent Tiering (choses automatically) | Standard - Infrequent Access | Reduced Redundancy Storage (aka 1 zone)
---- | --- | --- | ---
+--- | --- | --- | --- | ---
 Durability | 99.999999999% | 11 9s | 99.999999999% | 99.5%
 AZs | >= 3 | >=3 | >=3 | 1
 Availability | 99.99% | 99.9 | 99.9% | 99.5% 
