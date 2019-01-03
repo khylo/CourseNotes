@@ -89,7 +89,7 @@ Auto scaling based on demand (e.g. CPU utilization)
 ## Compute  **
 *  EC2  (see metaData)
 *  EC2 Container Service (ECS)
-*  Elastic Beanstalk (in developper associate exam).. designed to run a developer's code on an infrastructure that is automatically provisioned to host that co
+*  Elastic Beanstalk (in developper associate exam).. designed to run a developer's code on an infrastructure that is automatically provisioned to host that co ... Create WebServers and Worker environments
 *  Lambda
 *  LightSail VPS service.. Easier th
 *  Batch  

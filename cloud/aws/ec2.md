@@ -48,8 +48,10 @@ So EBS volume's placed in a specific availabilities zones where they are automat
 
     Magnetic types
         Magnetic Standard (previous generation ).. Can be root /bootable 
-        throughput optimized HDD.. big data, data warehouse. frequenctly acessed  (not bootable)
+        throughput optimized HDD.. big data, data warehouse. frequenctly acessed  (not bootable).. Min size 500GB
         sc1.. cold HDD .. less frequent. lowest cost hdd   (not bootable)
+		HDD volumes are optimized for large streaming throughput (measured in MiB/S) is a better perf measure than IOPs
+		
 
 by default EBS deleted with Ec2 instance, but can change.
 By default root volumne not encrypted, 
