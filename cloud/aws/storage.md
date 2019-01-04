@@ -225,7 +225,10 @@ Also DynamoDBMapper can be used to map to and from json
 If you want more *copies of DB server running*, can create Aurora replaics
 2 types of replicas A/ Aurora replicas (up to 15), mysql read replicas (5)
 Aurora => self healing
+*Note Aurora can have read replicas in another region https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Replication.CrossRegion.html *
 * Maria DB
+
+* Note * Only some RDS dbs support encryption at rest (e..g Sql server express does not)
 
 *Can turn on MultiAZ And read replicas.*
 Multi AZ is an option in console. When you turn it on it creates backup in seperate AZ and failsover to it (including DNS update). Can also manually failover.
