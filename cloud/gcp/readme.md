@@ -23,3 +23,10 @@ gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
 
 
 gcloud functions describe helloWorld
+
+
+## AppEngine
+
+Use mvn commands to deploy etc.
+See https://google.qwiklabs.com/focuses/951?parent=catalog
+Code: https://github.com/GoogleCloudPlatform/getting-started-java/blob/master/pom.xml
