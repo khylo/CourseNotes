@@ -1,12 +1,13 @@
 # Notes from O'Reilly CKAD course
 
+https://github.com/bmuschko/ckad-prep
 
 # Intro
 2 hour exam
 Details on certification : https://www.cncf.io/certification/ckad
 Cheat sheet : https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
-## THe curriculum
+## The curriculum
 13% Core concepts
 * Understand api
 * Create and configure basic pods
@@ -77,5 +78,109 @@ Keep moving though questions. Can skip 2 questions and still pass
 > if [ ! -d ~/tmp ]; then mkdir -p ~/tmp; fi; while true; 
 > do echo $(date) >> ~/tmp/date.txt; sleep 5; done;
 
+# Core Concepts
+
+## Kubenetes Object
+* API Version (change for breaking changes)
+* Kind : Pod/ deployment / quota
+* MetaData  : Name, Namespace, Labels
+* Spec : Desired State.. How many containers etc
+* Status : Actual state   .. Populated when running
+
+**Yaml equivilent **
+```
+apiVesrion: v1
+kind: Pod
+metadata:
+  createionTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+```  
+
+* When creating kubernetes resources yo uhave 2 / 3 options
+1. Command line  (note this means no history of changes. .Commands are run directly)
+> kubectl create namespace nkad
+> kubectl run nginx --image=nginx --restart=Never -n ckad
+> kubectl edit pod/nginx -n ckad
+
+1. Yaml
+> vi ckad.yaml
+> kubectl create -f ckad.yaml
+> dubectl delete pod/nginx
+
+1. Hybrid (use cmd to generate yaml)
+> kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > nginx-pod.yaml
+> vi nginx-pod.yaml
+> kubectl apply -f nginx-pod.yaml
+
+## Understanding Pods
+* Single container Pod / Multi container Pod
 
 
+### Kubernetes Master has 
+* Api Server 
+* etcd (db)  . Queried by controller and scheduler.
+* scheduler
+* Scheduler call kubectl
+* talks to pod
+
+### Pod Lifecycle
+* Pending: Pod has been accepted in kubernetes but all of the container images have not been created
+* Running : At least one container is still running
+* Succeeded  : all containers in Pod finished  successfully
+* Failed : at least containers in Pod finished with error
+* Unknown
+
+### Inspect Pod
+* Get status
+> kubectl describe pods nginx | grep Status: 
+
+Status Running 
+
+> kubectl get pods nginx -o yaml
+... phase : Running
+
+### Configuring Env variables
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-boot-app
+spec:
+  containers:
+  - image: 
+  env :
+  - name: SPRING_PORFILES_ACTIVE
+    value: production
+```
+
+### Running commands inside container
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-boot-app
+spec:
+  containers:
+  - image: nginx:1.15.12
+    name: nginx
+  args:
+  - /bin/sh
+  - -c
+  - echo "Hello World"
+```
+
+### Logs
+* Dump the pods logs
+> kubectl logs busybox
+* Connet to a running pod
+kubestl exec nginx -it -- /bin/sh   # creates inteactive session on a pod
