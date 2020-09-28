@@ -48,3 +48,34 @@ Understand ServiceAccounts
 
 * Understand PersistentVolumeClaims for storage
 
+## Exam environemnt
+Can take from home
+Can access  https://kubernetes.io/docs only
+2 hours to solve 19 problems
+Keep moving though questions. Can skip 2 questions and still pass
+
+### Timesaves
+* Use alias  for kubectl
+> alias k=kubectl
+* Make sure to execute command question asks
+* Perhaps create bash commands for bigger commands
+> kubectl config set-context $1 --namespace=$2
+* Use shortform commands e.g. instead of kubectl get namespaces 
+> k get ns  
+> k describe pvc claim  # Instead of persistentvolumeclaim
+
+* Don't wait for graceful deltion of objects
+> k delete pod nginx --grace-period=0 --force
+
+* Grep for parsing information
+> k describe pods | grep -C 10 "Authoer=John Doe"
+> k get pods -o yaml | grep -C 5 labels:
+
+### Bash
+* Be comfortable with bash. Won't be able to look it up in exam
+* Practise stuff
+> if [ ! -d ~/tmp ]; then mkdir -p ~/tmp; fi; while true; 
+> do echo $(date) >> ~/tmp/date.txt; sleep 5; done;
+
+
+
