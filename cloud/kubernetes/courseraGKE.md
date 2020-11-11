@@ -65,4 +65,49 @@ Cloud shell code editor
 ## QwikLAbs
 Login with incognito
 
+## Kubernetes
+### Overview
+* Open Source
+CNCF. .Can work on prem or in cloud.
+* Automation
+Automates deployment logging, s caling
+* Container Management
 
+* Declarative Configuration
+Declare desired state.
+* Imperitive configuration
+Used for quick fixes
+
+Stateless and stefuul application
+Autoscaling
+REsource limits
+Extensibility
+Portability
+
+Open source Kubernetes contains a daksboard
+
+### GKE
+Sits on top of GCP
+* Fully managed.. Handles GCP independently
+No need to handle underlying resources
+* Container Optimized OS
+
+* Auto Upgrade
+GKE instantiates a cluster . can auto upgrade to latest Kubernets
+
+* Auto Repair
+Configurable . Automaticaly repair problematic nodes
+Drain bad nodes and recreate them
+
+* Cluster scaling
+
+* Seemless Integration
+With
+
+* IAM
+
+* STackDriver
+Monitoring
+
+* Cloud Console
+Includes GKE dashboard, which is a step up from default Kubernetes dashboard
