@@ -34,5 +34,9 @@ So filesystem is standars, but can also have s3. However different types do not 
 * zone
 
 e.g.
-![sample shard config](https://github.com/khylo/CourseNotes/blob/[branch]/image.jpg?raw=true)
+![sample shard config](https://github.com/khylo/CourseNotes/blob/master/arty.png?raw=true)
 
+### Zones
+Allows you to specify different zones
+sample config
+![sample zone config](https://github.com/khylo/CourseNotes/blob/master/artyZones.png?raw=true)
