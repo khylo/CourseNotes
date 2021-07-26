@@ -13,9 +13,9 @@ docker build -t <tagname>  .    # build from a dockerfile   tagname normally, do
 '''
   
   
-  ## Sample Dockjerfile
-  https://youtu.be/rIcy-kbnbFk?t=7690
-  '''
+## Sample Dockjerfile
+https://youtu.be/rIcy-kbnbFk?t=7690
+'''
   # Use alpine base
   FROM alpine
   # Download an dinstall dependencies. Note gcc is not needed just for example
@@ -23,4 +23,4 @@ docker build -t <tagname>  .    # build from a dockerfile   tagname normally, do
   RUN apk add --update redis
   #Tell imnage what to do wgen it starts as a container
   CMD ["redis-server"]
-  '''
+'''
