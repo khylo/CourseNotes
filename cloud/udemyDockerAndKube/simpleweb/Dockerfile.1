@@ -1,0 +1,16 @@
+# run with docker run -p 8001:8080
+# docker run
+# base image
+FROM node:alpine
+
+#Create variable 
+ENV APP_DIR=/home/node/simpleweb
+#Specify the working directory. USed in copy and run command. AVoid #6 1.018 npm ERR! Tracker "idealTree" already exists See https://stackoverflow.com/questions/57534295/npm-err-tracker-idealtree-already-exists-while-creating-the-docker-image-for
+WORKDIR ${APP_DIR}
+# Copy current working folder contents to image
+COPY ./ ${APP_DIR}
+#install dependencies
+RUN npm install
+
+# Default command
+CMD ["npm", "start"]
