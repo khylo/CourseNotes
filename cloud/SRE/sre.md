@@ -16,7 +16,7 @@ Site reliability engineering is closely related to DevOps, a set of practices th
 
 from https://www.youtube.com/watch?v=uTEL8Ff1Zvk&ab_channel=GoogleCloudTech
 - Shared Ownership... reduce silos of knowledge
-- SLO's and blameless PMs
+- SLO's and blameless PMs (Post Mortems)
 - REduce cost of falure. .Implement gradual change
 - Leverage tooling and automation
 - Measure everything
