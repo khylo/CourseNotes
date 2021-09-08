@@ -7,6 +7,13 @@ Sources: https://www.youtube.com/watch?v=c-w_GYvi0eA
 
 
 ## SRE Principles
+Wiki definition
+```
+Site reliability engineering (SRE) is a set of principles and practices that incorporates aspects of software engineering and applies them to infrastructure and operations problems. 
+The main goals are to create scalable and highly reliable software systems. 
+Site reliability engineering is closely related to DevOps, a set of practices that combine software development and IT operations, and SRE has also been described as a specific implementation of DevOps.
+```
+
  - SRE needs Service Level Objectives (SLOs) with *consequences* ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `partially`
  - SREs have time to *"Make tomorrow better than today"* ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `improving`
  - SRE teams have the ability to regulate their workload.![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `improving`
