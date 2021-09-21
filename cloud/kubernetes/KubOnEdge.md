@@ -13,3 +13,7 @@ So, it seems that Akri is less about managing edge Kubernetes clusters, and more
 
 * K3. 
 Low powered kubernetes K3s can provide similar capabilities to EVE through other CNCF and cloud native projects, and, when built as part of a complete architecture, can resemble a complete system more like EdgeX Foundry. We chose K3s as the core of this course for its flexibility and suitability to constrained devices. It also offers a very low barrier to entry for learning and experimentation.
+
+
+See this blog post for instructions on setting up
+https://blog.alexellis.io/bare-metal-kubernetes-with-k3s/
