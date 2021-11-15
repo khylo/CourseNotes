@@ -11,4 +11,7 @@ Based on https://www.youtube.com/watch?v=PhG5p_yv0zs&ab_channel=JavaBrains
     - TEst http://localhost:8080/hello/who%20are%20You
     - Test param : http://localhost:8080/hello/p?p=myParam
 
-* Just add security dependency
+* Security 1
+     Just add actuator / security dependency / developer tools (active restarts on config change)
+    - Want to have actuator as a permitAll while the other urls are authentiaced
+    - Changed from Controller to RestController to simplify things/. (No @REsponseBody)
