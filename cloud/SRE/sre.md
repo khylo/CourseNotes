@@ -37,3 +37,30 @@ If you exceed the error budget . You need to improce reliability.
 - ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `#f03c15`
 - ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `#c5f015`
 - ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) `#1589F0`
+
+# DevOps vs SRE
+https://www.youtube.com/watch?v=uTEL8Ff1Zvk&ab_channel=GoogleCloudTech 
+and
+https://www.youtube.com/watch?v=0UyrVqBoCAU&ab_channel=GoogleCloudTech
+
+## DEvops
+ - Reduce operational silos
+ - Accept failure as Normal
+ - Implement gradual change
+ - Leverage tooling and automation
+ - Measure evertything
+
+ ## SRE
+ SRE like concrete class that implements DevOps
+- Reduce operational silos   .. SRE try to have uniform views for all users and SRE staff
+ - Accept failure as Normal  ... Blameless postmorterms.. Accespt errors as normal with error budget
+ - Implement gradual change   .. canary releases.
+ - Leverage tooling and automation  .. automate as much as possible.
+ - Measure evertything
+
+
+## DevOps
+Core development
+
+## Notes
+We are a combined DevOps SRE

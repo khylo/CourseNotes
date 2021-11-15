@@ -13,6 +13,11 @@ Only thing we an say is username, password and target db
 DB setup on atlas
 Download mongo shell: THen run
 
-mongosh "mongodb+srv://mflix.zjmvn.mongodb.net/mflix" --username dbuser
+>mongosh "mongodb+srv://mflix.zjmvn.mongodb.net/myFirstDatabase" --username dbuser
 
+
+
+## Commands
+```db.serverStatus()```
+Lists all details. CAn find servers in cluster here
 

@@ -67,3 +67,13 @@ Temporary Items
 .project
 
 *.deb
+
+.github/**
+.mvn/**
+.github
+.mvn
+target/**
+*/target/**
+**/target/**
+**/work/**
+**/.settings/**
