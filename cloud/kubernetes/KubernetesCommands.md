@@ -43,3 +43,73 @@ kubectl expose deployment http --external-ip="172.17.0.77" --port=8000 --target-
 # scale
 kubectl scale --replicas=3 deployment http
 ```
+
+# Jobs
+For one of tasks like running down queue of jobs
+Kubernetes runs jobs to completion on one or more pods. Can use scale cmd. Restarts take pods or nodes.
+* Non parallel jobs
+* Parallel jobs with fixed queue
+* Par
+'''
+Kubectl create -f job.yaml # create
+kubectl get jobs # check status
+kubectl get po # get pod status
+kubectl scale ...
+kubectl log <pod name>
+kubectl describe jobs countdown # get data on job e.g.for troubleshooting
+kubectl delete jobs countdown
+'''
+
+ # Manifest
+'''
+ApiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: countdown
+  label:
+spec:
+  template:
+    metadata:
+      name: countdown
+    spec:
+      container:
+        - name: countdown
+          image: CentOS:8
+          commands:
+            - ”/bin/bash”
+            - ”-c”
+            - ” for loop”
+            - restartPolicy: Never     # can be onFailure
+            - backoffLimit: 3 # default 6.. incr asking time
+'''
+
+
+# cronjobs
+
+
+
+ # Manifest
+'''
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: date
+  label:
+spec:
+  schedule * * * * *
+  jobTemplate:
+    spec:
+      template:
+        container:
+        - name: countdown
+          image: CentOS:8
+          commands:
+            - ”/bin/bash”
+            - ”-c”
+            - ”date”
+            - restartPolicy: Never     # can be onFailure
+            - backoffLimit: 3 # default 6.. incr asking time
+'''
+
