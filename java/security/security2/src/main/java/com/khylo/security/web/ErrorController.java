@@ -14,15 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @NoArgsConstructor
 public class ErrorController {
 
-    private static final String PATH = "/error";
+    // private static final String PATH = "/error";
 
-    @RequestMapping(value = PATH)
-    public String error() {
-        return "Error handling";
-    }
+    // @RequestMapping(value = PATH)
+    // public String error() {
+    //     return "Error handling";
+    // }
 
-    @Override
-    public String getErrorPath() {
-        return PATH;
-    }
 }

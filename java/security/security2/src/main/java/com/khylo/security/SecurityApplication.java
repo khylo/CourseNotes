@@ -12,25 +12,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @SpringBootApplication
 @EnableWebSecurity
-public class SecurityApplication  extends WebSecurityConfigurerAdapter{
+public class SecurityApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SecurityApplication.class, args);
-	}
-
-	/** Taken from https://spring.io/guides/gs/securing-web/
-	 * See also https://www.baeldung.com/spring-security-openid-connect
-	 */
-	@Bean
-	@Override
-	public UserDetailsService userDetailsService() {
-		UserDetails user =
-			 User.withDefaultPasswordEncoder()
-				.username("user")
-				.password("password")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(user);
 	}
 }
