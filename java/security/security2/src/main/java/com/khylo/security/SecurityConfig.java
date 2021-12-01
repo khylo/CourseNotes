@@ -76,13 +76,13 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter{
 
 
 	/* Sample In memory configure*/
-	protected void inMemory(AuthenticationManagerBuilder auth) throws Exception {
-		// First set your type of authentication
-		auth.inMemoryAuthentication()
-			.withUser("user")
-			.password("password")
-			.roles("USER");
-	}
+	// protected void inMemory(AuthenticationManagerBuilder auth) throws Exception {
+	// 	// First set your type of authentication
+	// 	auth.inMemoryAuthentication()
+	// 		.withUser("user")
+	// 		.password("password")
+	// 		.roles("USER");
+	// }
 
 	// @Bean
 	// public PasswordEncoder getNullPwdEncoder(){
