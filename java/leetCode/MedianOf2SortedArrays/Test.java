@@ -1,3 +1,7 @@
+/**
+to run 
+javac *.java  && java Test
+ */
 class Test {
     public static void main(String[] args) {
         Solution s= new Solution();
