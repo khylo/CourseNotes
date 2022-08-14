@@ -104,3 +104,5 @@ Vault has its core plus plugins
 * Audit plugin for auidting access
 * storage e.g. db for storing secrets at rest  / Secret like rabbitMQ / consul etc
 * 
+[<img src="https://mktg-content-api-hashicorp.vercel.app/api/assets?product=tutorials&version=main&asset=public%2Fimg%2Fvault%2Fvault-triangle.png">](https://learn.hashicorp.com/tutorials/vault/getting-started-intro?in=vault/getting-started)
+Vault Triangle
