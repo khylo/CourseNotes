@@ -108,3 +108,6 @@ Vault has its core plus plugins
 
 ### Vault CLI
 vault server -dev
+set VAULT_ADDR=http://127.0.0.1:8200
+set VAULT_TOKEN=<token printerd from server -dev>
+  vault status
