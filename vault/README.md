@@ -107,7 +107,21 @@ Vault has its core plus plugins
 [<img src="https://mktg-content-api-hashicorp.vercel.app/api/assets?product=tutorials&version=main&asset=public%2Fimg%2Fvault%2Fvault-triangle.png">](https://learn.hashicorp.com/tutorials/vault/getting-started-intro?in=vault/getting-started)
 
 ### Vault CLI
+```
 vault server -dev
 set VAULT_ADDR=http://127.0.0.1:8200
 set VAULT_TOKEN=<token printerd from server -dev>
-  vault status
+vault status
+vault secrets enable -version=2 kv #Enable v2 secrets engine
+vault kv put -mount=secret foo bar=baz  # put foo in mount secret with bar=baz
+vault kv get -mount=secret foo #Read this value back
+vault kv metadata get -mount=secret foo # Get metadata for the key:
+vault kv get -mount=secret -version=1 foo # Get a specific version of the key
+
+vault kv put -mount=secret hello foo=world excited=yes # multi[le entries
+vault kv put -mount=secret hello foo=world excited=yes
+# The deprecated path-like syntax can also be used, but this should be avoided
+#  for KV v2, as the fact that it is not actually the full API path to
+#  the secret (secret/data/foo) can cause confusion:
+ vault kv get secret/foo
+```
