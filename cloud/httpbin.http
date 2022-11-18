@@ -1,0 +1,3 @@
+### Example of bearer token from httpbin.org
+GET https://httpbin.org/bearer
+Authorization: Bearer someToken
