@@ -9,12 +9,21 @@ import java.util.List;
  * Soln:  https://www.youtube.com/watch?v=0LqHpmzRHzk&ab_channel=ICPCNews
  * Given grid, count triangles
  * For this 
+ cd C:\Users\8300\dev\CourseNotes\java\i-triangles\
+ javac Tests.java Tri.java && java Tests
  */
 public class Tri {
     /**
      * The first line of input contains two integers  and  (, ), specifying the picture size, where  is the number of rows of vertices and  is the number of columns. 
      * Following this are 2r-1 lines, each of them having at most 2c-1 characters. 
-     * Odd lines contain grid vertices (represented as lowercase x characters) and zero or more horizontal edges, while even lines contain zero or more diagonal edges. Specifically, picture lines with numbers  have vertices in positions  while lines with numbers  have vertices in positions  . All possible vertices are represented in the input (for example, see how Figure 1 is represented in Sample Input 2). Horizontal edges connecting neighboring vertices are represented by three dashes. Diagonal edges are represented by a single forward slash (‘/’) or backslash (‘\’) character. The edge characters will be placed exactly between the corresponding vertices. All other characters will be space characters. Note that if any input line could contain trailing whitespace, that whitespace may be omitted.
+     * Odd lines contain grid vertices (represented as lowercase x characters) and zero or more horizontal edges, while even lines contain zero or more diagonal edges. 
+     * Specifically, picture lines with numbers 4k+1 have vertices in positions  1,5,9,13 , 
+     * while lines with numbers 4k+3 have vertices in positions 3,7,11,15 . 
+     * All possible vertices are represented in the input (for example, see how Figure 1 is represented in Sample Input 2). 
+     * Horizontal edges connecting neighboring vertices are represented by three dashes.
+     *  Diagonal edges are represented by a single forward slash (‘/’) or backslash (‘\’) character. 
+     * The edge characters will be placed exactly between the corresponding vertices. All other characters will be space characters. 
+     * Note that if any input line could contain trailing whitespace, that whitespace may be omitted.     SO we should rtrim
      * @param args
      */
     public static void main(String[] args) throws IOException{
@@ -29,8 +38,8 @@ public class Tri {
     }
 
     String grid;
-    int rows;
-    int cols;
+    int rows; // 1<= r <=3000
+    int cols; // 1<= c <=6000
 
     public Tri(String input){
         String[] inputs = input.split("\n", 2);        
@@ -57,7 +66,7 @@ public class Tri {
         // Loop thru keeping track of potential triangles
         for(String line: lines){
             if(count%2==0)
-                Lines[] lines = parseEven(line);
+                parseEven(line);
             else
                 parseOdd(line);
             count++;
@@ -65,8 +74,28 @@ public class Tri {
         return rows*cols;
     }
 
+    protected static String allTrim(String a){
+        StringBuilder sb = new StringBuilder(a);
+        for(int i=a.length()-1;i>=0;i--){
+            if(Character.isWhitespace(sb.charAt(i)))
+                sb.deleteCharAt(i);
+        }
+        return sb.toString();
+    }
+
+
+    protected static String rTrim(String a){
+        StringBuilder sb = new StringBuilder(a);
+        for(int i=a.length()-1;i>=0;i--){
+            if(Character.isWhitespace(sb.charAt(i)))
+                sb.deleteCharAt(i);
+            else 
+                return sb.toString()  ;              
+        }
+        return sb.toString();
+    }
     
-    parseEven(String line){
+    void parseEven(String line){
         List<Point> points=List.of();
         List<Line> lines=List.of();
         for(int i=0;i<line.length();i++){
@@ -75,13 +104,13 @@ public class Tri {
                 if(false){
                     // First Check closes triangle
                 } else       // If not keep track     
-                    points.add(new Point(row, i));
+                    points.add(new Point(i, i));
             }else if(chr.equals("-")){
 
             }
         }
     }
-    parseOdd(String line){
+    void parseOdd(String line){
 
     }
     
@@ -90,6 +119,10 @@ public class Tri {
 // AKA vertex
 class Point{
     int x, y;
+    Point(int a, int b)    {
+        this.x=a;
+        this.y=b;
+    }
 }
 
 class Edge{

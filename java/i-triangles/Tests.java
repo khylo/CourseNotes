@@ -9,8 +9,17 @@ public class Tests {
     }
 
     public void run() throws Exception{
+        rTrim();
         ex1();
         ex2();
+    }
+
+    void rTrim(){
+        String t = "Hi there    ";
+        if("Hi there".equals(Tri.rTrim(t)))
+            System.out.println("rTrim pass!!");
+        else
+            System.out.println("rTrim fail!! "+ Tri.rTrim(t));
     }
 
     void ex1() throws IOException{
