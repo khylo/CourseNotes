@@ -1,6 +1,7 @@
 package com.khylo.ApiGateway;
 
-import reactor.core.publisher.Mono;
+import com.khylo.ApiGateway.predicate.OddDateRoutePredicateFactory;
+import com.khylo.ApiGateway.predicate.WeatherRoutePredicateFactory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // tag::code[]
@@ -42,7 +42,18 @@ public class ApiGatewayApplication {
     }
     // end::route-locator[]
 
+    @Bean
+    public OddDateRoutePredicateFactory oddDateRoutePredicate() {
+        return new OddDateRoutePredicateFactory();
+    }
+    @Bean
+    public WeatherRoutePredicateFactory rainingRoutePredicate() {
+        return new WeatherRoutePredicateFactory();
+    }
+
 }
+
+
 
 // tag::uri-configuration[]
 @ConfigurationProperties

@@ -1,12 +1,12 @@
-public class FizzBuzz{
+public class UniqueCode{
     public static void main(String[] args) {
-        FizzBuzz app = new FizzBuzz(100);
+        UniqueCode app = new UniqueCode(100);
         app.run()       ;
     }
 
     int range;
 
-    FizzBuzz(int range){
+    UniqueCode(int range){
         this.range=range;
     }
 
