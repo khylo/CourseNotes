@@ -1,0 +1,77 @@
+[
+  {
+    "sha": "d4e6b4ef0c3593dbdfe6c4523ad9aa15c81cbe1f",
+    "node_id": "MDY6Q29tbWl0Mjk3MTgxNTg2OmQ0ZTZiNGVmMGMzNTkzZGJkZmU2YzQ1MjNhZDlhYTE1YzgxY2JlMWY=",
+    "commit": {
+      "author": {
+        "name": "khylo",
+        "email": "keith_hyland@yahoo.com",
+        "date": "2020-09-20T23:27:21Z"
+      },
+      "committer": {
+        "name": "khylo",
+        "email": "keith_hyland@yahoo.com",
+        "date": "2020-09-20T23:27:21Z"
+      },
+      "message": "Initial commit.. Not working",
+      "tree": {
+        "sha": "22d358d73523ff23fe3aa644680cf8445a2b49c7",
+        "url": "https://api.github.com/repos/khylo/anagramizer/git/trees/22d358d73523ff23fe3aa644680cf8445a2b49c7"
+      },
+      "url": "https://api.github.com/repos/khylo/anagramizer/git/commits/d4e6b4ef0c3593dbdfe6c4523ad9aa15c81cbe1f",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null
+      }
+    },
+    "url": "https://api.github.com/repos/khylo/anagramizer/commits/d4e6b4ef0c3593dbdfe6c4523ad9aa15c81cbe1f",
+    "html_url": "https://github.com/khylo/anagramizer/commit/d4e6b4ef0c3593dbdfe6c4523ad9aa15c81cbe1f",
+    "comments_url": "https://api.github.com/repos/khylo/anagramizer/commits/d4e6b4ef0c3593dbdfe6c4523ad9aa15c81cbe1f/comments",
+    "author": {
+      "login": "khylo",
+      "id": 86197,
+      "node_id": "MDQ6VXNlcjg2MTk3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86197?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/khylo",
+      "html_url": "https://github.com/khylo",
+      "followers_url": "https://api.github.com/users/khylo/followers",
+      "following_url": "https://api.github.com/users/khylo/following{/other_user}",
+      "gists_url": "https://api.github.com/users/khylo/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/khylo/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/khylo/subscriptions",
+      "organizations_url": "https://api.github.com/users/khylo/orgs",
+      "repos_url": "https://api.github.com/users/khylo/repos",
+      "events_url": "https://api.github.com/users/khylo/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/khylo/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "khylo",
+      "id": 86197,
+      "node_id": "MDQ6VXNlcjg2MTk3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86197?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/khylo",
+      "html_url": "https://github.com/khylo",
+      "followers_url": "https://api.github.com/users/khylo/followers",
+      "following_url": "https://api.github.com/users/khylo/following{/other_user}",
+      "gists_url": "https://api.github.com/users/khylo/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/khylo/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/khylo/subscriptions",
+      "organizations_url": "https://api.github.com/users/khylo/orgs",
+      "repos_url": "https://api.github.com/users/khylo/repos",
+      "events_url": "https://api.github.com/users/khylo/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/khylo/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "parents": [
+
+    ]
+  }
+]

@@ -2,6 +2,7 @@ package com.khylo.reactivemongo.client;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class GithubClient {
 
     public static final String BASE_URL="https://api.github.com";
     public static final String GET_REPOS="/users/{user}/repos"; // See https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user
+    public static final String GET_COMMITS="/repos/{user}/{repo}/commits"; // >curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer <token>>"  -H "X-GitHub-Api-Version: 2022-11-28"    https://api.github.com/repos/<user>/<repo>/commits
     public static final String API_VERSION_HDR="X-GitHub-Api-Version";
     public static final String API_VERSION_VAL="2022-11-28";
     public static final String ACCEPT_HEADER="Accept";
@@ -65,10 +67,20 @@ public class GithubClient {
         resp.subscribe(l->printRepoSummary(l));
     }
 
-    private void printRepoSummary(List<Map<String, String>> repos){
+    private void printRepoSummary(List<Map<String, Object>> repos){
         System.out.println(repos.size()+" repos");
-        repos.stream().forEach(m -> System.out.println(String.format("  %s : %s (%d) *(%d)",m.get("name"),m.get("html_url"), m.get("size"),m.get("stargazers_count"))));
-
-
+        repos.stream().forEach(m -> {
+            String key = m.get("name").toString();
+            String user = ((Map)m.get("owner")).get("login").toString();
+            String commits = getCommits(user, key);
+            System.out.println(String.format("  %s : %s (%d) *(%d) %s", key, m.get("html_url"), m.get("size"), m.get("stargazers_count"),commits));
+        });
+    }
+    private String getCommits(String user, String repo){
+        Flux<List> resp = wc.get().uri(GET_COMMITS,user, repo).retrieve().bodyToFlux(List.class);
+        List l = resp.toStream().toList(); // Note this is blocking
+        StringBuilder ret = new StringBuilder(String.format("[%d commits], last on ", l.size()));
+        String date = ((Map)((Map)((Map)l.get(0)).get("commit")).get("committer")).get("date").toString();
+        return ret.append(date).toString();
     }
 }
