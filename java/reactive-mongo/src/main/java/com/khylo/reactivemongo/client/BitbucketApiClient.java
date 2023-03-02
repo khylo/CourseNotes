@@ -5,6 +5,7 @@ import com.khylo.reactivemongo.client.dto.Project;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -24,8 +25,8 @@ public class BitbucketApiClient {
         return webClient.get()
             .uri("/repositories")
             .retrieve()
-            .bodyToFlux(Project.class)
-            .filter(project -> project.getIs_private() == false);
+            .bodyToFlux(Project.class);
+            //.filter(project -> project.getIs_private() == false);
     }
 
     public Mono<Void> enableAnonymousAccessForProject(String projectKey) {
