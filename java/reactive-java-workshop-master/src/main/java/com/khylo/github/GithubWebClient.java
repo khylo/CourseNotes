@@ -6,7 +6,6 @@ public class GithubWebClient {
         client.run();
     }
 
-    WebClient
-    public void run(){
+    public void run() {
     }
 }

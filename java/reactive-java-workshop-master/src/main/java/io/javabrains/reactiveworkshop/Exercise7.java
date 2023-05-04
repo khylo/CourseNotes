@@ -10,7 +10,7 @@ public class Exercise7 {
         // Use ReactiveSources.intNumberMono() and ReactiveSources.userMono()
 
         // Print all values from intNumbersFlux that's greater than 5
-        // TODO: Write code here
+        ReactiveSources.intNumbersFlux().filter(i -> i > 5).log().subscribe(i -> System.out.println("Received " + i));
 
         // Print 10 times each value from intNumbersFlux that's greater than 5
         // TODO: Write code here
