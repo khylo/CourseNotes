@@ -53,6 +53,8 @@
 					<configuration>
 						<inputSpec>src/main/resources/8.10.swagger.v3.json</inputSpec>
 						<generatorName>java</generatorName>
+						<modelPackage>${project.groupId}.models</modelPackage>
+            			<apiPackage>${project.groupId}.apis</apiPackage>
 						<output>${project.build.directory}/generated-sources/openapi</output>
 						<configOptions>
 							<sourceFolder>src/main/java</sourceFolder>
