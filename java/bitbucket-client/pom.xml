@@ -55,6 +55,8 @@
 						<generatorName>java</generatorName>
 						<modelPackage>${project.groupId}.models</modelPackage>
             			<apiPackage>${project.groupId}.apis</apiPackage>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>${project.artifactId}</artifactId>
 						<output>${project.build.directory}/generated-sources/openapi</output>
 						<configOptions>
 							<sourceFolder>src/main/java</sourceFolder>
