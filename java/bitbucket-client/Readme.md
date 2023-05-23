@@ -1,7 +1,11 @@
 # Getting Started
 This projet generates a java client from the bitbucket openapi spec.
 This document is downloaded from https://developer.atlassian.com/server/bitbucket/rest/v810/intro/
-(Click on 3 dots and dowload api spec)
+(Click on 3 dots and dowload api spec).
+
+Note the first version of this appears to be 8.10
+
+We copied this and manually made (at this moment 1) adjustment to make it compatibile with 7.21. 
 
 Note for the Atlassian openapi docs we have specified skipValidation as by default it was generating errors
 
@@ -14,7 +18,7 @@ This will generate the client source code.
 
 To then build/ deploy that use something like
 ```
-mvn -f target/generated-sources/openapi/pom.xml -DskipTests install
+mvn -f target/generated-sources/openapi/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dmaven.javadoc.skip package
 ```
 ### Reference Documentation
 For further reference, please consider the following sections:
