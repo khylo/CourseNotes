@@ -9,8 +9,10 @@ Note we also updated the version field to take its value from the pom.xml (See $
 Note for the Atlassian openapi docs we have specified skipValidation as by default it was generating errors
 
 Also note in the plugin section we have set the target packages of the generated-sources
+
+NOTE: Run from root folder (inputSpec field in pom points to json spec relative to this.)
 '''
-mvn clean resources:resources generate-sources
+mvn clean resources:resources generate-sources -f java\bitbucket-client\pom.xml
 '''
 
 This will generate the client source code.
