@@ -20,6 +20,8 @@ To then build/ deploy that use something like
 ```
 mvn -f target/generated-sources/openapi/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dmaven.javadoc.skip package
 ```
+
+Also added github action to build
 ### Reference Documentation
 For further reference, please consider the following sections:
 
