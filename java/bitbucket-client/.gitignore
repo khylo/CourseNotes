@@ -29,5 +29,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### This didn't work. Needed to do a git add -f to force add
+!**/.github/**
+
 ### VS Code ###
 .vscode/

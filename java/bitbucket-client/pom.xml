@@ -63,7 +63,8 @@
 						<configOptions>
 							<sourceFolder>src/main/java</sourceFolder>
 							<generateClientAsBean>true</generateClientAsBean>  <!-- for spring-->
-							<dateLibrary>java8-localdatetime</dateLibrary>
+							<!--<dateLibrary>java8-localdatetime</dateLibrary> -->
+							<dateLibrary>java8</dateLibrary>
 							<openApiNullable>false</openApiNullable>
 						</configOptions>
 						<skipValidateSpec>true</skipValidateSpec>
