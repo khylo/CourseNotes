@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} pushed code to Bitbucket Client folder 🚀
 on: 
   push:
     paths:
-      - java/bitbucket-client
+      - java/bitbucket-client/**
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
