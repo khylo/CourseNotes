@@ -40,6 +40,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>7.21.swagger.v3.json</include>
+                </includes>
             </resource>
         </resources>
 		<plugins>
@@ -59,7 +62,7 @@
 					</goals>
 					<configuration>
 						<!-- <inputSpec>src/main/resources/8.10.swagger.v3.json</inputSpec> -->
-						<inputSpec>java/bitbucket-client/src/main/resources/7.21.swagger.v3.json</inputSpec>
+						<inputSpec>java/bitbucket-client/target/classes/7.21.swagger.v3.json</inputSpec>
 						<generatorName>java</generatorName>
 						<modelPackage>${project.groupId}.models</modelPackage>
             			<apiPackage>${project.groupId}.apis</apiPackage>
