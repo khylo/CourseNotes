@@ -19,7 +19,7 @@ This will generate the client source code.
 
 To then build/ deploy that use something like
 ```
-mvn -f target/generated-sources/openapi/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dmaven.javadoc.skip package
+mvn -f java/bitbucket-client/target/generated-sources/openapi/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dmaven.javadoc.skip package
 ```
 
 Also added github action to build
