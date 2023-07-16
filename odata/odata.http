@@ -1,0 +1,13 @@
+
+# from https://github.com/Huachao/vscode-restclient/issues/99
+# ctrl-shoft-p  "open settings (user) json"
+ # paste in the following
+# {
+#    "rest-client.previewOption": "exchange"
+# }
+#
+###
+GET {{odataUrl}}
+
+###
+GET https://services.odata.org/V2/Northwind/Northwind.svc/Regions
