@@ -78,3 +78,6 @@ target/**
 **/target/**
 **/work/**
 **/.settings/**
+
+# Ignore notes in aws
+/cloud/aws/developer/notes/**
