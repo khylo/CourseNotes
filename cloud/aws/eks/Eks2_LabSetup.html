@@ -1,0 +1,436 @@
+This is the manual setup for the lab.
+
+Option 2 (Only for self-learning): Running the workshop in your own EKS cluster
+Expand this for detailed instructions
+Cloud9 setup
+Setup Cloud9 environment using this  setup. Once your EC2 environment is up and running, perform the remaining steps
+
+Create an IAM role for your Cloud9 workspace environment
+
+A. Follow this link to create an IAM role with Administrator access 
+
+B. Confirm that AWS service and EC2 are selected, then click Next to view permissions.
+
+C. Confirm that AdministratorAccess is checked, then click Next to review.
+
+IAM Role
+
+Attach the IAM role to the cloud9 workspace
+
+A. Follow this link to your cloud9 ec2 instance  and filter with the name of the instance
+
+Cloud9 EC2
+
+B. Select the instance, then choose Actions / Security / Modify IAM Role
+
+Cloud9 EC2 Modify Role
+
+C. Choose eks-workshop-admin from the IAM Role drop down, and select Save
+
+Cloud9 EC2 Update Role
+
+Check if Cloud9 AWS temporary credentials is disabled
+
+Open the "Preferences" tab in Cloud9 console
+Open the "AWS Settings" and see "AWS Managed Temporary Credentials" is "Off", if not turn it "Off"
+Go to Cloud9 terminal and execute below commands to remove any existing credentials file:
+
+1
+2
+aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
+rm -vf ${HOME}/.aws/credentials
+
+Setup and Tools
+Execute all the below commands in Cloud9 terminal
+
+Install eksctl
+1
+2
+3
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv -v /tmp/eksctl /usr/local/bin
+
+Install kubectl
+1
+2
+3
+4
+sudo curl --silent --location -o /usr/local/bin/kubectl \
+   https://amazon-eks.s3.us-west-2.amazonaws.com/1.20.4/2021-04-12/bin/linux/amd64/kubectl
+
+sudo chmod +x /usr/local/bin/kubectl
+
+Install latest awscli
+1
+2
+3
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+Install jq, envsubst (from GNU gettext utilities) and bash-completion
+1
+sudo yum -y install jq gettext bash-completion moreutils
+
+Install yq for yaml processing
+1
+2
+3
+echo 'yq() {
+  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
+}' | tee -a ~/.bashrc && source ~/.bashrc
+
+
+Install c9 to open files in cloud9
+1
+npm install -g c9
+
+Below is one example:
+
+ c9 open ~/file.yaml
+Install k9s a Kubernetes CLI To Manage Your Clusters In Style!
+1
+curl -sS https://webinstall.dev/k9s | bash
+
+Verify the binaries are in the path and executable
+1
+2
+3
+4
+for command in kubectl jq envsubst aws
+  do
+    which $command &>/dev/null && echo "$command in path" || echo "$command NOT FOUND"
+  done
+
+Enable kubectl bash_completion
+1
+2
+3
+kubectl completion bash >>  ~/.bash_completion
+. /etc/profile.d/bash_completion.sh
+. ~/.bash_completion
+
+Enable some kubernetes aliases
+1
+2
+3
+4
+5
+6
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install --all
+sudo curl https://raw.githubusercontent.com/blendle/kns/master/bin/kns -o /usr/local/bin/kns && sudo chmod +x $_
+sudo curl https://raw.githubusercontent.com/blendle/kns/master/bin/ktx -o /usr/local/bin/ktx && sudo chmod +x $_
+echo "alias kgn='kubectl get nodes -L beta.kubernetes.io/arch -L eks.amazonaws.com/capacityType -L beta.kubernetes.io/instance-type -L eks.amazonaws.com/nodegroup -L topology.kubernetes.io/zone -L karpenter.sh/provisioner-name -L karpenter.sh/capacity-type'" | tee -a ~/.bashrc
+source ~/.bashrc
+
+Configure aws cli with your current region as default.
+
+1
+2
+3
+export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+
+export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+
+Check if AWS_REGION is set to desired region
+
+1
+test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
+
+Save these into bash_profile
+
+1
+2
+3
+4
+echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
+echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
+aws configure set default.region ${AWS_REGION}
+aws configure get default.region
+
+Ensure you are getting the IAM role that you have attached to Cloud9 IDE when you execute the below command
+
+1
+aws sts get-caller-identity --query Arn | grep eks-workshop-admin -q && echo "IAM role valid" || echo "IAM role NOT valid"
+
+If the IAM role is not valid, DO NOT PROCEED. Go back and confirm the steps on this section.
+
+Increase the disk size on the Cloud9 instance
+
+The following command adds more disk space to the root volume of the EC2 instance that Cloud9 runs on. Once the command completes, it reboots the instance and it could take a minute or two for the IDE to come back online.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+pip3 install --user --upgrade boto3
+export instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+python -c "import boto3
+import os
+from botocore.exceptions import ClientError 
+ec2 = boto3.client('ec2')
+volume_info = ec2.describe_volumes(
+    Filters=[
+        {
+            'Name': 'attachment.instance-id',
+            'Values': [
+                os.getenv('instance_id')
+            ]
+        }
+    ]
+)
+volume_id = volume_info['Volumes'][0]['VolumeId']
+try:
+    resize = ec2.modify_volume(    
+            VolumeId=volume_id,    
+            Size=30
+    )
+    print(resize)
+except ClientError as e:
+    if e.response['Error']['Code'] == 'InvalidParameterValue':
+        print('ERROR MESSAGE: {}'.format(e))"
+if [ $? -eq 0 ]; then
+    sudo reboot
+fi
+
+
+Create EKS cluster
+You can create the EKS Cluster using eksctl .
+Make sure when you create the cluster, the cluster name should be "eksworkshop-eksctl"
+Make sure to use "m5.large" instances and desiredCapacity as "3" for managed Nodegroup
+Make sure to add EKS console credentials to EKS Cluster by using below. This will give the EKS console role to access the EKS resources. Replace it with your Console ROLE_ARN.
+## ROLE_ARN will be "arn:aws:iam::<YOUR_ACCOUNT_ID>:role/<YOUR_CONSOLE_ROLE>"
+
+eksctl create iamidentitymapping --cluster eksworkshop-eksctl --arn <ROLE_ARN> --group system:masters --username admin
+Confirm EKS Setup
+You can test access to your cluster by running the following command. The output will be a list of worker nodes
+
+1
+kubectl get nodes
+
+You should see below output
+
+NAME                             STATUS   ROLES    AGE   VERSION
+ip-192-168-11-48.ec2.internal    Ready    <none>   50m   v1.24.7-eks-49a6c0
+ip-192-168-62-163.ec2.internal   Ready    <none>   50m   v1.24.7-eks-49a6c0
+ip-192-168-88-42.ec2.internal    Ready    <none>   50m   v1.24.7-eks-49a6c0
+  
+AWS Load Balancer Controller Installation
+AWS Load Balancer Controller is a controller to help manage Elastic Load Balancers for a Kubernetes cluster. This is a Kubernetes project that's been built and designed to bridge the gap between Kubernetes and AWS networking components. For example, the controller supports provisioning of Network Load Balancers(NLBs) by serving standard Kubernetes Service  resources of Type LoadBalancer. If you create an Ingress  resource, the controller provisions an Application Load Balancer(ALB).
+
+This section walks you through the installation steps for the AWS Load Balancer Controller v2.4.0, which are also published in the open source project documentation on GitHub  or on AWS documentation . Please check these links for most up to date information for different versions.
+
+Note : Make sure the Kubernetes cluster version is 1.19+. You can use kubectl version to find out.
+
+AWS Load Balancer Controller is installed as a deployment, which is comprised of two pods for reliability and availability, in the kube-system namespace. We will verify this in the last step.
+
+Create IAM OIDC Provider
+
+We need to associate our EKS cluster with IAM as an OIDC provider to use an IAM role for the service account that is used in AWS Load Balancer Controller. Copy and paste the following command snippet.
+
+1
+2
+3
+4
+eksctl utils associate-iam-oidc-provider \
+      --region ${AWS_REGION} \
+      --cluster ${LAB_CLUSTER_ID} \
+      --approve
+
+Output
+
+2022-03-08 15:46:16 [ℹ]  eksctl version 0.86.0
+2022-03-08 15:46:16 [ℹ]  using region eu-west-1
+2022-03-08 15:46:16 [ℹ]  will create IAM Open ID Connect provider for cluster "eksworkshop-eksctl" in "eu-west-1"
+2022-03-08 15:46:16 [✔]  created IAM Open ID Connect provider for cluster "eksworkshop-eksctl" in "eu-west-1"
+Note : If you received the following message then please ignore it and move on to the next step.
+
+2022-03-08 15:46:16 [ℹ] IAM Open ID Connect provider is already associated with cluster "eksworkshop-eksctl" in "eu-west-1"
+
+Create IAM Policy for the AWS Load Balancer Controller
+
+We need to create an IAM policy and associate it with the IAM role that the AWS Load Balancer Controller service account uses.
+
+First download the policy JSON file.
+
+1
+curl -o iam-policy.json https://raw.githubusercontent.com/aws-containers/eks-app-mesh-polyglot-demo/master/workshop/aws_lbc_iam_policy.json
+
+Output
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  7617  100  7617    0     0  35979      0 --:--:-- --:--:-- --:--:-- 35929
+Create the IAM policy based on the JSON file you have just downloaded.
+
+1
+2
+3
+aws iam create-policy \
+      --policy-name AWSLoadBalancerControllerIAMPolicy \
+      --policy-document file://iam-policy.json
+
+Output
+
+{
+    "Policy": {
+        "PolicyName": "AWSLoadBalancerControllerIAMPolicy",
+        "PolicyId": "ANPA2HDQZUN2Y2G7H7WG6",
+        "Arn": "arn:aws:iam::123456789012:policy/AWSLoadBalancerControllerIAMPolicy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2022-03-08T15:49:51+00:00",
+        "UpdateDate": "2022-03-08T15:49:51+00:00"
+    }
+}
+Create an IAM Role and ServiceAccount for the AWS Load Balancer controller
+
+In this step we will create an IAM role and associate the service account, that the AWS Load Balancer controller will use, with that IAM role. Sample command is shown below.
+
+1
+2
+3
+4
+5
+6
+7
+8
+eksctl create iamserviceaccount \
+--cluster=${LAB_CLUSTER_ID} \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+--override-existing-serviceaccounts \
+--region ${AWS_REGION} \
+--approve
+
+Output
+
+2022-03-08 15:52:05 [ℹ]  eksctl version 0.86.0
+2022-03-08 15:52:05 [ℹ]  using region eu-west-1
+2022-03-08 15:52:05 [ℹ]  1 iamserviceaccount (kube-system/aws-load-balancer-controller) was included (based on the include/exclude rules)
+2022-03-08 15:52:05 [!]  metadata of serviceaccounts that exist in Kubernetes will be updated, as --override-existing-serviceaccounts was set
+2022-03-08 15:52:05 [ℹ]  1 task: { 
+    2 sequential sub-tasks: { 
+        create IAM role for serviceaccount "kube-system/aws-load-balancer-controller",
+        create serviceaccount "kube-system/aws-load-balancer-controller",
+    } }2022-03-08 15:52:05 [ℹ]  building iamserviceaccount stack "eksctl-eksworkshop-eksctl-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-03-08 15:52:05 [ℹ]  deploying stack "eksctl-eksworkshop-eksctl-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-03-08 15:52:05 [ℹ]  waiting for CloudFormation stack "eksctl-eksworkshop-eksctl-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-03-08 15:52:23 [ℹ]  waiting for CloudFormation stack "eksctl-eksworkshop-eksctl-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-03-08 15:52:40 [ℹ]  waiting for CloudFormation stack "eksctl-eksworkshop-eksctl-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-03-08 15:52:40 [ℹ]  created serviceaccount "kube-system/aws-load-balancer-controller"
+Deploy AWS Load Balancer Controller using Helm
+
+Make sure have Helm installed by following the steps in the Using Helm section. If you have not then use the below command to install it.
+
+1
+curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+Output
+
+Downloading https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+Next, add the EKS chart Helm repo.
+
+1
+helm repo add eks https://aws.github.io/eks-charts
+
+Output
+
+"eks" has been added to your repositories
+Next, deploy AWS Load Balancer Controller using the respective Helm chart. Copy and paste the command shown below.
+
+1
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=${LAB_CLUSTER_ID} --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+
+Output
+
+name=aws-load-balancer-controller
+NAME: aws-load-balancer-controller
+LAST DEPLOYED: Tue Mar  8 15:55:52 2022
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+AWS Load Balancer controller installed!
+Verify AWS Load Balancer Controller Deployment
+
+Let’ s verify if the AWS Load Balancer Controllers are in healthy and running state.
+
+1
+kubectl get pods -n kube-system
+
+Output
+
+NAME                                            READY   STATUS    RESTARTS   AGE
+aws-load-balancer-controller-586d96695d-42hsx   1/1     Running   0          135m
+aws-load-balancer-controller-586d96695d-pwfqd   1/1     Running   0          135m
+aws-node-5cz8d                                  1/1     Running   0          148m
+aws-node-d2wpd                                  1/1     Running   0          148m
+aws-node-fxzfr                                  1/1     Running   0          148m
+coredns-65ccb76b7c-rn5sb                        1/1     Running   0          156m
+coredns-65ccb76b7c-sprfx                        1/1     Running   0          156m
+kube-proxy-8spl9                                1/1     Running   0          148m
+kube-proxy-lsclv                                1/1     Running   0          148m
+kube-proxy-slfz5                                1/1     Running   0          148m
+The first two pods in the above output are the AWS Load Balancer Controller pods.
+
+Uninstalling AWS Load Balancer Controller
+
+If for any reason you would like to use a different controller or just would like to remove AWS Load Balancer Controller, you can use the following steps.
+1
+helm uninstall aws-load-balancer-controller -n kube-system
+
+Delete the service account created for AWS Load Balancer Controller.
+
+1
+2
+3
+4
+5
+eksctl delete iamserviceaccount \
+    --cluster ${LAB_CLUSTER_ID} \
+    --name aws-load-balancer-controller \
+    --namespace kube-system \
+    --wait
+
+Delete the IAM Policy created for the AWS Load Balancer Controller.
+
+1
+2
+aws iam delete-policy \
+    --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy

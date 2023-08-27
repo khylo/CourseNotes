@@ -1,6 +1,46 @@
 Navigation
    hjkl
+  w  word skip
+  b back word skip
 
+  dd delete line
+  dw del word
+  d$ to end of line
+  db  del prev word
+  d0 dellft of line
+  u undo
+  trl r redo
+
+V  visual mode.. Highlight
+shift V visual line mode keeps lines
+
+Neovim is recommended, but follow this to share plugins etc between vim and neovim
+https://vi.stackexchange.com/questions/12794/how-to-share-config-between-vim-and-neovim
+
+  # PLugins
+  See https://stackoverflow.com/questions/48700563/how-do-i-install-plugins-in-neovim-correctly
+
+  ## Python example
+  https://realpython.com/vim-and-python-a-match-made-in-heaven/ 
+
+  ## Sample Fugutive
+  Fugitive is a git plugin for vim . https://github.com/tpope/vim-fugitive
+  #mkdir -p ~/.vim/pack/tpope/start
+  ```
+cd ~/.vim/pack/tpope/start
+git clone https://tpope.io/vim/fugitive.git
+vim -u NONE -c "helptags fugitive/doc" -c q
+```
+  ## NeoVim
+  :h packages
+  ~/.config/nvim/init.vim
+
+:set relativenumber
+:set number
+
+
+  Install packages 
+  ~/.local/share/nvim/site/pack/*/start
 
 hello world!
 

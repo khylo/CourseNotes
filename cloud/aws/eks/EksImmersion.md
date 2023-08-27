@@ -56,7 +56,7 @@ EKS manages the control plane componenets. THis is differnet to your VPC / AWS a
  # Lab1
  Using cloud9 Dev Env, to clone repo.
  https://catalog.us-east-1.prod.workshops.aws/join
- f0ea-087fcf-d4
+f0ea-087fcf-d4
 
  https://us-east-1.console.aws.amazon.com/cloud9/ide/298250ea09ba4a18994f4dfdfcab2603
 
@@ -158,12 +158,25 @@ Run in background
 TABLE_NAME=$(aws dynamodb list-tables | jq -r .TableNames[0])
 docker run -d -p 8000:80 -e AWS_DEFAULT_REGION=$AWS_REGION -e DDB_TABLE_NAME=$TABLE_NAME monolith-service
 
+Existing repositorie
+211929952315.dkr.ecr.us-east-1.amazonaws.com/containersid-mono-kw5sxmiclgjk
 
-
-Goto lab5 section 
+# lab5 section 
 https://catalog.us-east-1.prod.workshops.aws/event/dashboard/en-US/workshop/eks/launch-eks
+THis uses eksctl command to configure a cluster. Alternatives are awsCDK https://aws.amazon.com/cdk/, and terraform.
 
-```
+## PreREqs
+To help facilitate the workshop and interactions with your Amazon EKS clusters, we will install the following binaries:
+
+awscliv2  - Used to manage AWS services. This lab will also make use the AWS IAM Authenticator for Kubernetes  in the AWS CLI.
+eksctl  - Used to create and manage Amazon EKS clusters.
+kubectl  - Provides a command-line interface for communicating with the Kubernetes control plane.
+helm  - Kubernetes application management utility.
+jq  - Command-line JSON processor.
+yq  - Command-line YAML processor. Note that we will install this as a convenience - it is not specifically required for this workshop.
+bash-completion  and envsubst  - Utilities to help with shell commands.
+
+``` 
 cd ~/environment
 
 # install or upgrade the aws cli
@@ -215,8 +228,12 @@ kubectl get nodes -o wide
 
 aws eks get-token --cluster-name=
 
+# Lab 6
+In this lab, we are going to deploy the AWS Load Balancer Controller  - which will be used to expose our applications externally.
 
-lab7
+# Lab7
+In this lab, we are going to deploy the containerized version of the monolith application as a Kubernetes pod running in your Amazon EKS cluster.
+
 ```
 cat << EOF > monolith-app.yaml
 apiVersion: apps/v1
