@@ -1,0 +1,5 @@
+{
+    "compileOptions": {
+        "esModuleInterop": true
+    }
+}
