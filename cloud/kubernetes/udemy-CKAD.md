@@ -41,7 +41,7 @@ Orchestraiton.. Brings up new containers
 
 ## Pods
 kubectl get pods
-ubectl describe <pod>
+kubectl describe <pod>
 A pod contains these main things
 * apiVersion. 
   Verseion of k8s.. Can mean differnent entities 
@@ -59,7 +59,7 @@ A pod contains these main things
 Specifiction. Information like pods, nodes, clusters etc
 For pod
 spec:
-  xontainers:
+  containers:
     - name: nginx-container
       image: nginx
 
@@ -67,12 +67,20 @@ Node
 
 # kubectl
 Sample commands
-
+```
 kubectl run <container>   # runs container in a pod
 
 kubectl cluster-info  # gt info on cluster
 kubectl get nodes # gets info on nodes
 kubectl get pods # gets info on pods
+kubectl describe pod
+# Create inst
+# kubectl run <name> --image <img>
+kubextl run nginx --image nginx
+kubectl create -f desc.yaml
+
+```
+
 
 # Docker vs containerd
 cri = container runtime interface created by k8s to standardise container runtimes

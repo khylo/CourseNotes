@@ -1,0 +1,27 @@
+items:
+  - banana
+  - orange
+  - strawberry
+  - cabbage
+  - grapes
+  - carrot
+  - tomato
+  - peppers
+  - watermelon
+  - lettuce
+
+fruit:
+  yellow:
+    - banana
+  red:
+    - strawberry
+    - grapes
+  green:
+    - watermelon
+    - grapes
+
+veg:
+  yellow:
+  red:
+  green:
+  

@@ -29,19 +29,29 @@ it or test is a callb ack for indicidual tests
 
 Add *.only* (also *.xit*) to tests to only run this test
 Add *.skip* to tests to skip this test
-Add *.toso* to tests to mark them as todo
+Add *.todo* to tests to mark them as todo
 Add *.concurrant* to tests to only run this test
 
-watch mode
+### watch mode
 add to jest.config.ts (may not work)..or to pachage.json, e.g.`
 ```
 "scripts": {
     "test": "jest --watch"
   },
 ```
+### Coverage
+Add to jest.config.ts
+coverage: true
+
+Also normally they use Istanbul lib for covreage, so you can add comments to skip parts of coverage
+/* Istanbul ignore files */
+/* Istanbul ignore next */
+
+### Vs Code debug
+Use vscode recipes to get sample launch.json for jest.
 
 ## Matchers
-Note ToBe is ony for primitives, fo objects it checks object ref 
+Note ToBe is ony for primitives, for objects it checks object ref 
 toEqual is better for Objects
 arrayContaining (['s', 'S'])  # checks array entries regardless of order#
 

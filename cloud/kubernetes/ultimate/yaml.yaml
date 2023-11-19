@@ -1,0 +1,14 @@
+# Below Got element is a list
+# toGet is a Dict (since we have valuess)
+# return is also a dict.. Not sure of diff 
+shopping:
+  got:
+    - eggs
+    - bread
+    - milk
+  toGet:
+    - apples: 6
+    - bananas: 6
+  return:
+    cheese: cheddar
+    cream: 500ml
