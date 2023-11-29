@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  challenge
+  labels:
+    name:  os
+spec:
+  replicas: 3
+  selector:
+    os: ubuntu
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name:  my-name
+    spec:
+      containers:
+      - image:  ubuntu
+        name:  ubuntu
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "500M"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - ps -ef | grep -v grep
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        env:
+        - name:  ENVVARNAME
+          value:  ENVVARVALUE       
+        ports:
+        - containerPort:  8080
+          name:  port
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+      restartPolicy: Always
+      imagePullPolicy: Always
