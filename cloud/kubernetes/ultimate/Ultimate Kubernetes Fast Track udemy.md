@@ -14,6 +14,7 @@ Sample commands
 ```
 kubectl completion bash >>  ~/.bash_completion
 
+kubectl config set-context --current --namespace=$KNS
 kubectl run <container>   # runs container in a pod
 
 kubectl cluster-info  # gt info on cluster
@@ -31,6 +32,9 @@ kubectl create -f desc.yaml
 
 # lookup versions
 k api-resources | grep deploy 
+
+###  Debug
+k get events --namespace $KNS --sort-by.metadata.creationTimestamp
 ```
 
 ## HELM
@@ -50,6 +54,8 @@ helm search repo <reponame> name
 helm search repo -r ".*name.*" 
 ## Template (debug helm chart)
 helm template 
+# Can also add values and sets
+helm template --values chart/values.yaml --values chart/values-env.yaml --set 'specialFlag=specialVal'
 ## Sample
 helm create helloworld
 tree helloworld
