@@ -16,6 +16,7 @@ export VAULT_ADDR='http://127.0.0.1:8200'
 echo "GmUsB6tYWVFdfQactUK+2QFJ0zcPlRe2Agt7rp5neW8=" > unseal.key
 export VAULT_DEV_ROOT_TOKEN=hvs.dfw6J4Ozm3vQCpV3AOqZAHte
 vault status
+vault server --dev --dev-root-token-id="$VAULT_DEV_ROOT"
 ````
 #expose VAULT token in appliation.properties
 mvn spring-boot:run
@@ -24,7 +25,7 @@ Add secrets
 ```
 vault kv put secret/gs-vault-config example.username=demouser example.password=demopassword
 vault kv put secret/gs-vault-config/cloud example.username=clouduser example.password=cloudpassword
-vault kv put secret/kv keystore.password=changeit
+vault kv put secret/kv keystore.password=changeit db.password=dbpass
 ```
 
 By default, Spring Vault will look up secrets in the /secret/{application}/{profile} path, where application is the value of the spring.application.name property and profile is the value of the spring.profiles.active property.

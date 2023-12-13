@@ -24,8 +24,8 @@ public class SalaryApplication implements CommandLineRunner {
 		SpringApplication.run(SalaryApplication.class, args);
 	}
 
-	@Value("${keystore.password}")
-	String keystorePassword;
+	@Value("${db.password}")
+	String dbPassword;
 	@Value("${example.password}")
 	String examplePassword;
 
@@ -39,7 +39,7 @@ public class SalaryApplication implements CommandLineRunner {
 		logger.info("   example.username is {}", configuration.getUsername());
 		logger.info("   example.password is {}", configuration.getPassword());
 		logger.info("   example is {}",examplePassword);
-		logger.info("   keystore is {}", keystorePassword);
+		logger.info("   dbPassword is {}", dbPassword);
 		logger.info("----------------------------------------");
 	}
 
