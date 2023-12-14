@@ -1,0 +1,25 @@
+
+spring:
+  application:
+    name: salary
+  cloud:
+    vault:
+      token: 00000000-0000-0000-0000-000000000000
+      #token: ${VAULT_DEV_ROOT_TOKEN}
+      scheme: http
+      kv.enabled: true
+      application-name: gs-vault-config,kv,salary
+  config.import:  vault://
+
+server:
+  port: 8080
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-type: jks
+    key-store-password: ${keystore.password} # password from vault
+
+
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.vault: DEBUG
