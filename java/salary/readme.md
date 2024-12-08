@@ -41,3 +41,44 @@ spring.cloud.vault.application-name: gs-vault-config,kv,salary
 
 # Create Keystore
 keytool -genkey -alias clientCert -keyalg rsa -keystore keystore.jks
+
+# CLI
+curl 'https://ie.thesalarycalculator.co.uk/salary.php' \
+-H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+-H 'Accept-Language: en-US,en;q=0.9' \
+-H 'Cache-Control: max-age=0' \
+-H 'Connection: keep-alive' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-H 'DNT: 1' \
+-H 'Origin: https://ie.thesalarycalculator.co.uk' \
+-H 'Referer: https://ie.thesalarycalculator.co.uk/salary.php' \
+-H 'Sec-Fetch-Dest: document' \
+-H 'Sec-Fetch-Mode: navigate' \
+-H 'Sec-Fetch-Site: same-origin' \
+-H 'Sec-Fetch-User: ?1' \
+-H 'Upgrade-Insecure-Requests: 1' \
+-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
+-H 'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"' \
+-H 'sec-ch-ua-mobile: ?0' \
+-H 'sec-ch-ua-platform: "Windows"' \
+--data-raw 'salary=18304&status=0&age=low&pension=&taxCredit=3550&taxallowance=&chosenTaxYear=2023&submit=Go%21&timeperiods%5B%5D=1&timeperiods%5B%5D=12&timeperiods%5B%5D=52&timeperiods%5B%5D=260&submit=' \
+--compressed
+
+# Bash to parse
+#!/bin/bash
+
+# Extract the yearly values for Gross, tax, usc, prsi, and net pay
+gross=$(echo "$1" | pup 'tr.gross.normal td:nth-child(2) text{}')
+tax=$(echo "$1" | pup 'tr.tax.normal td:nth-child(2) text{}')
+usc=$(echo "$1" | pup 'tr.USC.normal td:nth-child(2) text{}')
+prsi=$(echo "$1" | pup 'tr.PRSI.grey td:nth-child(2) text{}')
+net_pay=$(echo "$1" | pup 'tr.takehome.normal td:nth-child(2) text{}')
+
+# Print the extracted values
+echo "Gross: **$gross**"
+echo "Tax: **$tax**"
+echo "USC: **$usc**"
+echo "PRSI: **$prsi**"
+echo "Net Pay: **$net_pay**"
+
+curl -s "https://example.com" | ./extract.sh
