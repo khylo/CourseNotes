@@ -14,6 +14,8 @@ PATH=$PATH:/home/keith/.local/bin/:$NVM_DIR:$HOME/kconnect
 # load kunctl completions
 source <(kubectl completion bash)
 source <(helm completion bash)
+#Alternative is one time (each for k, helm)
+#> helm completion bash > /etc/bash_completions/helm
 # Also do completions for k
 complete -F __start_kubectl k
 alias kall="k get all -o wide"

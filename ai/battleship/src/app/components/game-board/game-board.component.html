@@ -1,0 +1,7 @@
+<div class="board">
+  <div *ngFor="let row of board; let x = index">
+    <div *ngFor="let cell of row; let y = index" (click)="attack(x, y)" class="cell">
+      {{ cell }}
+    </div>
+  </div>
+</div>

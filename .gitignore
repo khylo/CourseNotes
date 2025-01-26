@@ -78,6 +78,7 @@ target/**
 **/target/**
 **/work/**
 **/.settings/**
+**/__pycache__/**
 
 # Ignore notes in aws
 /cloud/aws/developer/notes/**
