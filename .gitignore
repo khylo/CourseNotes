@@ -79,6 +79,9 @@ target/**
 **/work/**
 **/.settings/**
 **/__pycache__/**
+**/stopwords/*
+**/twitter_samples/*
+
 
 # Ignore notes in aws
 /cloud/aws/developer/notes/**
