@@ -1,0 +1,451 @@
+Portfolio managers... 
+	Mutual Fund and ETF's
+		Expense ration 1% of funds under mgmt.. so motivation is to have more assets under mgmt
+	Hedge Fund - 2 and 20.. motivation is to make profits (even if large fund)
+		2% of assets under mgmt and 20% of profits.. so if fund is 1mill and returns 20% .. then compensation is 20k (2%) + 40k (20% => 1M*.2*.2)
+	
+	Who invests
+		Individuals
+		Institutions (pension instites)
+		Funds of funds
+	
+	How to attrack investors
+		good track record
+		back tests
+		pigeon hole (for institutional investors)
+		
+		reference to a benchmark
+		absolute return
+		
+	Metrics
+		(Annual) Return
+			value[end]/ value[start] -1			
+			
+		Risk: Std deviation of return (Volatility)
+			std_metric = stddev(dailyReturn)
+			
+		Risk: Draw down   (drop in value of fund)
+			Max Drawdown is 100% at local max height.. what is percent drop to local Min
+		
+		Reward/Risk: Sharpe Ratio  (measure of reward over risk)
+			most 'important measure of asset performance.. How well does asset perform for the Risk that was taken
+			Higher sharpe ration is better (lower risk)
+			S = E[R-Rf]/ Std      (Note STD = sigma .. sigma is symbol for Std.. Variance = sigma^2)        Rf = libor or low risk asset
+			 = K dailyRet/ Std(DR)  (simplified version ...no Rf)
+				K = sqrt(250) .... number of days in a trading year (N.B. if calulcting monthly or somthing differnt then use differnt K eg sqrt(12))
+		
+		Reward/Risk: Sortino Ratio  (higher if more downward motion ). Doesn't count upward volatility
+		Jensens Alpha
+		
+		
+	Exampels from Paul Giganti
+	
+	Trailing stop  order
+		-> limit order (since these are suported by exchange)
+		We are selling
+		Once order tirggers.. Order goes to Market maker (exteranl company ,e.g. citigroup, citadel)
+			- Market maker. 
+				Can goto exchange and get market price (buy/ sell spread)
+				or external liquididy providers (Dark pool)
+					these can provide improved price (10th of penny for example)
+					if price not there they can make market in their own dark pool
+				
+				Most orders will goto market maker (and their dark pool)
+				
+				Market maker may accept all or part of trade.. 
+				
+				Any part of trade traded. then goes to exchange (printed)
+				
+				DTTMC.. Clearing company for stocks.. they get a copy of 'print'
+				
+			- Goes to exchange
+			
+			Opening days.. Orders are priced at mid point of buys and sells on exchanges.. goal to limit movement after opening point
+				Nasdaq does this automatically
+			
+		Things that can go wrong e.g. Facebook ipo
+			Similar process as opening day		
+			Huge demand on facebook to buy and sell on openeing which overwhelmed services
+			
+			Night install ?  New install on 7 of 8 servers.. Problem arose on server 8			
+			10 million doller per minute.. lasted 40 minutes
+				
+			
+		
+Excerxise 1
+	Loading 2011 financial data
+	Need to calc average daily rate and stdev for each (map reduce)
+	sharpe = adr/std
+	choose top 50 dr's... top 50 sharpes ... work out best combination
+	Starting from top dr's and top sharpes start mixing
+	ax1+bx2+cx3+dx4 to maximize 
+	
+ETF's
+Table 1-1 The Six Largest ETFs by Number of Shares Traded
+Name								Ticker		Average daily trading volume
+SPDR S&P 500							SPY		244 million shares
+Financial Select Sector SPDR			XLF		100 million shares
+iShares Russell 2000 Index				IWM		76 million shares
+PowerShares QQQ							QQQ		70 million shares
+iShares MSCI Emerging Markets Index		EEM		60 million shares
+iShares Silver Trust					SLV		40 million shares
+
+Table 1-2, I list the six largest ETFs based on their assets. You’ll notice some overlap with the funds listed in Table 1-1.
+Name								Ticker		Assets (in billions of dollars)
+SPDR S&P 500							SPY		$78.6
+SPDR Gold Shares						GLD		$70.4
+Vanguard MSCI Emerging Markets ETF		VWO		$44.8
+iShares MSCI EAFE Index					EFA			$35.4
+iShares MSCI Emerging Markets Index		EEM			$33.4
+iShares S&P 500 Index    				IVV 		$25.6	
+	
+QSTK
+	
+		
+Inside a Hedge Fund
+			Portforlio optimizer takes in 
+				-N-day forecast (i.e. target for portfolio for n days time), 
+				-currnent portfolio, 
+				- historical data (to balance sharpe)
+				
+			N-day forecast comes from forecasting algorithm.. takes feeds from
+				Information feed
+				Historical dats 
+		
+Estiming company value
+	3 sample ways to measure it are 
+		Market cap.. # shares by share value
+		Future dividends (returns) / Intrinsic value
+			Future returns (= div/(1- gamma)   where gamma is discount value (e.g. 0.95)
+		Book Value ...... Value of all assets added up minus liabilities
+	
+	Future dividends
+	e.g. company makes $1 per year
+		so what is value of $1 in the future
+			what would we pay now for $1 in a year.... 		say .95 - discount rate
+			
+			Value = Sum(.95^#year) => .95 +  .95^2 + .95^3 + .... 
+				= dividend/(1-gamma)  
+					=  1/(1-.95) => $20
+					
+	How do events effect price
+		MacKinley... Event studies in Economics and Finance.
+			e.g. bad news.. price on average is dropping before event. .Drops most when news comes out.. Often then recovers slightly 
+				likewise with good news
+
+	How  does market process information... Efficient Market hypothesis
+			
+	
+Capital Assets Pricing Model (CapM  from 1966) led to efficient market hypothesis
+	used in valuations.. takes into account rising tide... e.g. S&P portfolio 
+		Led to Index investing
+		
+	Return on market has 2 components
+		1- Systematic (market) (times a multiplier Beta)
+		2- Residual
+	Expected value of residual = 0
+	Market return
+		Risk free rate of return + excess return
+	
+	Ri = Beta *Rm + Alpha...    
+		R is return (ie. daily/ annual return).. Ri is stocks return ... Rm is market return
+		Alpha = residual  or information exploit (how it differs from market).. in CapM they expect it to goto 0
+		Beta
+		
+		if we Graph Ri vs Rm  (end up with elipse lots of times)  (Rm horizontal.. Ri Vertical)
+		 |   .
+		0| :::			most are gather around 0, but may be slight bias for alpha.. slope of line is Beta
+		 |'_______
+		use linear regresion fit line to scatter plot... Slope is Beta.. Alpha is where line hits Vertical Ri axis)
+		
+		corelation coefficient is how close scatter plot matches line  >-1 and <1.0.... 
+			1.0 = perfect correlation
+			-1 = inverse correlation (ie. amrket goes up.. stock goes down)
+		
+		Beta and correlation are different. Can have same Beta (slope) but different correlation coefficient
+		
+	CApM predicts Alpha is 0.. but Active Portfolio Mgmt says it is not and we can estimate Alpha
+	
+	Expected excess returns are proportional to beta... 
+		Beta greater than 1 implies stock returns higher than market (multiple) .. Therefore can make morey in theory
+		Greater Beta greater risk.. (different to correlation coeff)
+	Beta of a porfolio = weighted sum of betas of components
+		Rp = Sum (Wi * Ri)..  Rp = return of Portfolio... Sum of Weight of stock i by Return of Stock i
+		Betap = Sum(Wi * Betai)
+		
+		Weight calculated by value of component in portfolio e.g.g $1000 IBM $1000 Aol and $2000 goog.. 
+			Wibm = 0.25 Wgoog = .5
+			Note weight is calculated on total holding value.. not just number of shares etc
+		
+		
+	So if we think IBM will go up.. We go Long with IBM
+		But say market drops.. It will bring IBM with it and IBM will go down (but by less than market.. Alpha rate)
+		
+		So we actualyl Long IBM  AND short SPY
+		
+		so we buy and sell same amount so Wibm = 0,5 Wspy = -0.5
+		
+		Ribm = .5Beta + alpha
+		Rspy = -.5Beta +alpha (spy) ... But alpha of Spy =0
+			assume same Beta
+		R = alpha(Ibm)
+		
+		
+		
+Week 4	
+	Looking for arbitrage oppertunites. e.g. price greater than or less than true value
+	
+	Technical analysis.. Pricing and volumne only
+	
+	Fundamental Analysis
+		Finalcial statements
+		P/E rations, cash on hand dividends
+		
+	Source of data   news sites.. SEc fillings
+	
+	3 Versions of Efficient Market Hypothesis EMH (see wikipedia efficient markets hypothesis
+		Weak
+			Current prices reflect all past publicly available information
+			Prohibits profits from Technical Analysys
+		Semi-Strong
+			Weak + PRices change instanly to reflect new information
+			Prohibits profit from TA and Fundamental Analysis
+		Strong
+			Semi-String + prices instantly reflect even hidden or insider information
+			Prohibits profit from insider information
+			
+		Is EMH true ?
+			Relationship found between P/E and 
+			
+			Fundametal information can be correlated to future returns
+			
+		Behavioural Economics argues against EMH
+			Cognitive bias such as 
+				Overconfidence
+				Over-reaction
+				Inforation bias
+				
+	Event Studies
+		AC McKinlay event study in economics and finance
+		
+		docuemntsed news events  (e.g. jump in daily price)
+		
+		shows stock on average drifting upwards before news item. Then jump up after event
+			Likewise for bad news.. price is drifting down before event
+			Also flat line for random event
+			
+			For down movements tend to have over-raction effect, where after 2 days of negitive changes after event it tends to bounce back
+				Not really true for good news.. Levels off
+		
+Week 5		
+	Portfolio Optimization
+		Given a set of equities and a target return.. What is the optimum breakdown of equities in the portfolio
+		Inputs
+			Expected return for each equity
+			Volatility (risk) for each equity
+			Target Return of portfolio
+			Covariance Matrix
+		Ouput
+			Portfolio weights
+			Minimize risk for taget return
+	
+		Correlation - Covariance
+					
+		Mean Variance Optimization
+			Markowitz. won nobel prize in 1990
+		
+		Efficient Frontier
+		Curve.. Highest risk = 100% in equity with highest return
+				Lowest risk = lowest volatility.. but may not be positive return
+				Efficient frontier is often chosen as middle point = max sharpe ratio
+	
+		See tutorial 8
+	Digging into data
+		Looking up event studies to chose strategy
+		
+		Suvivor bias
+			Looking at historical data.. some companies die.. So taking newer S&P 500 from 2012.. will have better results than that of 2008 if computing event studies for 2008
+				since none of the 2012 companies will have faile, but some of 2008 will have
+		
+			One approach to mimnimize.. Create several random portfolios, and use them as benchmarks.
+				Can you devise strategy that does better than this.. may be viable strategy
+	
+	Adjusted vs actual close price
+		Actual is close at business end
+		
+		Adjusted is adjusted for things like stock splits, dividents etc. 
+			Look at example from notes.. 1962.. actual close 572... adjusted close 2.53
+	
+	
+		Data is QSTK is adjusted for splits not dividends
+			However you can download xls files from yahoo that includes divdends as well (apparently)
+			
+			Fill forward first  (don't want inflated value before it was available)
+			THen fill back (for equitries that have a NaN at start)
+			
+	Data sanity and scrubbing
+		Good Data is importatnt. Otherwise might find false strategies
+		
+	Bad Data
+		e.g. symbol DD 1987 - 1989 (on google finance.) factor of 10 problem for a year (1988)
+		
+		reverse splits been missed ae relatively common
+		Order of magnitude drop followed by order of magnitude climb
+		Database updates missing chunks of symbols (e.g. a - l symbols missing)
+		
+		Need to build in checks or alerts for this
+		
+	Sanity checks
+		Scan new data for ~50% drops or 200% gains (probably a split). Very rare for real data
+		NaNs in DOW stocks / S&P(probably bad data feed)
+		Recent adjusted prices less than 0.01 ... might be factor of 10 error
+		NaN's > 20 trading days
+		
+	Scrubbing
+		Remove or repair. Can only repair if you have multiple sources
+		
+	Homework 3
+		event study -> orders -> Market simulator -> Report
+		
+Week 6
+	Event study.. How to operationalize events into orders
+	
+	Firstly sanity check result.. Does event match what we are looking for
+	
+	The fundamental law and coin flipping
+		Thought experiment flip coin
+			uncertainty = Beta... Coin bias = alpha.. say 51% heads
+			We bet one token
+				win = 2 tokens
+				lose = 0 tokens
+			what if we bet in parallel	
+				What is expected return
+				case 1
+					one bet with $1000
+					0.51*1000 +.49*(-1000) = $20
+				case 2
+					1000 bets with $1
+					1000*(0.51*1 +.49*(-1)) = $20
+					
+			Risk Measure 1.. Possibilty we lose everything
+				Single Bet => 49%... (High)
+				Multi Bet => 0.49^1000 = very small
+				
+			Risk Measure Volatility
+				Single bet
+					=stdev(1000,0,0,0,0,0) = 31.62   (1 bet of 1000, plus 999 bets of 0)
+				Multi Bet
+					=stdev(1,-1,1,1,-1,1,-1,-1 ...) = 1.00 
+			Sharpe  SR = sharpe Ratio
+				SR single = .02/1 * sqrt (1000)
+				SR(multi) = SR(single) * sqrt(1000) (in coin flipping case)
+	
+		In general			
+			SR(multi) = C * alpha * sqrt(bets)
+		Information Ratio.. ratio of reward over risk
+		Information Co-efficient.. skill ... what do we know e.g. 51% heads
+		Strategy Breadth (num of bets)
+	
+	Fundamental Law (of active portfolio mgmt) .. Grinhold and Kahn chapters 5&6.... also augmentedtrader.wordpress.com
+		e.g. Jim Simons (rentec .. renaissance tech) and WArren Buffet BRK
+		
+		CAPM  .. read from Active Portfolio Management book
+			Rp(t) = Beta .Rm(t) + alphap  (t)
+			
+		Information Ratio = IR = mean (alphap(t))/ stdev(alphap(t))   = similar to sharpe
+		
+		Information Coefficient (IC)  .. what do we know 
+			correlation of forecase to actual return (e.g. biased coin 2%)
+		Breath BR = num bets
+	
+	IR = IC sqrt(BR)	=                      mean (alphap(t))/ stdev(alphap(t))
+	
+	Capm   (generaize it for a portfolio)
+		Rp(t) = Beta .Rm(t) + alphap  (t)    
+			alphap can be split into 2 components.. alpha (skill), and epsilon (random.. unmodelled information that effects price)
+			
+			rp = Sum(hi*ri)   where hi is % holding of stock i.. Sum over all stocks in i
+			
+		Can use this to cancel out market component if we know betas and alphas of the stocks in our portfolio
+		
+			e.g. R1 = 2.rm +0.2   (Beta = 2.. alpha = 0.2)
+				 R2 = 1.rm +0.1   (Beta = 1.. alpha = 0.1)
+				 
+				 so h1 = 1/3.... h2 = 2/3
+				 
+				 so Rp = 
+				 
+Week 7 
+	Feeds
+		Thompson Reuters Machine Readable News
+		StarMine
+		InsiderInsights
+		
+		What to look for
+			Historical data so you can test back
+			Survivor bias free.. Shoudl include dead stocks
+			Ease of integration with your system
+			Low latency
+		
+		Thompson Reuters MAchine readable
+			Xml tags with stock symbol.. tags related to future earning etc.
+			Offer csn at exchanges
+			servers in NYC, London, Chicago
+			
+		StarMine: Assessment of analysts (owned by thomson reuters)
+			Guages accuracy of analysts earning predictions
+			Daily feed each evening
+			Updates include analysts revisions
+			
+		Insider Insights.. What effect insider trades have.. (These are disclosed)
+			Daily feed each evening
+			Derived from public fillings
+			Values added by assessing importance of buying or selling
+			
+			Exampel of eent study of insider insights
+				Insiders Buying seems to signal a rise of up to 2% over 13 days on average (Also slight dip before disclosure of buying.. This may be due to historal delays in publishing data .. was 1 week, now 1 day)
+				Insiders selling.. Slight downward trend, but nothing significant... No real information
+		
+	Technical Analysis  (Technical analyis explained by Martin Pring)
+		Studies show simple indicators were profitable in past, but now multiple patterns may work
+		
+		Potential value in contra indicators.. e.g. stock going up and market going down, or vice versa
+		
+		Identify a trend reversal at an early stage, and rige on that trend until weigth of evidense shows trend has reversed
+			Assumption.. People will make same mistakes they have made in the past
+			
+		Three branches
+			Sentiment Indicators
+				Emotions of investors
+			Flow of Funds
+				How much money in or out
+				What capacity is in market for buy and sell
+			Market Structure Indicators
+				price and volumne.. Most indicators fall here
+				
+		Tuckers option
+			Best over short term (more inclined to high trading strategies)
+			Long term indicators don't tend to work (e.g. if holding for long time..)
+			
+		Mean reversion
+			Prices tend to revert to mean over time
+			e.g. SMA (Simple Moving Average).. e.g.g if price crosses SMA line
+			MACD (Moving average Convergence, divergence) (Fast average, and slow average.. e.g. 12 days and 26 days) EMA (Exponential moving average)
+				when lines cross. If fast ma crosses up thru slow ma.. Buy signal  if it crosses moving down then sell
+				
+		Bollinger Bands -> upper and lower bands contract and expand.. Volatility makes it expand.. calm period means they contract
+			middle line = moving average
+			If stock crosses top band then sell indicator.. Viceversa for bottem band
+			upper band.. STD of price above MA
+			Lower band.. STD of price below MA
+				(hence volatility expands band)
+				Also since volatility expands band it helps to stop excessive buying and selling
+			
+		Demo with Google Finance
+			SMA
+			
+		Important to convert all to std units for computation
+			e.g. for bollanger +1 for crossing bottemn band (buy) -1 for crossing top band (sell)
+			
+NumPytr
+	Python arrays

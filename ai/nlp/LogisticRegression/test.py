@@ -1,11 +1,3 @@
-# Sample code for Logistic Regression using NLTK for Twitter sentiment analysis
-# THis prepares the tweets for Logistic regression 
-# First stage loads sample tweets from nltk library
-# Clears out any stop words
-# Uses stemming library to redce verbs to their stems`
-# `LogisticRegression.py will then do LR on it.
-
-import numpy as np                          # Library for linear algebra and math utils
 import nltk                                # Python library for NLP
 from nltk.corpus import twitter_samples    # sample Twitter dataset from NLTK
 import matplotlib.pyplot as plt            # library for visualization
