@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import CustomStore from 'devextreme/data/custom_store';
-
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; 
+import { DxDataGridModule } from 'devextreme-angular';  
 
 @Component({
   selector: 'app-remote-datagrid',
-  imports: [],
+  standalone: true, // Mark as standalone
+  imports: [DxDataGridModule],
+  //providers: [provideHttpClient(withInterceptorsFromDi())],
   templateUrl: './remote-datagrid.component.html',
   styleUrl: './remote-datagrid.component.scss'
 })
