@@ -6,17 +6,17 @@
 <dx-data-grid
   [dataSource]="dataSource"
   [showBorders]="true"
-  [remoteOperations]="true"  
+  [remoteOperations]="true"
   [paging]="{ enabled: true }"
   [pager]="{
         visible: true,
         allowedPageSizes: [5, 10, 25, 50],
-        showPageSizeSelector: true,
+        showPageSize: true,
         showNavigationButtons: true
     }"
   [filterRow]="{ visible: true }"
-  [sorting]="{ mode: 'multiple' }">  
-  <dxi-column dataField="id" dataType="number"></dxi-column>  
+  [sorting]="{ mode: 'multiple' }">
+  <dxi-column dataField="id" dataType="number"></dxi-column>
   <dxi-column dataField="name"></dxi-column>
   <dxi-column dataField="description"></dxi-column>
-    </dx-data-grid>
+</dx-data-grid>

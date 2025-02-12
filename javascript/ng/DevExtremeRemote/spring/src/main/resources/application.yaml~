@@ -26,4 +26,4 @@ app:
       allowedOrigins: http://localhost:4200
       allowedMethods: GET,POST,PUT,DELETE
       #allowedHeaders: Content-Type,Authorization
-      allowedHeaders: \*
+      allowedHeaders: *

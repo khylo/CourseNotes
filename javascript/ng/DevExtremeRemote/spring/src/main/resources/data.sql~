@@ -2,7 +2,7 @@ CREATE TABLE data_entity (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     description VARCHAR(255)
-);
+)
 -- data.sql (H2 initialization script - in resources folder)
 INSERT INTO data_entity (name, description) VALUES ('Item 1', 'Description 1');
 INSERT INTO data_entity (name, description) VALUES ('Item 2', 'Description 2');

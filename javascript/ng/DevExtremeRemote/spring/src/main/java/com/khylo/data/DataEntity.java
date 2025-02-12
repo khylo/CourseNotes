@@ -3,6 +3,7 @@ package com.khylo.data;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "data_entity")
 public class DataEntity {
 
     @Id

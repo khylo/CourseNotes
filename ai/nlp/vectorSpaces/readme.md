@@ -1,0 +1,2 @@
+
+For vector spaces can plot graph of word mappings e.g. use of data (x) / film (y). FRomt his it should give clear areas to differentiate different topics.. e.g. machine learning would be heavy on data and light on film. Whereas entertainment would be the opposite.

@@ -1,0 +1,27 @@
+# Get all data (no pagination) - if your controller supports it
+
+curl http://localhost:8080/api/data
+
+# Get paginated data (page 0, size 10)
+
+curl "http://localhost:8080/api/data?page=0&size=10"
+
+# Get paginated data (page 1, size 25)
+
+curl "http://localhost:8080/api/data?page=1&size=25"
+
+# Get paginated data with sorting (sort by name, ascending)
+
+curl "http://localhost:8080/api/data?page=0&size=10&sortField=name&sortOrder=asc"
+
+# Get paginated data with sorting (sort by description, descending)
+
+curl "http://localhost:8080/api/data?page=0&size=10&sortField=description&sortOrder=desc"
+
+# Get paginated data with a filter (name contains "Item")
+
+curl "http://localhost:8080/api/data?page=0&size=10&filterField=name&filterValue=Item"
+
+# Get paginated data with filter and sort
+
+curl "http://localhost:8080/api/data?page=0&size=10&filterField=name&filterValue=Item&sortField=id&sortOrder=asc"

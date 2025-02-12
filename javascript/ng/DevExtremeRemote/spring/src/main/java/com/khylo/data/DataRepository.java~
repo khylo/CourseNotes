@@ -21,9 +21,4 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> { // Lon
     @Query("SELECT d FROM DataEntity d WHERE d.description LIKE %:description%")
     Page<DataEntity> findByDescriptionContaining(@Param("description") String description, Pageable pageable);
 
-  Page<DataEntity> findByNameContainingIgnoreCase(String name, Pageable pageable);
-  Page<DataEntity> findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
-  Page<DataEntity> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description, Pageable pageable);
-
-
 }
