@@ -1,24 +1,29 @@
-package com.khylo.data;
+package com.khylo.data.sqlite;
+
+import com.khylo.data.DataEntity;
+import com.khylo.data.DataRepository;
 import jakarta.persistence.EntityManagerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/data")
-public class DataController {
+@RequestMapping("/api/sqlite")
+public class SqliteController {
 
-    //private final DataRepository dataRepository; // Your JPA repository
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-
-  @Autowired
-  private DataRepository dataRepository;
+    private final DataRepository dataRepository; // Your JPA repository
+    private final EntityManagerFactory entityManagerFactory;
+    public SqliteController(@Qualifier("sqliteEntityManagerFactory") EntityManagerFactory entityManagerFactory, DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
+        this.entityManagerFactory = entityManagerFactory;
+    }
 
   @GetMapping
   public Page<DataEntity> getData(
