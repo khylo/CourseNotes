@@ -1,0 +1,57 @@
+{
+    "info": {
+        "name": "OData Users Demo",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Service Metadata",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/$metadata"
+            }
+        },
+        {
+            "name": "Get All Users",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users"
+            }
+        },
+        {
+            "name": "Filter Users by Location",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users?$filter=location eq 'New York'"
+            }
+        },
+        {
+            "name": "Select Specific Fields",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users?$select=firstName,lastName,email"
+            }
+        },
+        {
+            "name": "Order Users by Last Name",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users?$orderby=lastName asc"
+            }
+        },
+        {
+            "name": "Paginate Users",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users?$top=10&$skip=0"
+            }
+        },
+        {
+            "name": "Combined Query",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:8080/odata/Users?$filter=role eq 'Developer'&$select=firstName,lastName,email&$orderby=lastName&$top=5"
+            }
+        }
+    ]
+} 
