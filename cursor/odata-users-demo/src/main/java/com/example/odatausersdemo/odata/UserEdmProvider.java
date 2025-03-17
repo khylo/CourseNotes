@@ -39,25 +39,32 @@ public class UserEdmProvider extends CsdlAbstractEdmProvider {
         if (ET_USER_FQN.equals(entityTypeName)) {
             CsdlProperty id = new CsdlProperty()
                     .setName("id")
-                    .setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName())
+                    .setNullable(false);
             CsdlProperty firstName = new CsdlProperty()
                     .setName("firstName")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
             CsdlProperty lastName = new CsdlProperty()
                     .setName("lastName")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
             CsdlProperty title = new CsdlProperty()
                     .setName("title")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
             CsdlProperty role = new CsdlProperty()
                     .setName("role")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
             CsdlProperty email = new CsdlProperty()
                     .setName("email")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
             CsdlProperty location = new CsdlProperty()
                     .setName("location")
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName())
+                    .setNullable(true);
 
             CsdlPropertyRef propertyRef = new CsdlPropertyRef();
             propertyRef.setName("id");
@@ -73,9 +80,12 @@ public class UserEdmProvider extends CsdlAbstractEdmProvider {
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
         if (CONTAINER.equals(entityContainer) && ES_USERS_NAME.equals(entitySetName)) {
-            return new CsdlEntitySet()
-                    .setName(ES_USERS_NAME)
-                    .setType(ET_USER_FQN);
+            CsdlEntitySet entitySet = new CsdlEntitySet();
+            entitySet.setName(ES_USERS_NAME);
+            entitySet.setType(ET_USER_FQN);
+            // Enable all capabilities
+            entitySet.setIncludeInServiceDocument(true);
+            return entitySet;
         }
         return null;
     }
