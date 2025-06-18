@@ -65,6 +65,7 @@ curl 'https://ie.thesalarycalculator.co.uk/salary.php' \
 --compressed
 
 # Bash to parse
+see salary.sh and loop.sh
 #!/bin/bash
 
 # Extract the yearly values for Gross, tax, usc, prsi, and net pay

@@ -3,17 +3,17 @@ package com.khylo.salary.service.calc;
 import com.khylo.salary.service.MaritalTaxStatus;
 import com.khylo.salary.service.Prsi;
 import com.khylo.salary.service.Salary;
-import com.khylo.salary.service.SalaryCalculatorService;
 import com.khylo.salary.service.SalaryInputParams;
+import com.khylo.salary.service.SalaryCalculatorService;
 import com.khylo.salary.service.Tuple2;
 import com.khylo.salary.service.Tuple3;
 import com.khylo.salary.service.Utils;
-import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
@@ -21,15 +21,13 @@ import java.util.Map;
 
 import static com.khylo.salary.service.Utils.bd;
 
-@Service
-@Validated
 /**
  * See https://www.citizensinformation.ie/en/money-and-tax/tax/income-tax/how-your-tax-is-calculated/
  * more info on tax credits
  * https://www.citizensinformation.ie/en/money-and-tax/tax/income-tax-credits-and-reliefs/introduction-to-income-tax-credits-and-reliefs/
  *
  curl 'https://ie.thesalarycalculator.co.uk/salary.php' \
- -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+ -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng;q=0.8,application/signed-exchange;v=b3;q=0.7' \
   -H 'Accept-Language: en-US,en;q=0.9' \
   -H 'Cache-Control: max-age=0' \
   -H 'Connection: keep-alive' \
@@ -49,9 +47,10 @@ import static com.khylo.salary.service.Utils.bd;
 		-H 'sec-gpc: 1' \
 		--data-raw 'salary=18304&status=0&age=low&pension=&taxCredit=3550&taxallowance=&chosenTaxYear=2023&submit=Go%21&timeperiods%5B%5D=1&timeperiods%5B%5D=12&timeperiods%5B%5D=52&timeperiods%5B%5D=260&submit=' \
 		--compressed
- */
-publ
-		IESalaryService2023 extends SalaryCalculatorService {
+		*/
+@Service
+@Validated
+public class IESalaryService2023 extends SalaryCalculatorService {
 	public static final int StartYear=2019;
 	public static final int EndYear=2019;
 	public boolean isValidForYear(int year){

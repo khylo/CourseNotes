@@ -42,6 +42,14 @@ kubectl describe deployment http # get lots of information deployments
 kubectl expose deployment http --external-ip="172.17.0.77" --port=8000 --target-port=80
 # scale
 kubectl scale --replicas=3 deployment http
+# autoscalers taken from \https://www.youtube.com/watch?v=hsJ2qtwoWZw
+k get vpa    # Vertical autoscaler
+k describe vpa myapp # get details incuding recomendations
+# Dont use vpa recomendations for stateless.. Instead just horizontal
+k get hpa    # Vertical autoscaler
+k describe hpa myapp # get details incuding recomendations
+# use keda for autscaling
+
 ```
 
 # Jobs
