@@ -85,3 +85,5 @@ target/**
 
 # Ignore notes in aws
 /cloud/aws/developer/notes/**
+**/.idea/**
+**/.idea

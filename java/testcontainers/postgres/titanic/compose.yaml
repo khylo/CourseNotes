@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine # Or any specific PostgreSQL version you need
+    environment:
+      POSTGRES_DB: titanic
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+    ports:
+      # It's generally not recommended to expose fixed ports in docker-compose for Testcontainers
+      # because Testcontainers will dynamically map ports. However, if you explicitly need it
+      # for local development convenience outside of tests, you can add it, but be aware
+      # of potential port conflicts. Testcontainers will still get the dynamically mapped port.
+      - "5432:5432" 
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Optional: Mount an init script to populate the database on startup
+      - ./sql/titanic.sql:/docker-entrypoint-initdb.d/init.sql
+      #- ./sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d titanic"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
