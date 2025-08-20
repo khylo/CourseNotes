@@ -1,3 +1,4 @@
+package MedianOf2SortedArrays;
 /**
 Runtime: 2 ms, faster than 99.89% of Java online submissions for Median of Two Sorted Arrays.
 Memory Usage: 39.7 MB, less than 99.96% of Java online submissions for Median of Two Sorted Arrays.

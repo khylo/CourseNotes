@@ -36,7 +36,7 @@ class Solution {
 
             }
             // Add for future circular check
-            preReqs.add(prerequisites[i][0], newMap(prerequisites[i]))
+            //preReqs.add(prerequisites[i][0], newMap(prerequisites[i]));
         }
         return true;
     }

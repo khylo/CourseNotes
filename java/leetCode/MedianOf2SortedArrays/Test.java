@@ -1,3 +1,4 @@
+package MedianOf2SortedArrays;
 /**
 to run 
 javac *.java  && java Test

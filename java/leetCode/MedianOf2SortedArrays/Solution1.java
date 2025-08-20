@@ -1,3 +1,4 @@
+package MedianOf2SortedArrays;
 //import java.util.*;
 /**
  * Runtime: 2 ms, faster than 99.89% of Java online submissions for Median of Two Sorted Arrays.

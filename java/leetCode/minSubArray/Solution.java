@@ -1,3 +1,4 @@
+package minSubArray;
 /**
  * Runtime 1ms (After deeting printlns) beats 99.94#5
  * Memory 53.57 MB beats 90.99%

@@ -1,3 +1,4 @@
+package ProductOfArrayExceptSelf;
 import com.sun.net.httpserver.Authenticator.Result;
 
 /** 

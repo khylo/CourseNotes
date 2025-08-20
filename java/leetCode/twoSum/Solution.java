@@ -1,3 +1,7 @@
+package twoSum;
+
+import java.util.HashMap;
+
 /**
  * See https://leetcode.com/problems/two-sum/submissions/895621290/
  * Not this solution beats my original (2 loops with n squared complexity)

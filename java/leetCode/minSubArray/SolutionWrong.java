@@ -1,3 +1,4 @@
+package minSubArray;
 import java.util.Arrays;
 /**
  * We are not allowed re-sort the array. We want a subarray
