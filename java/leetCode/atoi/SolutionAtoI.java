@@ -1,4 +1,5 @@
 package atoi;
+import java.math.MathContext;
 /**
  *
  Whitespace: Ignore any leading whitespace (" ").
@@ -34,22 +35,30 @@ class SolutionAtoI implements SolutionInf{
         // parse numbers
         while(c<s.length()) {
             if (s.charAt(c) - '0' < 0 || s.charAt(c) - '0' > 9) { // NaN
-                return getAns(ans, positive);
+                return ans;
             } else {
                 // Number
                 int add = s.charAt(c) - '0';
                 // Check for overflow
-                if (((Integer.MAX_VALUE / 10) - add) <= ans) {
+                /*if (positive && ((Integer.MAX_VALUE / 10) - add) < ans) {
                     return getAns(Integer.MAX_VALUE, positive);
                 }
-                ans = (ans * 10) + add;
+                if (!positive && (-(Integer.MIN_VALUE / 10) - add) < ans) {
+                    return getAns(Integer.MIN_VALUE, positive);
+                }*/
+                try {
+                    ans = inc(ans, add, positive);
+                } catch (Exception e){
+                    return positive?Integer.MAX_VALUE:Integer.MIN_VALUE;
+                }
                 c++;
             }
         }
-        return getAns(ans, positive);
+        return ans;
     }
 
-    private int getAns(int ans, boolean positive){
-        return positive?ans:-ans;
+    private int inc(int ans, int add, boolean positive){
+        return positive? Math.addExact(Math.multiplyExact(ans, 10) , add) : Math.addExact(Math.multiplyExact(ans, 10), -add);
     }
+
 }

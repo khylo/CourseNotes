@@ -38,6 +38,13 @@ class Test {
         ans = call(s,"     +004500");
         assert ans == 4500;
 
+        ans = call(s,"     -042");
+        assert ans == 42;
+
+        ans = call(s,"2147483646");
+        assert ans == 2147483646;
+        ;
+
     }
 
     public static int call(SolutionInf s, String num){
