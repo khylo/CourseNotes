@@ -721,3 +721,50 @@ print('The third word is:', prep[3])
 print('Your prediction is:', pred[3])
 print('Your corresponding label y is: ', y[3])
 
+'''
+Compute Accuracy
+'''
+# UNQ_C8 GRADED FUNCTION: compute_accuracy
+def compute_accuracy(pred, y):
+    '''
+    Input: 
+        pred: a list of the predicted parts-of-speech 
+        y: a list of lines where each word is separated by a '\t' (i.e. word \t tag)
+    Output: 
+        Accuracy: float, ratio of correct predictions to total predictions
+    '''
+    num_correct = 0
+    total = 0
+    
+    # Zip together the prediction and the labels
+    for prediction, y_line in zip(pred, y):
+        # Split the label into the word and the POS tag
+        word_tag_tuple = y_line.strip().split('\t')
+        
+        # Check that there is actually a word and a tag
+        if len(word_tag_tuple) != 2:
+            continue
+
+        # store the word and tag separately
+        word, tag = word_tag_tuple
+        
+        # Check if the POS tag label matches the prediction
+        if prediction == tag:
+            num_correct += 1
+            
+        # keep track of the total number of examples (that have valid labels)
+        total += 1
+
+    return num_correct / total if total > 0 else 0.0
+
+
+print(f"Accuracy of the Viterbi algorithm is {compute_accuracy(pred, y):.4f}")
+
+''' exected Accuracy of the Viterbi algorithm is 0.9531
+Can identify POSs with 95% accuracy
+
+I wonder can it identify
+Dogs dogs dog dog dogs
+ '''
+# Test your function
+w2_unittest.test_compute_accuracy(compute_accuracy, pred, y)

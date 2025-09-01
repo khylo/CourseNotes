@@ -319,3 +319,605 @@ def replace_oov_words_by_unk(tokenized_sentences, vocabulary, unknown_token="<un
         # Append the list of tokens to the list of lists
         replaced_tokenized_sentences.append(replaced_sentence)
     return replaced_tokenized_sentences
+
+tokenized_sentences = [["dogs", "run"], ["cats", "sleep"]]
+vocabulary = ["dogs", "sleep"]
+tmp_replaced_tokenized_sentences = replace_oov_words_by_unk(tokenized_sentences, vocabulary)
+print(f"Original sentence:")
+print(tokenized_sentences)
+print(f"tokenized_sentences with less frequent words converted to '<unk>':")
+print(tmp_replaced_tokenized_sentences)
+
+'''
+Exercise 7 - preprocess_data
+Now we are ready to process our data by combining the functions that you just implemented.
+
+Find tokens that appear at least count_threshold times in the training data.
+Replace tokens that appear less than count_threshold times by "<unk>" both for training and test data.
+'''
+# UNIT TEST COMMENT: Candidate for Table Driven Tests 
+### UNQ_C7 GRADED_FUNCTION: preprocess_data ###
+def preprocess_data(train_data, test_data, count_threshold, unknown_token="<unk>", get_words_with_nplus_frequency=get_words_with_nplus_frequency, replace_oov_words_by_unk=replace_oov_words_by_unk):
+    """
+    Preprocess data, i.e.,
+        - Find tokens that appear at least N times in the training data.
+        - Replace tokens that appear less than N times by "<unk>" both for training and test data.        
+    Args:
+        train_data, test_data: List of lists of strings.
+        count_threshold: Words whose count is less than this are 
+                      treated as unknown.
+    
+    Returns:
+        Tuple of
+        - training data with low frequent words replaced by "<unk>"
+        - test data with low frequent words replaced by "<unk>"
+        - vocabulary of words that appear n times or more in the training data
+    """
+    ### START CODE HERE ###
+
+    # Get the closed vocabulary using the train data
+    vocabulary = get_words_with_nplus_frequency(train_data, count_threshold)
+    
+    # For the train data, replace less common words with "<unk>"
+    train_data_replaced = replace_oov_words_by_unk(train_data, vocabulary, unknown_token)
+    
+    # For the test data, replace less common words with "<unk>"
+    test_data_replaced = replace_oov_words_by_unk(test_data, vocabulary, unknown_token)
+    
+    ### END CODE HERE ###
+    return train_data_replaced, test_data_replaced, vocabulary
+
+# test your code
+tmp_train = [['sky', 'is', 'blue', '.'],
+     ['leaves', 'are', 'green']]
+tmp_test = [['roses', 'are', 'red', '.']]
+
+tmp_train_repl, tmp_test_repl, tmp_vocab = preprocess_data(tmp_train, 
+                                                           tmp_test, 
+                                                           count_threshold = 1
+                                                          )
+
+print("tmp_train_repl")
+print(tmp_train_repl)
+print()
+print("tmp_test_repl")
+print(tmp_test_repl)
+print()
+print("tmp_vocab")
+print(tmp_vocab)
+
+# Test your function
+w3_unittest.test_preprocess_data(preprocess_data)
+
+minimum_freq = 2
+train_data_processed, test_data_processed, vocabulary = preprocess_data(train_data, 
+                                                                        test_data, 
+                                                                        minimum_freq)
+print("First preprocessed training sample:")
+print(train_data_processed[0])
+print()
+print("First preprocessed test sample:")
+print(test_data_processed[0])
+print()
+print("First 10 vocabulary:")
+print(vocabulary[0:10])
+print()
+print("Size of vocabulary:", len(vocabulary))
+
+
+# UNIT TEST COMMENT: Candidate for Table Driven Tests
+### UNQ_C8 GRADED FUNCTION: count_n_grams ###
+def count_n_grams(data, n, start_token='<s>', end_token = '<e>'):
+    """
+    Count all n-grams in the data
+
+    Args:
+        data: List of lists of words
+        n: number of words in a sequence
+
+    Returns:
+        A dictionary that maps a tuple of n-words to its frequency
+    """
+
+    # Initialize dictionary of n-grams and their counts
+    n_grams = {}
+
+    ### START CODE HERE ###
+    prepend = [start_token] * n
+    # Go through each sentence in the data
+    for sentence in data: # complete this line
+
+        # prepend start token n times, and  append the end token one time
+        sentence = prepend +  sentence + [end_token]
+
+        # convert list to tuple
+        # So that the sequence of words can be used as
+        # a key in the dictionary
+        sentence = tuple(sentence)
+
+        # Use 'i' to indicate the start of the n-gram
+        # from index 0
+        # to the last index where the end of the n-gram
+        # is within the sentence.
+        for i in range(len(sentence)-n+1): # complete this line
+
+            # Get the n-gram from i to i+n
+            n_gram = tuple([ sentence[c+i] for c in range(n)])
+            # check if the n-gram is in the dictionary
+            if n_gram in n_grams: # complete this line with the proper condition
+                # Increment the count for this n-gram
+                n_grams[n_gram] += 1
+            else:
+                # Initialize this n-gram count to 1```
+                n_grams[n_gram] = 1
+
+            ### END CODE HERE ###
+    return n_grams
+
+# test your code
+# CODE REVIEW COMMENT: Outcome does not match expected outcome
+sentences = [['i', 'like', 'a', 'cat'],
+             ['this', 'dog', 'is', 'like', 'a', 'cat']]
+print("Uni-gram:")
+print(count_n_grams(sentences, 1))
+print("Bi-gram:")
+print(count_n_grams(sentences, 2))
+
+# Test your function
+w3_unittest.test_count_n_grams(count_n_grams)
+
+### UNQ_C9 GRADED FUNCTION: estimate_probability ###
+def estimate_probability(word, previous_n_gram, 
+                         n_gram_counts, n_plus1_gram_counts, vocabulary_size, k=1.0):
+    """
+    Estimate the probabilities of a next word using the n-gram counts with k-smoothing
+    
+    Args:
+        word: next word
+        previous_n_gram: A sequence of words of length n
+        n_gram_counts: Dictionary of counts of n-grams
+        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams
+        vocabulary_size: number of words in the vocabulary
+        k: positive constant, smoothing parameter
+    
+    Returns:
+        A probability
+    """
+    # convert list to tuple to use it as a dictionary key
+    previous_n_gram = tuple(previous_n_gram)
+    
+    ### START CODE HERE ###
+    
+    # Set the denominator
+    # If the previous n-gram exists in the dictionary of n-gram counts,
+    # Get its count.  Otherwise set the count to zero
+    # Use the dictionary that has counts for n-grams
+    previous_n_gram_count = n_gram_counts.get(previous_n_gram, 0)
+            
+    # Calculate the denominator using the count of the previous n gram
+    # and apply k-smoothing
+    denominator = previous_n_gram_count + (vocabulary_size*k)
+
+    # Define n plus 1 gram as the previous n-gram plus the current word as a tuple
+    n_plus1_gram =  previous_n_gram +(word,)
+  
+    # Set the count to the count in the dictionary,
+    # otherwise 0 if not in the dictionary
+    # use the dictionary that has counts for the n-gram plus current word    
+    n_plus1_gram_count = n_plus1_gram_counts.get(n_plus1_gram, 0)
+            
+    # Define the numerator use the count of the n-gram plus current word,
+    # and apply smoothing
+    numerator = n_plus1_gram_count + k
+        
+    # Calculate the probability as the numerator divided by denominator
+    probability = numerator/denominator
+    
+    ### END CODE HERE ###
+    
+    return probability
+
+# test your code
+sentences = [['i', 'like', 'a', 'cat'],
+             ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+
+unigram_counts = count_n_grams(sentences, 1)
+bigram_counts = count_n_grams(sentences, 2)
+print(f"Vocab = {unique_words}, \n1Counts = {unigram_counts} , \n2count = {bigram_counts}")
+tmp_prob = estimate_probability("cat", ["a"], unigram_counts, bigram_counts, len(unique_words), k=1)
+
+print(f"The estimated probability of word 'cat' given the previous n-gram 'a' is: {tmp_prob:.4f}")
+
+# Test your function
+w3_unittest.test_estimate_probability(estimate_probability)
+
+def estimate_probabilities(previous_n_gram, n_gram_counts, n_plus1_gram_counts, vocabulary, end_token='<e>', unknown_token="<unk>",  k=1.0):
+    """
+    Estimate the probabilities of next words using the n-gram counts with k-smoothing
+    
+    Args:
+        previous_n_gram: A sequence of words of length n
+        n_gram_counts: Dictionary of counts of n-grams
+        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams
+        vocabulary: List of words
+        k: positive constant, smoothing parameter
+    
+    Returns:
+        A dictionary mapping from next words to the probability.
+    """
+    # convert list to tuple to use it as a dictionary key
+    previous_n_gram = tuple(previous_n_gram)    
+    
+    # add <e> <unk> to the vocabulary
+    # <s> is not needed since it should not appear as the next word
+    vocabulary = vocabulary + [end_token, unknown_token]    
+    vocabulary_size = len(vocabulary)    
+    
+    probabilities = {}
+    for word in vocabulary:
+        probability = estimate_probability(word, previous_n_gram, 
+                                           n_gram_counts, n_plus1_gram_counts, 
+                                           vocabulary_size, k=k)
+                
+        probabilities[word] = probability
+
+    return probabilities
+
+# test your code
+sentences = [['i', 'like', 'a', 'cat'],
+             ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+unigram_counts = count_n_grams(sentences, 1)
+bigram_counts = count_n_grams(sentences, 2)
+
+estimate_probabilities(["a"], unigram_counts, bigram_counts, unique_words, k=1)    
+
+# Additional test
+trigram_counts = count_n_grams(sentences, 3)
+estimate_probabilities(["<s>", "<s>"], bigram_counts, trigram_counts, unique_words, k=1)
+
+def make_count_matrix(n_plus1_gram_counts, vocabulary):
+    # add <e> <unk> to the vocabulary
+    # <s> is omitted since it should not appear as the next word
+    vocabulary = vocabulary + ["<e>", "<unk>"]
+    
+    # obtain unique n-grams
+    n_grams = []
+    for n_plus1_gram in n_plus1_gram_counts.keys():
+        n_gram = n_plus1_gram[0:-1]        
+        n_grams.append(n_gram)
+    n_grams = list(set(n_grams))
+    
+    # mapping from n-gram to row
+    row_index = {n_gram:i for i, n_gram in enumerate(n_grams)}    
+    # mapping from next word to column
+    col_index = {word:j for j, word in enumerate(vocabulary)}    
+    
+    nrow = len(n_grams)
+    ncol = len(vocabulary)
+    count_matrix = np.zeros((nrow, ncol))
+    for n_plus1_gram, count in n_plus1_gram_counts.items():
+        n_gram = n_plus1_gram[0:-1]
+        word = n_plus1_gram[-1]
+        if word not in vocabulary:
+            continue
+        i = row_index[n_gram]
+        j = col_index[word]
+        count_matrix[i, j] = count
+    
+    count_matrix = pd.DataFrame(count_matrix, index=n_grams, columns=vocabulary)
+    return count_matrix
+
+sentences = [['i', 'like', 'a', 'cat'],
+                 ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+bigram_counts = count_n_grams(sentences, 2)
+
+print('bigram counts')
+#display(make_count_matrix(bigram_counts, unique_words))
+
+# Show trigram counts
+print('\ntrigram counts')
+trigram_counts = count_n_grams(sentences, 3)
+#display(make_count_matrix(trigram_counts, unique_words))
+print(make_count_matrix(trigram_counts, unique_words))
+
+def make_probability_matrix(n_plus1_gram_counts, vocabulary, k):
+    count_matrix = make_count_matrix(n_plus1_gram_counts, unique_words)
+    count_matrix += k
+    prob_matrix = count_matrix.div(count_matrix.sum(axis=1), axis=0)
+    return prob_matrix
+
+sentences = [['i', 'like', 'a', 'cat'],
+                 ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+bigram_counts = count_n_grams(sentences, 2)
+print("bigram probabilities")
+#display(make_probability_matrix(bigram_counts, unique_words, k=1))
+print(make_probability_matrix(bigram_counts, unique_words, k=1))
+
+print("trigram probabilities")
+trigram_counts = count_n_grams(sentences, 3)
+#display(make_probability_matrix(trigram_counts, unique_words, k=1))
+print(make_probability_matrix(trigram_counts, unique_words, k=1))
+
+'''
+Perplexity
+In this section, you will generate the perplexity score to evaluate your model on the test set.
+
+You will also use back-off when needed.
+Perplexity is used as an evaluation metric of your language model.
+To calculate the perplexity score of the test set on an n-gram model, use:
+'''
+
+# UNQ_C10 GRADED FUNCTION: calculate_perplexity
+def calculate_perplexity(sentence, n_gram_counts, n_plus1_gram_counts, vocabulary_size, start_token='<s>', end_token = '<e>', k=1.0):
+    """
+    Calculate perplexity for a list of sentences
+    
+    Args:
+        sentence: List of strings
+        n_gram_counts: Dictionary of counts of n-grams
+        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams
+        vocabulary_size: number of unique words in the vocabulary
+        k: Positive smoothing constant
+    
+    Returns:
+        Perplexity score
+    """
+    # length of previous words
+    n = len(list(n_gram_counts.keys())[0]) 
+    
+    # prepend <s> and append <e>
+    sentence = [start_token] * n + sentence + [end_token]
+    
+    # Cast the sentence from a list to a tuple
+    sentence = tuple(sentence)
+    
+    # length of sentence (after adding <s> and <e> tokens)
+    N = len(sentence)
+    
+    # The variable p will hold the product
+    # that is calculated inside the n-root
+    # Update this in the code below
+    product_pi = 1.0
+    
+    ### START CODE HERE ###
+    
+    # Index t ranges from n to N - 1, inclusive on both ends
+    for t in range(n, N):
+
+        # get the n-gram preceding the word at position t
+        n_gram = sentence[t-n:t] 
+        
+        # get the word at position t
+        word = sentence[t]
+        
+        # Estimate the probability of the word given the n-gram
+        # using the n-gram counts, n-plus1-gram counts,
+        # vocabulary size, and smoothing constant
+        
+        #probability = (n_plus1_gram_count + k) / (n_gram_count + k * vocabulary_size)
+        probability = estimate_probability(word, n_gram, n_gram_counts, n_plus1_gram_counts, vocabulary_size, k)
+        
+        # Update the product of the probabilities
+        # This 'product_pi' is a cumulative product 
+        # of the (1/P) factors that are calculated in the loop
+        product_pi *= 1/probability
+        ### END CODE HERE ###
+
+    # Take the Nth root of the product
+    perplexity = (product_pi)**(1/N)
+    
+    ### END CODE HERE ### 
+    return perplexity
+
+
+# test your code
+
+sentences = [['i', 'like', 'a', 'cat'],
+                 ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+
+unigram_counts = count_n_grams(sentences, 1)
+bigram_counts = count_n_grams(sentences, 2)
+
+
+perplexity_train = calculate_perplexity(sentences[0],
+                                         unigram_counts, bigram_counts,
+                                         len(unique_words), k=1.0)
+print(f"Perplexity for first train sample: {perplexity_train:.4f}")
+
+test_sentence = ['i', 'like', 'a', 'dog']
+perplexity_test = calculate_perplexity(test_sentence,
+                                       unigram_counts, bigram_counts,
+                                       len(unique_words), k=1.0)
+print(f"Perplexity for test sample: {perplexity_test:.4f}")
+
+
+# Test your function
+w3_unittest.test_calculate_perplexity(calculate_perplexity)
+
+
+'''
+4 - Build an Auto-complete System
+In this section, you will combine the language models developed so far to implement an auto-complete system.
+
+
+Exercise 11 - suggest_a_word
+Compute probabilities for all possible next words and suggest the most likely one.
+
+This function also take an optional argument start_with, which specifies the first few letters of the next words.
+'''
+# UNQ_C11 GRADED FUNCTION: suggest_a_word
+def suggest_a_word(previous_tokens, n_gram_counts, n_plus1_gram_counts, vocabulary, end_token='<e>', unknown_token="<unk>", k=1.0, start_with=None):
+    """
+    Get suggestion for the next word
+    
+    Args:
+        previous_tokens: The sentence you input where each token is a word. Must have length >= n 
+        n_gram_counts: Dictionary of counts of n-grams
+        n_plus1_gram_counts: Dictionary of counts of (n+1)-grams
+        vocabulary: List of words
+        k: positive constant, smoothing parameter
+        start_with: If not None, specifies the first few letters of the next word
+        
+    Returns:
+        A tuple of 
+          - string of the most likely next word
+          - corresponding probability
+    """
+    
+    # length of previous words (How big is the ngram)
+    n = len(list(n_gram_counts.keys())[0])
+    
+    # append "start token" on "previous_tokens"
+    previous_tokens = ['<s>'] * n + previous_tokens
+    
+    # From the words that the user already typed
+    # get the most recent 'n' words as the previous n-gram
+    previous_n_gram = previous_tokens[-n:]
+
+    # Estimate the probabilities that each word in the vocabulary
+    # is the next word,
+    # given the previous n-gram, the dictionary of n-gram counts,
+    # the dictionary of n plus 1 gram counts, and the smoothing constant
+    probabilities = estimate_probabilities(previous_n_gram,
+                                           n_gram_counts, n_plus1_gram_counts,
+                                           vocabulary, k=k)
+    
+    # Initialize suggested word to None
+    # This will be set to the word with highest probability
+    suggestion = None
+    
+    # Initialize the highest word probability to 0
+    # this will be set to the highest probability 
+    # of all words to be suggested
+    max_prob = 0
+    
+    ### START CODE HERE ###
+    
+    # For each word and its probability in the probabilities dictionary:
+    for word, prob in probabilities.items(): # complete this line
+        
+        # If the optional start_with string is set
+        if start_with !=None: # complete this line with the proper condition
+            
+            # Check if the beginning of word does not match with the letters in 'start_with'
+            if not word.startswith(start_with): # complete this line with the proper condition
+
+                # if they don't match, skip this word (move onto the next word)
+                continue
+        
+        # Check if this word's probability
+        # is greater than the current maximum probability
+        if prob > max_prob: # complete this line with the proper condition
+            
+            # If so, save this word as the best suggestion (so far)
+            suggestion = word
+            
+            # Save the new maximum probability
+            max_prob = prob
+
+    ### END CODE HERE
+    
+    return suggestion, max_prob
+
+# test your code
+sentences = [['i', 'like', 'a', 'cat'],
+             ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+
+unigram_counts = count_n_grams(sentences, 1)
+bigram_counts = count_n_grams(sentences, 2)
+
+previous_tokens = ["i", "like"]
+tmp_suggest1 = suggest_a_word(previous_tokens, unigram_counts, bigram_counts, unique_words, k=1.0)
+print(f"The previous words are 'i like',\n\tand the suggested word is `{tmp_suggest1[0]}` with a probability of {tmp_suggest1[1]:.4f}")
+
+print()
+# test your code when setting the starts_with
+tmp_starts_with = 'c'
+tmp_suggest2 = suggest_a_word(previous_tokens, unigram_counts, bigram_counts, unique_words, k=1.0, start_with=tmp_starts_with)
+print(f"The previous words are 'i like', the suggestion must start with `{tmp_starts_with}`\n\tand the suggested word is `{tmp_suggest2[0]}` with a probability of {tmp_suggest2[1]:.4f}")
+
+# Test your function
+w3_unittest.test_suggest_a_word(suggest_a_word)
+
+'''
+Get multiple suggestions
+The function defined below loops over various n-gram models to get multiple suggestions.
+'''
+def get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0, start_with=None):
+    model_counts = len(n_gram_counts_list)
+    suggestions = []
+    for i in range(model_counts-1):
+        n_gram_counts = n_gram_counts_list[i]
+        n_plus1_gram_counts = n_gram_counts_list[i+1]
+        
+        suggestion = suggest_a_word(previous_tokens, n_gram_counts,
+                                    n_plus1_gram_counts, vocabulary,
+                                    k=k, start_with=start_with)
+        suggestions.append(suggestion)
+    return suggestions
+
+# test your code
+sentences = [['i', 'like', 'a', 'cat'],
+             ['this', 'dog', 'is', 'like', 'a', 'cat']]
+unique_words = list(set(sentences[0] + sentences[1]))
+
+unigram_counts = count_n_grams(sentences, 1)
+bigram_counts = count_n_grams(sentences, 2)
+trigram_counts = count_n_grams(sentences, 3)
+quadgram_counts = count_n_grams(sentences, 4)
+qintgram_counts = count_n_grams(sentences, 5)
+
+n_gram_counts_list = [unigram_counts, bigram_counts, trigram_counts, quadgram_counts, qintgram_counts]
+previous_tokens = ["i", "like"]
+tmp_suggest3 = get_suggestions(previous_tokens, n_gram_counts_list, unique_words, k=1.0)
+
+print(f"The previous words are 'i like', the suggestions are:")
+#display(tmp_suggest3)
+print(tmp_suggest3)
+
+n_gram_counts_list = []
+for n in range(1, 6):
+    print("Computing n-gram counts with n =", n, "...")
+    n_model_counts = count_n_grams(train_data_processed, n)
+    n_gram_counts_list.append(n_model_counts)
+
+previous_tokens = ["i", "am", "to"]
+tmp_suggest4 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+
+print(f"The previous words are {previous_tokens}, the suggestions are:")
+#display(tmp_suggest4)
+print(tmp_suggest4)
+
+previous_tokens = ["i", "want", "to", "go"]
+tmp_suggest5 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+
+print(f"The previous words are {previous_tokens}, the suggestions are:")
+#display(tmp_suggest5)
+print(tmp_suggest5)
+
+previous_tokens = ["hey", "how", "are"]
+tmp_suggest6 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+
+print(f"The previous words are {previous_tokens}, the suggestions are:")
+#display(tmp_suggest6)
+print(tmp_suggest6)
+
+previous_tokens = ["hey", "how", "are", "you"]
+tmp_suggest7 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+
+print(f"The previous words are {previous_tokens}, the suggestions are:")
+#display(tmp_suggest7)
+print(tmp_suggest7)
+
+previous_tokens = ["hey", "how", "are", "you"]
+tmp_suggest8 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0, start_with="d")
+
+print(f"The previous words are {previous_tokens}, the suggestions are:")
+#display(tmp_suggest8)
+print(tmp_suggest8)
