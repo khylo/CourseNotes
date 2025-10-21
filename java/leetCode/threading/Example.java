@@ -60,13 +60,13 @@ public class Example {
                 try {
                     Thread.currentThread().sleep(time);
                 }catch(InterruptedException e){
-                    System.err.println("Fork Join Thread interuppted "+e.getMessage());
+                    System.err.println("Thread sleep interrupted "+e.getMessage());
                     e.printStackTrace();
                 }
                 return item.toLowerCase();
         });
-            executorService.shutdown();
-            executorService.awaitTermination(1, TimeUnit.MINUTES);
+        executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.MINUTES);
 
         )
 

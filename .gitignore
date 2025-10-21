@@ -87,3 +87,4 @@ target/**
 /cloud/aws/developer/notes/**
 **/.idea/**
 **/.idea
+**/venv/**
