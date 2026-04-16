@@ -33,7 +33,7 @@ class Game:
 
 
 g = Game()
-print (g.start(6,5))
+print (g.start(10))
 print ("Guessing 5 ")
 print (g.guess(5))
 print (g.guess(5))

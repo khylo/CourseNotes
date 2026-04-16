@@ -81,7 +81,7 @@ target/**
 **/__pycache__/**
 **/stopwords/*
 **/twitter_samples/*
-
+**/myEnv.py
 
 # Ignore notes in aws
 /cloud/aws/developer/notes/**

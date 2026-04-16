@@ -50,7 +50,7 @@ import static com.khylo.salary.service.Utils.bd;
 		*/
 @Service
 @Validated
-public class IESalaryService2025 extends SalaryCalculatorService {
+public class IESalaryService2026 extends SalaryCalculatorService {
 	public static final int StartYear=2019;
 	public static final int EndYear=2019;
 	public boolean isValidForYear(int year){
@@ -61,12 +61,12 @@ public class IESalaryService2025 extends SalaryCalculatorService {
 	
 	private static BigDecimal uscZeroCutoff=bd("13000");
 	private static String[][] uscA = { {".5", "12012"},
-										{"2", "22920"},// up from 19874
+										{"2", "28700"},// up from 19874
 										{"3", "70044"}, //was 4 <2025
 										{"8", "99999999"}};
 	
 	private static String[][] uscS = { 	{".5", "12012"},
-										{"2", "22920"},
+										{"2", "28700"},
 										{"3", "70044"},//was 4 <2025
 										{"8", "100000"},
 										{"11", "99999999"}};

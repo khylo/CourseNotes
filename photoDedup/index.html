@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photos Dedup — Free Up Space</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --surface3: #2a2a2a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #555;
+    --accent: #4ade80;
+    --accent-dim: rgba(74,222,128,0.12);
+    --danger: #f87171;
+    --danger-dim: rgba(248,113,113,0.12);
+    --warning: #fbbf24;
+    --warning-dim: rgba(251,191,36,0.1);
+    --info: #60a5fa;
+    --info-dim: rgba(96,165,250,0.1);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.5; }
+
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Topbar */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(15,15,15,0.92); backdrop-filter: blur(12px); z-index: 100; }
+  .topbar-logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 0.05em; }
+  .topbar-status { font-size: 12px; color: var(--text2); font-family: 'DM Mono', monospace; }
+
+  /* Layout */
+  .main { flex: 1; max-width: 1100px; margin: 0 auto; width: 100%; padding: 2rem 2rem 6rem; }
+
+  /* Auth screen */
+  #auth-screen { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
+  .auth-box { max-width: 480px; text-align: center; }
+  .auth-box h1 { font-size: 28px; font-weight: 300; margin-bottom: 12px; line-height: 1.3; }
+  .auth-box h1 span { color: var(--accent); font-weight: 500; }
+  .auth-box p { color: var(--text2); font-size: 14px; margin-bottom: 2rem; line-height: 1.7; }
+  .setup-steps { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .setup-steps h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 12px; font-family: 'DM Mono', monospace; }
+  .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .step:last-child { margin-bottom: 0; }
+  .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-size: 11px; font-family: 'DM Mono', monospace; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step p { font-size: 13px; color: var(--text2); }
+  .step p strong { color: var(--text); font-weight: 500; }
+  .step p a { color: var(--info); text-decoration: none; }
+  .step p a:hover { text-decoration: underline; }
+  .token-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+  .token-form input { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: 'DM Mono', monospace; outline: none; }
+  .token-form input:focus { border-color: var(--accent); }
+  .token-form input::placeholder { color: var(--text3); }
+  .btn-connect { background: var(--accent); color: #0a1a0a; border: none; border-radius: var(--radius-sm); padding: 11px 24px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif; }
+  .btn-connect:hover { background: #86efac; }
+  .or-divider { font-size: 12px; color: var(--text3); margin: 0.5rem 0; }
+  .btn-demo { background: transparent; border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius-sm); padding: 10px 24px; font-size: 13px; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif; }
+  .btn-demo:hover { border-color: var(--border2); background: var(--surface); color: var(--text); }
+  .auth-note { font-size: 12px; color: var(--text3); margin-top: 1rem; }
+
+  /* Scan screen */
+  #scan-screen { display: none; align-items: center; justify-content: center; min-height: 70vh; }
+  .scan-box { max-width: 400px; text-align: center; }
+  .scan-box h2 { font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+  .scan-box .scan-sub { font-size: 13px; color: var(--text2); margin-bottom: 2rem; font-family: 'DM Mono', monospace; }
+  .progress-track { height: 2px; background: var(--surface3); border-radius: 1px; overflow: hidden; margin-bottom: 8px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 1px; transition: width 0.4s ease; }
+  .scan-log { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; min-height: 18px; }
+
+  /* Results */
+  #results-screen { display: none; }
+  .results-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+  .results-header h2 { font-size: 20px; font-weight: 400; }
+  .results-header h2 span { color: var(--accent); }
+  .stats-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; }
+  .stat .s-label { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat .s-val { font-size: 20px; font-weight: 500; color: var(--text); }
+  .stat .s-val.accent { color: var(--accent); }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .filter-pill { padding: 5px 13px; font-size: 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; cursor: pointer; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .filter-pill:hover { border-color: var(--border2); color: var(--text); }
+  .filter-pill.on { background: var(--accent-dim); color: var(--accent); border-color: rgba(74,222,128,0.25); }
+
+  /* Group card */
+  .group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .group-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; user-select: none; }
+  .group-head:hover { background: var(--surface2); }
+  .type-badge { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+  .badge-exact { background: var(--danger-dim); color: var(--danger); }
+  .badge-burst { background: var(--warning-dim); color: var(--warning); }
+  .badge-similar { background: var(--info-dim); color: var(--info); }
+  .group-title { flex: 1; font-size: 13px; color: var(--text2); }
+  .group-title strong { color: var(--text); font-weight: 500; }
+  .group-save { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--accent); }
+  .chevron { color: var(--text3); font-size: 12px; transition: transform 0.2s; }
+  .group.open .chevron { transform: rotate(180deg); }
+
+  /* Photo grid */
+  .group-body { display: none; border-top: 1px solid var(--border); }
+  .group.open .group-body { display: block; }
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 14px; }
+  .photo-card { position: relative; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); border: 1.5px solid transparent; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+  .photo-card:hover { transform: scale(1.02); }
+  .photo-card.selected { border-color: var(--danger); }
+  .photo-card.keep { border-color: var(--accent); }
+  .photo-thumb-wrap { aspect-ratio: 1; overflow: hidden; position: relative; }
+  .photo-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; background: var(--surface3); }
+  .photo-thumb-wrap .thumb-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 36px; }
+  .photo-thumb-wrap .play-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.35); }
+  .photo-thumb-wrap .play-icon svg { width: 32px; height: 32px; }
+  .photo-card-label { position: absolute; top: 6px; left: 6px; font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 4px; }
+  .label-keep { background: var(--accent); color: #0a1a0a; }
+  .label-dup { background: var(--danger); color: white; }
+  .checkbox { position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+  .photo-card.selected .checkbox { background: var(--danger); border-color: var(--danger); }
+  .checkbox svg { display: none; }
+  .photo-card.selected .checkbox svg { display: block; }
+  .photo-meta { padding: 7px 9px; }
+  .photo-meta .fname { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'DM Mono', monospace; }
+  .photo-meta .fsize { font-size: 11px; color: var(--text3); }
+
+  /* Preview modal */
+  #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+  #modal.open { display: flex; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; max-width: 860px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .modal-top h3 { font-size: 14px; font-weight: 500; }
+  .modal-close { background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; line-height: 1; padding: 4px 8px; border-radius: 4px; }
+  .modal-close:hover { background: var(--surface3); color: var(--text); }
+  .modal-body { overflow-y: auto; padding: 18px; }
+  .modal-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .modal-photo { background: var(--surface2); border-radius: var(--radius); overflow: hidden; }
+  .modal-img-wrap { position: relative; width: 100%; padding-bottom: 75%; background: var(--surface3); }
+  .modal-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .modal-img-wrap .mp-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 48px; }
+  .modal-img-wrap .mp-placeholder span { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .modal-photo-info { padding: 10px 12px; }
+  .modal-photo-info .mpi-name { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); margin-bottom: 4px; word-break: break-all; }
+  .modal-photo-info .mpi-meta { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+  .modal-photo-info .mpi-actions { display: flex; gap: 8px; }
+  .btn-sm { font-size: 12px; padding: 5px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border2); cursor: pointer; font-family: 'DM Sans', sans-serif; background: transparent; }
+  .btn-keep { color: var(--accent); border-color: rgba(74,222,128,0.3); }
+  .btn-keep:hover { background: var(--accent-dim); }
+  .btn-del { color: var(--danger); border-color: rgba(248,113,113,0.3); }
+  .btn-del:hover { background: var(--danger-dim); }
+  .btn-view { color: var(--info); border-color: rgba(96,165,250,0.25); }
+  .btn-view:hover { background: var(--info-dim); }
+
+  /* Group actions bar */
+  .group-actions { display: flex; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface2); }
+  .group-actions .ga-note { font-size: 12px; color: var(--text3); flex: 1; font-family: 'DM Mono', monospace; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius-sm); padding: 6px 13px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-ghost:hover { background: var(--surface3); color: var(--text); }
+  .btn-preview { background: var(--info-dim); border: 1px solid rgba(96,165,250,0.25); color: var(--info); border-radius: var(--radius-sm); padding: 6px 13px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-preview:hover { background: rgba(96,165,250,0.18); }
+
+  /* Bottom bar */
+  .bottombar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,15,15,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 14px 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; }
+  .bb-info { font-size: 13px; color: var(--text2); }
+  .bb-info strong { color: var(--text); }
+  .bb-info .save-amt { color: var(--accent); font-weight: 500; }
+  .bb-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-clear { background: transparent; border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-clear:hover { color: var(--text); background: var(--surface); }
+  .btn-delete { background: var(--danger); color: white; border: none; border-radius: var(--radius-sm); padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; opacity: 0.4; pointer-events: none; }
+  .btn-delete.active { opacity: 1; pointer-events: auto; }
+  .btn-delete.active:hover { background: #ef4444; }
+
+  /* Confirm dialog */
+  #confirm-dialog { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; align-items: center; justify-content: center; }
+  #confirm-dialog.open { display: flex; }
+  .confirm-box { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 1.5rem; max-width: 380px; width: 100%; }
+  .confirm-box h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .confirm-box p { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6; }
+  .confirm-note { background: var(--warning-dim); border: 1px solid rgba(251,191,36,0.2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px; color: var(--warning); margin-bottom: 1.25rem; line-height: 1.6; }
+  .confirm-actions { display: flex; gap: 10px; }
+  .confirm-actions .btn-cancel { flex: 1; background: transparent; border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius-sm); padding: 9px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .confirm-actions .btn-confirm-del { flex: 1; background: var(--danger); border: none; color: white; border-radius: var(--radius-sm); padding: 9px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  /* Toast */
+  #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--surface3); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13px; color: var(--text); z-index: 400; display: none; font-family: 'DM Mono', monospace; }
+
+  /* Misc */
+  .no-groups { text-align: center; padding: 3rem; color: var(--text3); font-size: 14px; }
+  .error-msg { background: var(--danger-dim); border: 1px solid rgba(248,113,113,0.2); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; color: var(--danger); margin-top: 10px; display: none; }
+  .api-note { background: var(--warning-dim); border: 1px solid rgba(251,191,36,0.15); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--warning); line-height: 1.6; margin-bottom: 1.5rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">photos_dedup</div>
+  <div class="topbar-status" id="topbar-status"></div>
+</div>
+
+<div class="main">
+
+  <!-- Auth screen -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <h1>Find &amp; remove<br><span>duplicate photos</span></h1>
+      <p>Scan your Google Photos library to identify exact duplicates, burst shots, and similar images — then delete with confidence using side-by-side previews.</p>
+
+      <div class="setup-steps">
+        <h3>Setup (one time)</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <p>Go to <a href="https://developers.google.com/photos/library/guides/get-started" target="_blank">Google Photos API console</a>, create a project, enable the Photos Library API, and create an OAuth 2.0 credential (type: <strong>Web app</strong>).</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p>Add <strong>http://localhost:8080</strong> as an authorised redirect URI in your OAuth credentials.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p>Serve this file locally: <strong>python3 -m http.server 8080</strong> — then open <strong>http://localhost:8080</strong></p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <p>Enter your <strong>OAuth Client ID</strong> below and click Connect.</p>
+        </div>
+      </div>
+
+      <div class="token-form">
+        <input type="text" id="client-id-input" placeholder="your-client-id.apps.googleusercontent.com" />
+      </div>
+      <div class="error-msg" id="error-msg"></div>
+      <button class="btn-connect" onclick="connectGoogle()">Connect with Google</button>
+      <div class="or-divider">— or —</div>
+      <button class="btn-demo" onclick="loadDemo()">Load demo (no login needed)</button>
+      <p class="auth-note">This app runs entirely in your browser. No data leaves your machine.</p>
+    </div>
+  </div>
+
+  <!-- Scan screen -->
+  <div id="scan-screen">
+    <div class="scan-box">
+      <h2>Scanning your library…</h2>
+      <div class="scan-sub" id="scan-count-label">0 items</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="scan-log" id="scan-log">Initialising…</div>
+    </div>
+  </div>
+
+  <!-- Results screen -->
+  <div id="results-screen">
+    <div class="results-header">
+      <h2>Found <span id="group-count">0</span> duplicate groups</h2>
+    </div>
+    <div class="api-note" id="api-delete-note" style="display:none">
+      ⚠ The Google Photos API does not support deletion. After reviewing, this tool will generate a list of filenames you can bulk-delete in the Google Photos app or via Google Takeout. Demo mode simulates deletion locally.
+    </div>
+    <div class="stats-strip" id="stats-strip"></div>
+    <div class="filters" id="filter-bar"></div>
+    <div id="groups-container"></div>
+  </div>
+
+</div>
+
+<!-- Preview modal -->
+<div id="modal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3 id="modal-title">Compare photos</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-photos" id="modal-photos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm delete dialog -->
+<div id="confirm-dialog">
+  <div class="confirm-box">
+    <h3>Remove selected photos?</h3>
+    <p id="confirm-desc"></p>
+    <div class="confirm-note">Note: The Google Photos API does not support deletion. This tool will remove items from this view and export a list for you to delete manually in the Google Photos app.</div>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-del" onclick="doDelete()">Remove from list</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom bar -->
+<div class="bottombar" id="bottombar">
+  <div class="bb-info" id="bb-info">No photos selected</div>
+  <div class="bb-actions">
+    <button class="btn-clear" onclick="clearSelection()">Clear</button>
+    <button class="btn-delete" id="btn-delete" onclick="openConfirm()">Delete selected</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── Config ────────────────────────────────────────────────────────────────
+const SCOPES = 'https://www.googleapis.com/auth/photoslibrary.readonly';
+const PAGE_SIZE = 100;
+const BURST_WINDOW_MS = 3000; // photos within 3s = burst
+
+// ─── State ─────────────────────────────────────────────────────────────────
+let accessToken = null;
+let allGroups = [];
+let selected = new Set();
+let currentFilter = 'all';
+let isDemo = false;
+let openGroups = new Set();
+
+// ─── Auth / Connect ─────────────────────────────────────────────────────────
+function connectGoogle() {
+  const clientId = document.getElementById('client-id-input').value.trim();
+  if (!clientId) { showError('Please enter your OAuth Client ID.'); return; }
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: window.location.origin + window.location.pathname,
+    response_type: 'token',
+    scope: SCOPES,
+    prompt: 'consent'
+  });
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+}
+
+function parseHashToken() {
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  return params.get('access_token');
+}
+
+// ─── Scanning ───────────────────────────────────────────────────────────────
+async function startScan(token) {
+  accessToken = token;
+  showScreen('scan');
+  document.getElementById('topbar-status').textContent = 'scanning…';
+
+  let items = [];
+  let pageToken = null;
+  let total = 0;
+
+  setLog('Fetching media items…');
+  try {
+    do {
+      const body = { pageSize: PAGE_SIZE };
+      if (pageToken) body.pageToken = pageToken;
+
+      const res = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems?pageSize=' + PAGE_SIZE + (pageToken ? '&pageToken=' + pageToken : ''), {
+        headers: { Authorization: 'Bearer ' + accessToken }
+      });
+      if (!res.ok) throw new Error('API error: ' + res.status);
+      const data = await res.json();
+      const batch = data.mediaItems || [];
+      items = items.concat(batch);
+      total += batch.length;
+      pageToken = data.nextPageToken;
+      setProgress(Math.min(total / 2000 * 70, 70)); // estimate
+      setCount(total + ' items fetched');
+      setLog('Page fetched — ' + total + ' items so far…');
+      await sleep(100);
+    } while (pageToken);
+  } catch(e) {
+    showError('Failed to fetch photos: ' + e.message);
+    showScreen('auth');
+    return;
+  }
+
+  setLog('Analysing for duplicates…');
+  setProgress(80);
+  await sleep(200);
+  allGroups = detectGroups(items, false);
+  setProgress(100);
+  setLog('Done.');
+  await sleep(300);
+  document.getElementById('api-delete-note').style.display = 'block';
+  showResults();
+}
+
+// ─── Duplicate Detection ─────────────────────────────────────────────────────
+function detectGroups(items, demo) {
+  const groups = [];
+
+  // 1. Exact duplicates: same filename (ignore copy suffixes)
+  const byName = {};
+  for (const item of items) {
+    const base = item.filename.replace(/\s*\(\d+\)(\.\w+)?$/, '$1').replace(/\s*copy(\.\w+)?$/i, '$1');
+    if (!byName[base]) byName[base] = [];
+    byName[base].push(item);
+  }
+  for (const [name, group] of Object.entries(byName)) {
+    if (group.length > 1) {
+      groups.push({
+        id: 'exact-' + name,
+        type: 'exact',
+        label: 'Exact duplicate',
+        photos: group.map((p, i) => makePhoto(p, i === 0 ? 'keep' : 'dup', demo))
+      });
+    }
+  }
+
+  // 2. Burst shots: photos within BURST_WINDOW_MS of each other
+  const remaining = items.filter(item => {
+    const baseName = item.filename.replace(/\s*\(\d+\)(\.\w+)?$/, '$1').replace(/\s*copy(\.\w+)?$/i, '$1');
+    return (byName[baseName] || []).length === 1;
+  });
+
+  const sorted = [...remaining].sort((a, b) => {
+    const ta = new Date(a.mediaMetadata.creationTime).getTime();
+    const tb = new Date(b.mediaMetadata.creationTime).getTime();
+    return ta - tb;
+  });
+
+  let i = 0;
+  while (i < sorted.length) {
+    const anchor = sorted[i];
+    const t0 = new Date(anchor.mediaMetadata.creationTime).getTime();
+    const burst = [anchor];
+    let j = i + 1;
+    while (j < sorted.length) {
+      const t1 = new Date(sorted[j].mediaMetadata.creationTime).getTime();
+      if (t1 - t0 <= BURST_WINDOW_MS && anchor.mediaMetadata.photo && sorted[j].mediaMetadata.photo) {
+        burst.push(sorted[j]);
+        j++;
+      } else break;
+    }
+    if (burst.length >= 3) {
+      groups.push({
+        id: 'burst-' + i,
+        type: 'burst',
+        label: 'Burst shots',
+        photos: burst.map((p, idx) => makePhoto(p, idx === 0 ? 'keep' : 'dup', demo))
+      });
+      i = j;
+    } else i++;
+  }
+
+  return groups;
+}
+
+function makePhoto(item, role, demo) {
+  const meta = item.mediaMetadata || {};
+  const isVideo = !!meta.video;
+  const kb = parseInt(meta.width || 0) * parseInt(meta.height || 0) * 3 / 1024; // rough estimate
+  const sizeMb = Math.max(0.5, kb / 1024);
+  return {
+    id: item.id,
+    filename: item.filename,
+    role,
+    isVideo,
+    baseUrl: item.baseUrl || null,
+    productUrl: item.productUrl || null,
+    created: meta.creationTime ? new Date(meta.creationTime).toLocaleString() : 'Unknown',
+    width: meta.width || '?',
+    height: meta.height || '?',
+    sizeMb: parseFloat(sizeMb.toFixed(1))
+  };
+}
+
+// ─── Demo Data ───────────────────────────────────────────────────────────────
+function loadDemo() {
+  isDemo = true;
+  showScreen('scan');
+  document.getElementById('topbar-status').textContent = 'demo mode';
+
+  const ICONS = ['🌅','🐈','🌊','🏔️','🌸','🏙️','🌿','🍕'];
+  const demoItems = [];
+  let t = Date.now() - 365 * 24 * 3600 * 1000;
+  let id = 1;
+
+  // Exact dup pairs
+  for (let k = 0; k < 4; k++) {
+    t += 3600000 * 24 * Math.random() * 30;
+    const name = `IMG_${1000 + k * 100}.jpg`;
+    const icon = ICONS[k % ICONS.length];
+    demoItems.push(makeDemoItem(id++, name, t, 4000, 3000, icon));
+    demoItems.push(makeDemoItem(id++, name.replace('.jpg', ' (1).jpg'), t, 4000, 3000, icon));
+  }
+
+  // Burst groups
+  for (let k = 0; k < 3; k++) {
+    t += 3600000 * 24 * Math.random() * 20;
+    const base = t;
+    const icon = ICONS[(k + 4) % ICONS.length];
+    const count = 3 + Math.floor(Math.random() * 3);
+    for (let b = 0; b < count; b++) {
+      demoItems.push(makeDemoItem(id++, `IMG_${2000 + k * 100 + b}.jpg`, base + b * 700, 4000, 3000, icon));
+    }
+  }
+
+  // Simulate scan animation
+  let step = 0;
+  const steps = ['Fetching media items…','Analysing filenames…','Detecting burst shots…','Comparing timestamps…','Finalising results…'];
+  let cnt = 0;
+  const iv = setInterval(() => {
+    cnt += Math.floor(Math.random() * 120 + 50);
+    setLog(steps[Math.min(step, steps.length - 1)]);
+    setCount(cnt + ' items scanned');
+    setProgress((step + 1) / steps.length * 100);
+    step++;
+    if (step >= steps.length) {
+      clearInterval(iv);
+      allGroups = detectDemoGroups(demoItems);
+      setTimeout(showResults, 400);
+    }
+  }, 500);
+}
+
+function makeDemoItem(id, filename, timestamp, w, h, icon) {
+  return {
+    id: 'demo-' + id,
+    filename,
+    baseUrl: null,
+    productUrl: null,
+    demoIcon: icon,
+    mediaMetadata: {
+      creationTime: new Date(timestamp).toISOString(),
+      width: String(w),
+      height: String(h),
+      photo: {}
+    }
+  };
+}
+
+function detectDemoGroups(items) {
+  const groups = detectGroups(items, true);
+  // Patch in demo icons
+  const iconMap = {};
+  for (const item of items) iconMap[item.id] = item.demoIcon;
+  for (const g of groups) {
+    for (const p of g.photos) p.demoIcon = iconMap[p.id] || '🖼️';
+  }
+  return groups;
+}
+
+// ─── Results rendering ───────────────────────────────────────────────────────
+function showResults() {
+  document.getElementById('group-count').textContent = allGroups.length;
+  renderStats();
+  renderFilters();
+  renderGroups();
+  showScreen('results');
+  updateBottomBar();
+  document.getElementById('topbar-status').textContent = allGroups.length + ' groups found';
+}
+
+function renderStats() {
+  const totalDup = allGroups.reduce((a, g) => a + g.photos.filter(p => p.role === 'dup').length, 0);
+  const totalSave = allGroups.reduce((a, g) => a + g.photos.filter(p => p.role === 'dup').reduce((s, p) => s + p.sizeMb, 0), 0);
+  const types = { exact: 0, burst: 0, similar: 0 };
+  for (const g of allGroups) types[g.type] = (types[g.type] || 0) + 1;
+
+  document.getElementById('stats-strip').innerHTML = `
+    <div class="stat"><div class="s-label">Total groups</div><div class="s-val">${allGroups.length}</div></div>
+    <div class="stat"><div class="s-label">Removable files</div><div class="s-val accent">${totalDup}</div></div>
+    <div class="stat"><div class="s-label">Space recoverable</div><div class="s-val accent">${fmtSize(totalSave)}</div></div>
+    <div class="stat"><div class="s-label">Exact dups</div><div class="s-val">${types.exact || 0}</div></div>
+    <div class="stat"><div class="s-label">Burst groups</div><div class="s-val">${types.burst || 0}</div></div>
+  `;
+}
+
+const FILTER_LABELS = { all: 'All groups', exact: 'Exact duplicates', burst: 'Burst shots', similar: 'Similar' };
+function renderFilters() {
+  const types = ['all', ...new Set(allGroups.map(g => g.type))];
+  document.getElementById('filter-bar').innerHTML = types.map(t =>
+    `<button class="filter-pill ${t === currentFilter ? 'on' : ''}" onclick="setFilter('${t}',this)">${FILTER_LABELS[t] || t}</button>`
+  ).join('');
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  renderGroups();
+}
+
+function renderGroups() {
+  const filtered = currentFilter === 'all' ? allGroups : allGroups.filter(g => g.type === currentFilter);
+  const c = document.getElementById('groups-container');
+  if (!filtered.length) { c.innerHTML = '<div class="no-groups">No groups found for this filter.</div>'; return; }
+  c.innerHTML = filtered.map(g => renderGroup(g)).join('');
+}
+
+function renderGroup(g) {
+  const dups = g.photos.filter(p => p.role === 'dup');
+  const saveable = dups.reduce((s, p) => s + p.sizeMb, 0);
+  const isOpen = openGroups.has(g.id);
+  return `
+    <div class="group ${isOpen ? 'open' : ''}" id="grp-${g.id}">
+      <div class="group-head" onclick="toggleGroup('${g.id}')">
+        <span class="type-badge badge-${g.type}">${g.label}</span>
+        <div class="group-title"><strong>${g.photos.length} files</strong> · ${g.photos[0].created.split(',')[0]}</div>
+        <div class="group-save">−${fmtSize(saveable)}</div>
+        <div class="chevron">▾</div>
+      </div>
+      <div class="group-body">
+        <div class="photo-grid">${g.photos.map(p => renderPhotoCard(p, g.id)).join('')}</div>
+        <div class="group-actions">
+          <div class="ga-note">${dups.length} suggested for removal</div>
+          <button class="btn-preview" onclick="openModal('${g.id}')">🔍 Preview &amp; compare</button>
+          <button class="btn-ghost" onclick="autoSelect('${g.id}')">Select suggested</button>
+          <button class="btn-ghost" onclick="deselectGroup('${g.id}')">Deselect all</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderPhotoCard(p, gid) {
+  const isSel = selected.has(p.id);
+  const thumbHtml = p.baseUrl
+    ? `<img src="${p.baseUrl}=w300-h300-c" alt="${p.filename}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'thumb-placeholder\\'>${p.demoIcon || '🖼️'}</div>'">`
+    : `<div class="thumb-placeholder">${p.demoIcon || (p.isVideo ? '🎬' : '🖼️')}</div>`;
+
+  return `
+    <div class="photo-card ${isSel ? 'selected' : ''} ${p.role === 'keep' ? 'keep' : ''}" onclick="togglePhoto('${p.id}','${gid}')" id="pc-${p.id}">
+      <div class="photo-thumb-wrap">
+        ${thumbHtml}
+        ${p.isVideo ? '<div class="play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>' : ''}
+      </div>
+      <span class="photo-card-label ${p.role === 'keep' ? 'label-keep' : 'label-dup'}">${p.role === 'keep' ? 'keep' : 'dup'}</span>
+      <div class="checkbox"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="photo-meta">
+        <div class="fname" title="${p.filename}">${p.filename}</div>
+        <div class="fsize">${fmtSize(p.sizeMb)} · ${p.width}×${p.height}</div>
+      </div>
+    </div>`;
+}
+
+// ─── Modal ───────────────────────────────────────────────────────────────────
+function openModal(gid) {
+  const g = allGroups.find(x => x.id === gid);
+  if (!g) return;
+  document.getElementById('modal-title').textContent = g.label + ' — ' + g.photos.length + ' files';
+  document.getElementById('modal-photos').innerHTML = g.photos.map(p => `
+    <div class="modal-photo">
+      <div class="modal-img-wrap">
+        ${p.baseUrl
+          ? `<img src="${p.baseUrl}=w600-h450-c" alt="${p.filename}" onerror="this.parentNode.innerHTML='<div class=\\'mp-placeholder\\'>${p.demoIcon || '🖼️'}<span>Preview unavailable</span></div>'">`
+          : `<div class="mp-placeholder">${p.demoIcon || (p.isVideo ? '🎬' : '🖼️')}<span>${isDemo ? 'Demo mode' : 'Preview unavailable'}</span></div>`}
+      </div>
+      <div class="modal-photo-info">
+        <div class="mpi-name">${p.filename}</div>
+        <div class="mpi-meta">${fmtSize(p.sizeMb)} · ${p.width}×${p.height} · ${p.created}</div>
+        <div class="mpi-actions">
+          ${p.productUrl ? `<button class="btn-sm btn-view" onclick="window.open('${p.productUrl}','_blank')">Open in Photos</button>` : ''}
+          ${p.role !== 'keep' ? `<button class="btn-sm btn-del ${selected.has(p.id) ? '' : ''}" onclick="selectFromModal('${p.id}','${gid}')">${selected.has(p.id) ? '✓ Selected' : 'Select for removal'}</button>` : `<button class="btn-sm btn-keep" disabled>Suggested keep</button>`}
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('modal').classList.add('open');
+}
+
+function selectFromModal(pid, gid) {
+  selected.add(pid);
+  updateBottomBar();
+  const card = document.getElementById('pc-' + pid);
+  if (card) card.classList.add('selected');
+  openModal(gid); // re-render modal to show checked state
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+// ─── Selection ───────────────────────────────────────────────────────────────
+function togglePhoto(pid, gid) {
+  if (selected.has(pid)) selected.delete(pid);
+  else selected.add(pid);
+  const card = document.getElementById('pc-' + pid);
+  if (card) card.classList.toggle('selected', selected.has(pid));
+  updateBottomBar();
+}
+
+function autoSelect(gid) {
+  const g = allGroups.find(x => x.id === gid);
+  if (!g) return;
+  g.photos.filter(p => p.role === 'dup').forEach(p => {
+    selected.add(p.id);
+    const card = document.getElementById('pc-' + p.id);
+    if (card) card.classList.add('selected');
+  });
+  updateBottomBar();
+}
+
+function deselectGroup(gid) {
+  const g = allGroups.find(x => x.id === gid);
+  if (!g) return;
+  g.photos.forEach(p => {
+    selected.delete(p.id);
+    const card = document.getElementById('pc-' + p.id);
+    if (card) card.classList.remove('selected');
+  });
+  updateBottomBar();
+}
+
+function clearSelection() {
+  selected.clear();
+  document.querySelectorAll('.photo-card.selected').forEach(c => c.classList.remove('selected'));
+  updateBottomBar();
+}
+
+function updateBottomBar() {
+  const count = selected.size;
+  const allPhotos = allGroups.flatMap(g => g.photos);
+  const sizeMb = allPhotos.filter(p => selected.has(p.id)).reduce((s, p) => s + p.sizeMb, 0);
+  const infoEl = document.getElementById('bb-info');
+  const delBtn = document.getElementById('btn-delete');
+  if (count === 0) {
+    infoEl.innerHTML = 'No photos selected';
+    delBtn.classList.remove('active');
+  } else {
+    infoEl.innerHTML = `<strong>${count}</strong> photo${count > 1 ? 's' : ''} selected · <span class="save-amt">${fmtSize(sizeMb)} to free</span>`;
+    delBtn.classList.add('active');
+  }
+}
+
+function toggleGroup(gid) {
+  if (openGroups.has(gid)) openGroups.delete(gid);
+  else openGroups.add(gid);
+  renderGroups();
+}
+
+// ─── Delete flow ─────────────────────────────────────────────────────────────
+function openConfirm() {
+  if (selected.size === 0) return;
+  const allPhotos = allGroups.flatMap(g => g.photos);
+  const sizeMb = allPhotos.filter(p => selected.has(p.id)).reduce((s, p) => s + p.sizeMb, 0);
+  document.getElementById('confirm-desc').textContent =
+    `You are about to mark ${selected.size} photo${selected.size > 1 ? 's' : ''} (approx. ${fmtSize(sizeMb)}) for removal.`;
+  document.getElementById('confirm-dialog').classList.add('open');
+}
+
+function closeConfirm() { document.getElementById('confirm-dialog').classList.remove('open'); }
+
+function doDelete() {
+  closeConfirm();
+  // Export filename list
+  const allPhotos = allGroups.flatMap(g => g.photos);
+  const toRemove = allPhotos.filter(p => selected.has(p.id));
+  const fileList = toRemove.map(p => p.filename).join('\n');
+  const blob = new Blob([`# Files to delete from Google Photos\n# Generated: ${new Date().toISOString()}\n\n${fileList}`], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'photos_to_delete.txt'; a.click();
+  URL.revokeObjectURL(url);
+
+  // Remove from UI
+  const removedIds = new Set(selected);
+  selected.clear();
+  for (const g of allGroups) g.photos = g.photos.filter(p => !removedIds.has(p.id));
+  allGroups = allGroups.filter(g => g.photos.length > 1);
+  document.getElementById('group-count').textContent = allGroups.length;
+  renderStats();
+  renderGroups();
+  updateBottomBar();
+  showToast('Removed ' + removedIds.size + ' items · list saved as photos_to_delete.txt');
+}
+
+// ─── Utilities ───────────────────────────────────────────────────────────────
+function fmtSize(mb) {
+  if (mb >= 1000) return (mb / 1000).toFixed(1) + ' GB';
+  return Math.round(mb) + ' MB';
+}
+
+function showScreen(name) {
+  document.getElementById('auth-screen').style.display = name === 'auth' ? 'flex' : 'none';
+  document.getElementById('scan-screen').style.display = name === 'scan' ? 'flex' : 'none';
+  document.getElementById('results-screen').style.display = name === 'results' ? 'block' : 'none';
+}
+
+function setProgress(pct) { document.getElementById('progress-fill').style.width = Math.min(100, pct) + '%'; }
+function setLog(msg) { document.getElementById('scan-log').textContent = msg; }
+function setCount(msg) { document.getElementById('scan-count-label').textContent = msg; }
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+(function init() {
+  const token = parseHashToken();
+  if (token) {
+    window.location.hash = '';
+    startScan(token);
+  } else {
+    showScreen('auth');
+  }
+})();
+</script>
+</body>
+</html>
